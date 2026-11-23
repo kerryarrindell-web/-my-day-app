@@ -12,17 +12,25 @@
 @keyframes md11-rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.md11-rise{animation:none!important}.md11-sticky{transition:none!important}}
 @media(max-width:350px){.md11-grid{grid-template-columns:1fr}}
-
 /* v1.1 QA: note completion feedback, lightweight touch transitions */
 .md11-sticky button:active,.md11-actions button:active{transform:scale(.96)}
 .md11-sticky button{transition:transform .16s ease}
 .md11-verse{border-left:3px solid var(--pri);padding:8px 12px;margin:12px 0;line-height:1.55}
 .md11-sticky{animation:md11-rise .34s ease-out both}
 @media(prefers-reduced-motion:reduce){.md11-sticky,.md11-sticky button{animation:none!important;transition:none!important}}
-
 /* Final review: note completion motion; respects reduced motion */
 .md11-completing{position:relative;animation:md11-finish .38s ease-in forwards!important}
 .md11-completing:after{content:'✓ ✨';position:absolute;inset:0;display:grid;place-items:center;font-size:2rem;font-weight:800;color:#37523c;pointer-events:none;animation:md11-check .38s ease-out both}
 @keyframes md11-finish{0%{opacity:1;transform:scale(1)}65%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(.94)}}
 @keyframes md11-check{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.md11-completing,.md11-completing:after{animation:none!important}}
+
+/* My Day v1.2 — Rota-style edge LEDs. Purely decorative; no layout or storage changes. */
+:root{--md12-led-a:#e45e9e;--md12-led-b:#a581f2;--md12-glow:rgba(214,80,157,.25)}
+body.dark{--md12-led-a:#ff82c1;--md12-led-b:#ac91ff;--md12-glow:rgba(235,99,183,.29)}
+/* All main card surfaces. Existing rounded corners and background colours are retained. */
+#app .card{position:relative;isolation:isolate;box-shadow:var(--shadow),0 0 10px var(--md12-glow),0 0 2px var(--md12-led-a)}
+#app .card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;border:1.5px solid transparent;background:linear-gradient(125deg,var(--md12-led-a),transparent 33%,transparent 66%,var(--md12-led-b)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:.9;animation:md12-led-drift 12s ease-in-out infinite alternate}
+#app .card::after{content:"";position:absolute;inset:-2px;border-radius:inherit;pointer-events:none;z-index:-1;background:linear-gradient(125deg,var(--md12-led-a),transparent 32%,transparent 68%,var(--md12-led-b));filter:blur(5px);opacity:.5;animation:md12-led-drift 12s ease-in-out infinite alternate}
+@keyframes md12-led-drift{0%{background-position:-12px -8px;opacity:.67}100%{background-position:12px 8px;opacity:1}}
+@media(prefers-reduced-motion:reduce){#app .card::before,#app .card::after{animation:none!important}}
