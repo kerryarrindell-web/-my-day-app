@@ -1,0 +1,14 @@
+/* My Day v1.1 additive styling: preserves existing themes */
+.md11-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.md11-sticky{min-height:110px;border-radius:5px 5px 16px 5px;padding:13px;color:#483949;box-shadow:2px 5px 10px #49344222;white-space:pre-wrap;overflow-wrap:anywhere;transform:rotate(-1deg);transition:transform .2s,opacity .2s}
+.md11-sticky:nth-child(even){transform:rotate(1deg)}
+.md11-sticky:active{transform:scale(.97)}
+.md11-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.md11-actions button{border:0;border-radius:10px;padding:7px 10px;background:#ffffffb8;color:#463846;font-weight:700}
+.md11-verse{margin:12px 0;padding:10px 15px;border-left:4px solid var(--pri);font-size:1.1em;line-height:1.55}
+.md11-verse .meta{margin-top:8px}
+#md11-fab{position:fixed;right:16px;bottom:calc(83px + env(safe-area-inset-bottom));z-index:8;background:var(--pri);color:white;border:0;border-radius:50px;padding:13px 17px;font-weight:800;box-shadow:0 5px 20px #54263b55}
+.md11-rise{animation:md11-rise .34s ease-out both}
+@keyframes md11-rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.md11-rise{animation:none!important}.md11-sticky{transition:none!important}}
+@media(max-width:350px){.md11-grid{grid-template-columns:1fr}}
