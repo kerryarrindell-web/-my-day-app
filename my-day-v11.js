@@ -52,10 +52,16 @@ window.MyDay11={
  newNote(){openModal('<h2>📌 New sticky note</h2><textarea id="md11-note-text" rows="5" placeholder="Write a reminder…"></textarea><div class="mbtns"><button class="btn" onclick="MyDay11.saveNote()">Stick to Today</button><button class="btn alt" onclick="closeModal()">Cancel</button></div>')},
  saveNote(){const t=document.getElementById('md11-note-text')?.value.trim();if(!t)return;S.notes.unshift({id:uid(),text:t,color:noteColor,pin:true,img:'',v11done:false});save();closeModal();render();toast('Note pinned ✨')},
  toggle(id){const n=S.notes.find(n=>n.id===id);if(!n)return;
- const completing=!n.v11done;const tile=completing?document.querySelector(`[data-md11-note="${id}"]`):null;
- if(tile&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){tile.classList.add('md11-completing');setTimeout(()=>{n.v11done=true;save();render();toast('✨ Note completed')},380)}
- else{n.v11done=completing;if(!n.v11done)n.pin=true;save();render();toast(completing?'Note completed':'Note restored')}
-},
+ const completing=!n.v11done;
+ // Persist immediately, before any animation; repeated taps cannot lose the update.
+ n.v11done=completing;
+ if(!completing)n.pin=true;
+ save();
+ const tile=completing?Array.from(document.querySelectorAll('[data-md11-note]')).find(el=>el.dataset.md11Note===String(id)):null;
+ const animated=tile&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+ if(animated){tile.classList.add('md11-completing');tile.querySelectorAll('button').forEach(b=>b.disabled=true);setTimeout(()=>{render();toast('✨ Note completed')},380)}
+ else{render();toast(completing?'Note completed':'Note restored')}
+ },
  priority(id){const task=S.tasks.find(t=>t.id===id);if(!task)return;const ids=priorityIds().filter(x=>x!==id);if(!priorityIds().includes(id)&&ids.length<3)ids.push(id);S.settings.v11PriorityIds=ids;save();render()},
  edit(id){noteModal(id)},notes(){tab='notes';render()},shopping(){tab='lists';curList='groc';render()},
  quick(){openModal('<h2>✨ Quick Add</h2><div class="mbtns"><button class="btn" onclick="MyDay11.newNote()">📌 Sticky note</button><button class="btn alt" onclick="MyDay11.jump(\'today\',\'nt\')">✓ Task</button><button class="btn alt" onclick="MyDay11.jump(\'lists\',\'ni\')">🛒 Shopping item</button><button class="btn alt" onclick="MyDay11.jump(\'appts\')">📅 Appointment</button></div>')},
@@ -63,7 +69,8 @@ window.MyDay11={
  copyVerse(){const [t,r]=verse();const v=`“${t}” — ${r} (KJV)`;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(v).then(()=>toast('Verse copied')).catch(()=>toast('Copy unavailable'));else toast('Copy unavailable')},
  shareVerse(){const [t,r]=verse();const v=`“${t}” — ${r} (KJV)`;if(navigator.share)navigator.share({text:v}).catch(()=>{});else this.copyVerse()},
  verseSetting(show){S.settings.v11verse=show;save();render();openSettings()},
- backup(){originalBackup();S.settings.v11BackupDismissed=day();save();render()},snooze(){S.settings.v11BackupDismissed=day();save();render()}
+ backup(){originalBackup();openModal('<h2>💾 Backup check</h2><p>Please check that the backup JSON file is saved in Downloads before confirming.</p><div class="mbtns"><button class="btn" onclick="MyDay11.confirmBackup()">I saved the backup</button><button class="btn alt" onclick="closeModal()">Not saved yet</button></div>')},
+ confirmBackup(){S.settings.v11BackupDismissed=day();save();closeModal();render();toast('Backup reminder updated')},snooze(){S.settings.v11BackupDismissed=day();save();render()}
 };
 render();
 })();
