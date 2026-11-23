@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
+  <link rel="stylesheet" href="my-day-v11.css">
 <meta charset="utf-8">
 <title>My Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -715,6 +716,7 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=
 let lastDay=todayStr();setInterval(()=>{tick();if(todayStr()!==lastDay){lastDay=todayStr();render()}},15000);
 render();tick();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
-</script>
+</script> 
+  <script src="my-day-v11.js"></script>
 </body>
 </html>
