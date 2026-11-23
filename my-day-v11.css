@@ -12,3 +12,10 @@
 @keyframes md11-rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.md11-rise{animation:none!important}.md11-sticky{transition:none!important}}
 @media(max-width:350px){.md11-grid{grid-template-columns:1fr}}
+
+/* v1.1 QA: note completion feedback, lightweight touch transitions */
+.md11-sticky button:active,.md11-actions button:active{transform:scale(.96)}
+.md11-sticky button{transition:transform .16s ease}
+.md11-verse{border-left:3px solid var(--pri);padding:8px 12px;margin:12px 0;line-height:1.55}
+.md11-sticky{animation:md11-rise .34s ease-out both}
+@media(prefers-reduced-motion:reduce){.md11-sticky,.md11-sticky button{animation:none!important;transition:none!important}}

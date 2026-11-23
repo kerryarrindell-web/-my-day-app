@@ -28,19 +28,26 @@ function priorities(){const td=day(),open=tasksFor(td).filter(t=>!isDone(t,td)).
 function tomorrow(){const d=addDays(day(),1),tasks=S.tasks.filter(t=>occursOn(t,d)&&!isDone(t,d)).slice(0,3),appts=S.appts.filter(a=>a.date===d).slice(0,3);return `<section class="card md11-rise"><h2>🌙 Tomorrow preview</h2>${tasks.map(t=>`<p class="meta">✓ ${safe(t.t)}</p>`).join('')}${appts.map(a=>`<p class="meta">📅 ${safe(a.title||a.t||'Appointment')}</p>`).join('')}${!tasks.length&&!appts.length?'<p class="meta">Nothing planned yet.</p>':''}</section>`}
 function shopping(){const l=S.lists.find(l=>l.id==='groc'),n=l?l.items.filter(i=>!i.done).length:0;return `<section class="card md11-rise"><h2>🛒 Shopping</h2><p class="meta">${n} item${n===1?'':'s'} remaining</p>${btn('Open shopping list','shopping')}</section>`}
 function backupCard(){const last=S.settings.v11BackupDismissed,elapsed=last?(Date.now()-Date.parse(last+'T00:00:00'))/86400000:999;return elapsed>=7?`<section class="card md11-rise"><h2>💾 Backup reminder</h2><p class="meta">Your data is stored on this phone. Export a backup to protect it.</p><div class="acts">${btn('Export backup','backup')}${btn('Remind next week','snooze')}</div></section>`:''}
-function renderExtras(){return motivationVerse()+noteCard()+priorities()+tomorrow()+shopping()+backupCard()}
+function renderExtras(){return noteCard()+priorities()+tomorrow()+shopping()+backupCard()}
 const originalToday=vToday;
-vToday=function(){const base=originalToday();return renderExtras()+base};
+vToday=function(){
+ const base=originalToday();
+ const motivation=motiCard();
+ const extra=motivationVerse()+renderExtras();
+ return motivation&&base.includes(motivation)
+   ?base.replace(motivation,motivation+extra)
+   :extra+base;
+};
 const originalRender=render;
 render=function(){originalRender();let fab=document.getElementById('md11-fab');if(tab==='today'){if(!fab){fab=document.createElement('button');fab.id='md11-fab';fab.textContent='＋ Quick Add';fab.onclick=()=>MyDay11.quick();document.body.appendChild(fab)}}else if(fab)fab.remove()};
 const originalSettings=openSettings;
 openSettings=function(){originalSettings();const modal=document.querySelector('#modal');if(!modal)return;const node=document.createElement('div');node.innerHTML=`<label>Daily KJV Bible verse</label><div class="seg"><button class="${S.settings.v11verse!==false?'on':''}" onclick="MyDay11.verseSetting(true)">Show</button><button class="${S.settings.v11verse===false?'on':''}" onclick="MyDay11.verseSetting(false)">Hide</button></div>`;modal.appendChild(node)};
 const originalBackup=backup;
-backup=function(){originalBackup();S.settings.v11BackupDismissed=day();save()};
+backup=function(){originalBackup()};
 window.MyDay11={
  newNote(){openModal('<h2>📌 New sticky note</h2><textarea id="md11-note-text" rows="5" placeholder="Write a reminder…"></textarea><div class="mbtns"><button class="btn" onclick="MyDay11.saveNote()">Stick to Today</button><button class="btn alt" onclick="closeModal()">Cancel</button></div>')},
  saveNote(){const t=document.getElementById('md11-note-text')?.value.trim();if(!t)return;S.notes.unshift({id:uid(),text:t,color:noteColor,pin:true,img:'',v11done:false});save();closeModal();render();toast('Note pinned ✨')},
- toggle(id){const n=S.notes.find(n=>n.id===id);if(!n)return;n.v11done=!n.v11done;n.pin=!n.v11done;save();render();toast(n.v11done?'✨ Note completed':'Note restored')},
+ toggle(id){const n=S.notes.find(n=>n.id===id);if(!n)return;n.v11done=!n.v11done;if(!n.v11done)n.pin=true;save();render();toast(n.v11done?'✨ Note completed':'Note restored')},
  edit(id){noteModal(id)},notes(){tab='notes';render()},shopping(){tab='lists';curList='groc';render()},
  quick(){openModal('<h2>✨ Quick Add</h2><div class="mbtns"><button class="btn" onclick="MyDay11.newNote()">📌 Sticky note</button><button class="btn alt" onclick="MyDay11.jump(\'today\',\'nt\')">✓ Task</button><button class="btn alt" onclick="MyDay11.jump(\'lists\',\'ni\')">🛒 Shopping item</button><button class="btn alt" onclick="MyDay11.jump(\'appts\')">📅 Appointment</button></div>')},
  jump(t,id){closeModal();tab=t;if(t==='lists')curList='groc';render();if(id)setTimeout(()=>document.getElementById(id)?.focus(),50)},
