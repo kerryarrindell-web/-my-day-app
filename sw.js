@@ -1,4 +1,4 @@
-const CACHE = 'myday-v11-development';
+const CACHE = 'myday-v11-release-candidate-1';
 const FILES = ['./', 'index.html', 'my-day-v11.js', 'my-day-v11.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

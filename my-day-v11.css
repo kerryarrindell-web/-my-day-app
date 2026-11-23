@@ -19,3 +19,10 @@
 .md11-verse{border-left:3px solid var(--pri);padding:8px 12px;margin:12px 0;line-height:1.55}
 .md11-sticky{animation:md11-rise .34s ease-out both}
 @media(prefers-reduced-motion:reduce){.md11-sticky,.md11-sticky button{animation:none!important;transition:none!important}}
+
+/* Final review: note completion motion; respects reduced motion */
+.md11-completing{position:relative;animation:md11-finish .38s ease-in forwards!important}
+.md11-completing:after{content:'✓ ✨';position:absolute;inset:0;display:grid;place-items:center;font-size:2rem;font-weight:800;color:#37523c;pointer-events:none;animation:md11-check .38s ease-out both}
+@keyframes md11-finish{0%{opacity:1;transform:scale(1)}65%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(.94)}}
+@keyframes md11-check{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.md11-completing,.md11-completing:after{animation:none!important}}
