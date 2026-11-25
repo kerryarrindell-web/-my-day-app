@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <title>My Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#e0678a">
+<meta name="theme-color" content="#fdf6f0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="My Day">
@@ -57,7 +57,7 @@ body.dark .btn.danger{background:#43232d;color:#f4a3b8}
 .tabs button{flex:1;background:none;border:0;padding:8px 2px;color:var(--mute);font-weight:700;font-size:.72em;border-radius:14px}
 .tabs button span{display:block;font-size:1.85em;line-height:1.2}
 .tabs button.on{color:var(--pri);background:var(--pri2)}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;overflow-x:visible;padding:4px 0 8px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{border:0;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:700;white-space:nowrap;color:var(--ink)}
 .chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
@@ -176,6 +176,14 @@ body.noglass .card,body.noglass .tabs,body.noglass #modal,body.noglass header.sc
 body.noglass .card,body.noglass .tabs,body.noglass .gear,body.noglass .chip,body.noglass .seg button,body.noglass header.scrolled{background:var(--card)}
 body.noglass #modal{background:var(--bg)}
 @media (prefers-reduced-motion:reduce){body::before{animation:none}#modalwrap:not([hidden]) #modal,#modalwrap:not([hidden]) .scrim,#app.enter>*,.row.slidein{animation:none}}
+
+/* v1.3.1: additional shopping lists are visible cards, not hidden offscreen tabs */
+.myday-list-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.myday-list-tile{min-width:0;text-align:left;border:1px solid var(--line);border-left:5px solid var(--list-accent);border-radius:17px;background:var(--card);color:var(--ink);padding:14px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);cursor:pointer}
+.myday-list-tile strong{overflow-wrap:anywhere;font-size:1em}
+.myday-list-tile small{color:var(--mute);font-size:.8em}
+.myday-list-icon{font-size:1.5em}.myday-list-open{font-size:.8em;font-weight:700;color:var(--list-accent)}
+@media(max-width:330px){.myday-list-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body data-size="m">
@@ -627,6 +635,11 @@ function vToday(){
   ${S.settings.babyUrl?`<div class="card"><a class="btn" style="display:block;text-align:center;text-decoration:none" href="${esc(S.settings.babyUrl)}" target="_blank" rel="noopener">👶 Open baby tracker</a></div>`:''}
   <div class="card" onclick="tab='lists';curList='groc';animTab=true;render()" style="cursor:pointer"><h2>🛒 Shopping</h2><div class="meta">${need?need+' item'+(need>1?'s':'')+' still to get':'Nothing on the list'} – tap to open</div></div>`}
 function listChips(sel){return `<div class="chips">${S.lists.map(x=>`<button class="chip ${x.id===sel?'on':''}" onclick="curList='${x.id}';confirmDel=false;render()">${x.emoji} ${esc(x.name)}</button>`).join('')}<button class="chip ${sel==='meals'?'on':''}" onclick="curList='meals';render()">🍽️ Meals</button></div>`}
+function listOverviewTiles(){
+  const extras=S.lists.filter(x=>x.id!=='groc');
+  if(!extras.length)return '';
+  return `<div class="card"><h2>🛍️ My other lists</h2><div class="myday-list-grid">${extras.map((x,i)=>`<button type="button" class="myday-list-tile" style="--list-accent:${['#7658ac','#a64e82','#2b8577','#b77840'][i%4]}" onclick="curList='${x.id}';confirmDel=false;render();window.scrollTo({top:0,behavior:'auto'})"><span class="myday-list-icon">${x.emoji}</span><strong>${esc(x.name)}</strong><small>${x.items.filter(it=>!it.done).length} to get · ${x.items.length} total</small><span class="myday-list-open">Open list →</span></button>`).join('')}</div></div>`;
+}
 function vLists(){
   if(curList==='meals')return listChips('meals')+vMeals();
   const l=curL(),open=l.items.filter(i=>!i.done),done=l.items.filter(i=>i.done);
@@ -639,6 +652,7 @@ function vLists(){
       <button class="a-del" onclick="renameList()">Rename</button>${S.lists.length>1?`<button class="a-del" onclick="delList()">${confirmDel?'Tap again to delete list':'Delete list'}</button>`:''}</div>
   </div>
   ${l.id==='groc'?quickCard(l):''}
+  ${listOverviewTiles()}
   <div class="card"><h2>➕ New list</h2><div class="add" style="margin:0"><input id="nl" placeholder="e.g. Chemist, Pack for hospital" onkeydown="if(event.key==='Enter')newListGo()"><button class="btn alt" onclick="newListGo()">Create</button></div></div>`}
 function apptCard(a){
   const link=gcal({title:a.title,date:a.date,time:a.time,dur:a.dur,place:a.place,notes:a.notes});
@@ -661,8 +675,47 @@ function vNotes(){
   ${S.notes.length?`<input id="nq" type="text" placeholder="🔍 Search my notes" value="${esc(noteQ)}" oninput="noteQ=this.value;render()" style="margin-bottom:12px">`:''}
   ${(()=>{const q=noteQ.trim().toLowerCase();const ns=S.notes.filter(n=>!q||(n.text||'').toLowerCase().includes(q)).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
     return ns.length?`<div class="notes">${ns.map(n=>`<div class="note" style="background:${n.color}" onclick="noteModal('${n.id}')">${n.pin?'📌 ':''}${esc(n.text).replace(/\n/g,'<br>')}${n.img?`<img src="${n.img}" alt="" style="width:100%;border-radius:8px;margin-top:8px;display:block">`:''}<button class="x" onclick="event.stopPropagation();delNote('${n.id}')" aria-label="Delete note">×</button></div>`).join('')}</div>`:S.notes.length?'<div class="empty">No notes match.</div>':'<div class="empty">No notes yet. Things like “Parked on level 3” or “Ask about jabs”.</div>'})()}`}
-const TABS=[['today','🌸','Today'],['lists','🛒','Lists'],['appts','📅','Appts'],['notes','📌','Notes']];
+/* Me Time: additive, private local-only journal; never removes S.notes. */
+const ME_TEMPLATES={
+  rest:['I managed to get some rest','I took a shower and felt refreshed','I ate a proper meal','I drank some water','I listened to my body and slowed down','I asked for help when I needed it'],
+  baby:['I enjoyed cuddles with my baby','I soothed my baby','I made it through a difficult night','I enjoyed a bonding moment','I noticed something new about my baby','I felt a little more confident as a mum'],
+  self:['I made time for something I enjoy','I got dressed and felt good','I enjoyed a peaceful drink','I listened to music','I stepped outside for fresh air','I took a moment just for me'],
+  everyday:['I managed a household task','I prepared something to eat','I got through a busy day','I finished something I had put off','I made someone smile','I gave myself permission to leave things undone']};
+const ME_PROMPTS=['Put on a favourite song and dance for two minutes 🎶','Enjoy a cosy drink and a quiet moment ☕','Try a five-minute creative activity 🎨','Name three things that made you smile 💕','Take a gentle stretch or breathing break 🌿','Choose a happy memory and write a sentence about it 🌸'];
+const ME_ADVICE={
+ rest:['If someone can watch baby for a few minutes, try lying down without feeling you must finish a chore first.','A short quiet break still counts. Put your phone aside and rest somewhere comfortable.','Choose one task that can wait today. Rest is a real need, not a reward.','If sleep was broken last night, ask someone you trust to take over for a little while so you can recharge.','Try a calm, screen-free pause with a warm drink or soothing music.'],
+ food:['Keep a simple snack within reach for busy feeding or cuddling days.','If cooking feels like too much, a sandwich or something easy is perfectly fine.','Try to sit down for a meal when you can, even if the housework waits.','Ask someone to prepare a snack or meal for you; accepting help is a win.','Pair a meal with a little break and eat at your own pace.'],
+ water:['Keep a drink close to your usual resting or feeding spot.','Take a few comfortable sips now, and refill your glass when you can.','Try a refreshing drink you enjoy; caring for yourself can be simple.','If you have been busy, pause for a drink before the next task.','Put a reusable water bottle somewhere easy to reach.'],
+ fun:['Play a favourite song and enjoy it without multitasking.','Pick a colour and find three lovely things around you in that shade.','Send a funny message to someone who makes you laugh.','Spend a few minutes on a hobby you enjoy, even if you do not finish anything.','Visit Play Corner for a surprise idea; fun does not have to be productive.'],
+ support:['Try asking for one specific thing, like a meal, a shower break or ten minutes to yourself.','Tell someone you trust what would make today a little easier.','You do not need to handle everything alone. Asking for help is a strength.','If you are feeling overwhelmed, consider checking in with a friend, family member or health visitor.','Let someone else take a small task off your plate if they can.']
+};
+function meAdvice(need){const arr=ME_ADVICE[need];if(!arr)return '';const d=todayStr();let n=0;for(const ch of d)n=(n*31+ch.charCodeAt(0))>>>0;return arr[n%arr.length]}
+function meGreeting(){const hour=new Date().getHours();return hour<12?'Good morning, lovely!':hour<17?'Good afternoon, lovely!':'Good evening, lovely!'}
+let meSection='home',meCategory='rest',mePrompt=-1;
+function meToday(){S.meTime=S.meTime||{};return S.meTime[todayStr()]||{mood:'',done:[],reflection:'',moments:[],littleWins:[]}}
+function meWrite(item){S.meTime=S.meTime||{};S.meTime[todayStr()]=item;save()}
+function meUpdate(field,value){const m=Object.assign({mood:'',done:[],reflection:'',moments:[],littleWins:[]},meToday());if(field==='toggle'){const set=new Set(m.done);set.has(value)?set.delete(value):set.add(value);m.done=[...set]}else m[field]=value;meWrite(m);if(field!=='reflection')render()}
+function meNavigate(section){meSection=section;render()}
+function meAdd(kind){const el=document.getElementById(kind==='moments'?'meMomentInput':'meWinInput');if(!el)return;const value=el.value.trim().slice(0,240);if(!value)return;const m=meToday();const field=kind==='moments'?'moments':'littleWins';m[field]=Array.isArray(m[field])?m[field]:[];m[field].unshift({id:uid(),text:value,at:new Date().toISOString()});meWrite(m);if(kind==='littleWins')meCelebrate();render()}
+function meTemplate(cat,index){const label=ME_TEMPLATES[cat]&&ME_TEMPLATES[cat][index];if(!label)return;const m=meToday();m.littleWins=Array.isArray(m.littleWins)?m.littleWins:[];if(m.littleWins.some(w=>w.text===label)){toast('Already celebrated today 🌸');return}m.littleWins.unshift({id:uid(),text:label,at:new Date().toISOString()});meWrite(m);meCelebrate();render()}
+function meDelete(kind,id){const m=meToday(),field=kind==='moments'?'moments':'littleWins';m[field]=(m[field]||[]).filter(x=>x.id!==id);meWrite(m);render()}
+function meCelebrate(){celebrate('one');if(!reduceMotion){const f=document.createElement('span');f.className='md131-flower';f.textContent='🌸 ✨ 🌷';f.style.left=Math.max(15,Math.min(innerWidth-160,lastClick.x-55))+'px';f.style.top=Math.max(80,lastClick.y-35)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1150)}}
+function meEntries(kind){const m=meToday(),items=kind==='moments'?m.moments:m.littleWins;return (items||[]).length?items.map(x=>`<div class="md131-entry"><span>${kind==='moments'?'💜':'🌟'} ${esc(x.text)}</span><button aria-label="Remove entry" onclick="meDelete('${kind}','${x.id}')">×</button></div>`).join(''):'<p class="meta">Nothing added yet. There is no rush 💗</p>'}
+function vMeTime(){const m=meToday(),count=(m.littleWins||[]).length, moods=[['🥰','Loved'],['😊','Happy'],['😌','Calm'],['🥱','Tired'],['🥺','Low']];
+ const top=`<div class="md131-hero"><div class="md131-eyebrow">YOUR LITTLE CORNER</div><h2>Me Time 🌸</h2><p>${meGreeting()} 💕 How are you doing today?</p></div>`;
+ const back=meSection==='home'?'':`<button class="md131-back" onclick="meNavigate('home')">← Back to Me Time</button>`;
+ if(meSection==='home')return `${top}<div class="card md131-mood-card md131-feature"><h2>💗 My gentle check-in</h2><p class="meta">No pressure to do everything. You can skip this whenever you like.</p><h3>How are you feeling today?</h3><div class="md131-moods">${moods.map(([e,label])=>`<button class="md131-mood ${m.mood===label?'selected':''}" aria-pressed="${m.mood===label}" onclick="meUpdate('mood','${label}')"><span>${e}</span>${label}</button>`).join('')}</div><h3>What would help right now?</h3><div class="md131-needs">${[['rest','😴','Rest'],['food','🥣','Something to eat'],['water','💧','A drink'],['fun','🎨','A little fun'],['support','💕','Some support']].map(([id,emoji,label])=>`<button class="md131-need ${m.need===id?'selected':''}" aria-pressed="${m.need===id}" onclick="meUpdate('need','${id}')">${emoji} ${label}</button>`).join('')}</div><p class="md131-kind-note" aria-live="polite">${m.need?`🌸 Today's gentle suggestion: ${esc(meAdvice(m.need))}`:'Choose what feels right, or leave this for another time. 🌸'}</p></div>
+ <div class="md131-grid"><button class="md131-tile purple" onclick="meNavigate('moments')"><span>📸</span><strong>My Moments</strong><small>Today's activities</small></button><button class="md131-tile pink" onclick="meNavigate('wins')"><span>🏆</span><strong>Little Wins</strong><small>Celebrate yourself</small></button><button class="md131-tile green" onclick="meNavigate('garden')"><span>🌸</span><strong>Blossom Garden</strong><small>Watch it grow</small></button><button class="md131-tile orange" onclick="meNavigate('play')"><span>🎲</span><strong>Play Corner</strong><small>Something fun</small></button></div>
+ <div class="card"><h2>🌿 A moment for me</h2>${[['pause','Take a quiet moment'],['water','Drink some water'],['kind','Do one kind thing for myself']].map(([id,label])=>`<label class="md131-check"><input type="checkbox" ${m.done.includes(id)?'checked':''} onchange="meUpdate('toggle','${id}')">${label}</label>`).join('')}</div>
+ <div class="card"><h2>💌 One good thing</h2><textarea id="meReflection" rows="3" maxlength="500" placeholder="A little moment you appreciated today…" oninput="meUpdate('reflection',this.value)">${esc(m.reflection||'')}</textarea><p class="meta">Private on this device · included in your backup</p></div>`;
+ if(meSection==='moments')return `${top}${back}<div class="card md131-panel purple"><h2>📸 My Day in Moments</h2><p>What did you do today? A cuddle, a walk, a nap — everything counts.</p><input id="meMomentInput" maxlength="240" placeholder="e.g. Enjoyed a peaceful morning"><button class="btn md131-action" onclick="meAdd('moments')">+ Add my moment</button>${meEntries('moments')}</div>`;
+ if(meSection==='wins')return `${top}${back}<div class="card md131-panel pink"><h2>🏆 Little Wins</h2><p>Small achievements deserve celebrating, especially on the hard days.</p><div class="md131-categories">${[['rest','🌷 Rest'],['baby','🍼 Baby'],['self','💖 Me'],['everyday','🏡 Everyday']].map(([id,name])=>`<button class="${meCategory===id?'active':''}" onclick="meCategory='${id}';render()">${name}</button>`).join('')}</div><div class="md131-templates">${ME_TEMPLATES[meCategory].map((x,i)=>`<button onclick="meTemplate('${meCategory}',${i})">🌸 ${esc(x)}</button>`).join('')}</div><label for="meWinInput">Or write your own</label><input id="meWinInput" maxlength="240" placeholder="Something I'm proud of…"><button class="btn md131-action" onclick="meAdd('littleWins')">✨ Celebrate my win</button><h3>Today's little wins (${count})</h3>${meEntries('littleWins')}</div>`;
+ if(meSection==='garden'){const total=Object.values(S.meTime||{}).reduce((n,x)=>n+(Array.isArray(x.littleWins)?x.littleWins.length:0),0),shown=Math.min(total,24);return `${top}${back}<div class="card md131-panel green"><h2>🌷 My Blossom Garden</h2><p>Every little win helps your garden bloom.</p><div class="md131-garden" aria-label="${total} flowers earned">${Array.from({length:shown},(_,i)=>`<span class="md131-blossom" style="animation-delay:${Math.min(i*60,600)}ms">${['🌸','🌷','🌼','🌺'][i%4]}</span>`).join('')||'<span class="md131-seed">🌱 Your first blossom is waiting</span>'}</div><p class="md131-total">${total} ${total===1?'blossom':'blossoms'} grown</p><button class="btn md131-action" onclick="meNavigate('wins')">Celebrate a little win 🌸</button></div>`}
+ return `${top}${back}<div class="card md131-panel orange"><h2>🎲 Play Corner</h2><p>Something gentle to try when you're bored. No scores, no pressure.</p><div class="md131-surprise">🎁<p>${mePrompt<0?'A surprise is waiting for you!':esc(ME_PROMPTS[mePrompt])}</p></div><button class="btn md131-action" onclick="mePrompt=(mePrompt+1+Math.floor(Math.random()*(ME_PROMPTS.length-1)))%ME_PROMPTS.length;render()">✨ Surprise me!</button></div>`;
+}
+const TABS=[['today','🌸','Today'],['lists','🛒','Lists'],['appts','📅','Appts'],['me','💗','Me Time']];
 function render(){
+  if(tab==='notes')tab='today';
   const act=document.activeElement&&document.activeElement.id;const vals={};
   document.querySelectorAll('#app input,#app textarea').forEach(e=>{if(e.id&&e.value&&e.type!=='date'&&e.type!=='time')vals[e.id]=e.value});
   /* keep the task day/time/repeat the user picked (and the panel open) so a re-render can't flip a PM time back */
@@ -671,7 +724,24 @@ function render(){
   document.body.dataset.size=S.settings.size;document.body.classList.toggle('dark',!!S.settings.dark);
   $('#hi').innerHTML=greeting();
   $('#dt').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
-  $('#app').innerHTML=({today:vToday,lists:vLists,appts:vAppts,notes:vNotes})[tab]()+`<div class="sync">${syncMsg}</div>`;
+  $('#app').innerHTML=({today:vToday,lists:vLists,appts:vAppts,me:vMeTime})[tab]()+`<div class="sync">${syncMsg}</div>`;
+  /* Visual-only category colours: no changes to storage, tasks or notes. */
+  const toneOf=(heading)=>{
+    const h=heading.toLowerCase();
+    if(/shopping|grocer|new list|quick add|baby list|list/.test(h))return 'peach';
+    if(/appointment|upcoming|coming up|calendar/.test(h))return 'lavender';
+    if(/routine|meal plan|meals|breakfast/.test(h))return 'mint';
+    if(/tomorrow|sticky|note|reminder/.test(h))return 'berry';
+    if(/complete|progress|wins|celebrat/.test(h))return 'honey';
+    if(/task|to do|things to do|today|priority/.test(h))return 'rose';
+    return 'lavender';
+  };
+  $('#app').querySelectorAll('.card:not(.md131-panel):not(.md131-feature)').forEach(card=>{
+    const title=card.querySelector('h2');
+    if(title){card.classList.add('md131-colour-card');card.dataset.tone=toneOf(title.textContent||'');}
+  });
+  document.body.dataset.section=tab;
+
   Object.keys(vals).forEach(k=>{const e=document.getElementById(k);if(e)e.value=vals[k]});
   Object.keys(draft).forEach(k=>{const e=document.getElementById(k);if(e)e.value=draft[k]});
   if(detOpen){const d=document.getElementById('ndet');if(d)d.open=true}
