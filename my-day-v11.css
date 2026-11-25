@@ -25,12 +25,17 @@
 @keyframes md11-check{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.md11-completing,.md11-completing:after{animation:none!important}}
 
-/* My Day v1.2 — Rota-style edge LEDs. Purely decorative; no layout or storage changes. */
-:root{--md12-led-a:#e45e9e;--md12-led-b:#a581f2;--md12-glow:rgba(214,80,157,.25)}
-body.dark{--md12-led-a:#ff82c1;--md12-led-b:#ac91ff;--md12-glow:rgba(235,99,183,.29)}
-/* All main card surfaces. Existing rounded corners and background colours are retained. */
-#app .card{position:relative;isolation:isolate;box-shadow:var(--shadow),0 0 10px var(--md12-glow),0 0 2px var(--md12-led-a)}
-#app .card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;border:1.5px solid transparent;background:linear-gradient(125deg,var(--md12-led-a),transparent 33%,transparent 66%,var(--md12-led-b)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:.9;animation:md12-led-drift 12s ease-in-out infinite alternate}
-#app .card::after{content:"";position:absolute;inset:-2px;border-radius:inherit;pointer-events:none;z-index:-1;background:linear-gradient(125deg,var(--md12-led-a),transparent 32%,transparent 68%,var(--md12-led-b));filter:blur(5px);opacity:.5;animation:md12-led-drift 12s ease-in-out infinite alternate}
-@keyframes md12-led-drift{0%{background-position:-12px -8px;opacity:.67}100%{background-position:12px 8px;opacity:1}}
-@media(prefers-reduced-motion:reduce){#app .card::before,#app .card::after{animation:none!important}}
+/* My Day v1.3 — calmer card edge. Replaces the animated LED glow: static, no filters,
+   no masks, no per-card animation, so tiles stay painted while scrolling. */
+:root{--md12-edge:rgba(224,103,138,.28)}
+body.dark{--md12-edge:rgba(255,130,193,.3)}
+#app .card{box-shadow:var(--shadow),0 0 0 1px var(--md12-edge)}
+#app .card::before,#app .card::after{content:none!important;animation:none!important}
+
+/* v1.3 Android performance: static blossom-pink/lavender edge; no tile repaint animation. */
+:root{--md13-lavender:rgba(178,148,220,.20)}
+body.dark{--md13-lavender:rgba(205,168,245,.22)}
+#app .card{position:relative;background:var(--card);border:1px solid var(--md12-edge);box-shadow:0 2px 9px rgba(120,70,90,.09),0 0 0 1px var(--md13-lavender);animation:none!important;filter:none!important;opacity:1!important;visibility:visible!important}
+#app.enter>*{animation:none!important;opacity:1!important;transform:none!important}
+.md11-sticky{animation:none!important}
+body::before{animation:none!important}

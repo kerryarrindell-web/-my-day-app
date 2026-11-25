@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="My Day">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" href="icon-192.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="alternate icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -23,6 +23,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui
 body[data-size=l]{font-size:21px}body[data-size=xl]{font-size:24px}
 header{padding:calc(22px + env(safe-area-inset-top)) 18px 8px;display:flex;align-items:flex-start;gap:10px;max-width:640px;margin:0 auto}
 header .hd{flex:1;min-width:0}
+.logo{width:1.15em;height:1.15em;vertical-align:-.2em}
 header h1{margin:0;font-size:1.45em;font-weight:800;line-height:1.2}
 header p{margin:2px 0 0;color:var(--mute);font-size:.9em}
 .gear{background:var(--card);border:0;border-radius:50%;width:46px;height:46px;font-size:1.2em;box-shadow:var(--shadow);flex:none}
@@ -123,10 +124,10 @@ summary{cursor:pointer}
 :root{--glass:rgba(255,255,255,.58);--glass2:rgba(255,255,255,.88);--gedge:rgba(255,255,255,.78);--gshadow:0 8px 28px rgba(120,70,90,.12);--b1:rgba(224,103,138,.26);--b2:rgba(111,176,143,.24);--b3:rgba(242,184,75,.18);--inp:rgba(255,255,255,.72);--spring:cubic-bezier(.34,1.56,.64,1)}
 body.dark{--glass:rgba(48,37,41,.55);--glass2:rgba(34,26,29,.9);--gedge:rgba(255,255,255,.14);--gshadow:0 8px 28px rgba(0,0,0,.35);--b1:rgba(240,138,168,.2);--b2:rgba(124,196,160,.16);--b3:rgba(242,184,75,.1);--inp:rgba(36,28,31,.6)}
 body{font-family:ui-rounded,"SF Pro Rounded",Nunito,system-ui,sans-serif;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
-body::before{content:'';position:fixed;inset:-15%;z-index:-1;pointer-events:none;background:radial-gradient(42% 34% at 12% 8%,var(--b1),transparent 70%),radial-gradient(40% 38% at 92% 28%,var(--b2),transparent 70%),radial-gradient(46% 38% at 28% 96%,var(--b3),transparent 70%);animation:drift 26s ease-in-out infinite alternate}
+body::before{content:'';position:fixed;inset:-15%;z-index:-1;pointer-events:none;background:radial-gradient(42% 34% at 12% 8%,var(--b1),transparent 70%),radial-gradient(40% 38% at 92% 28%,var(--b2),transparent 70%),radial-gradient(46% 38% at 28% 96%,var(--b3),transparent 70%);}
 @keyframes drift{to{transform:translate3d(3%,-2%,0) scale(1.08)}}
-.card,.gear,.tabs,#modal,#toast,header.scrolled{-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%)}
-.card{background:var(--glass);border:1px solid var(--gedge);box-shadow:var(--gshadow),inset 0 1px 0 rgba(255,255,255,.55)}
+.gear,.tabs,#modal,#toast,header.scrolled{-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%)}
+.card{background:var(--glass2);border:1px solid var(--gedge);box-shadow:var(--gshadow),inset 0 1px 0 rgba(255,255,255,.55)}
 .moti{background:linear-gradient(135deg,color-mix(in srgb,var(--pri2) 75%,transparent),color-mix(in srgb,var(--sage2) 75%,transparent))}
 .gear{background:var(--glass);border:1px solid var(--gedge);box-shadow:var(--gshadow)}
 .chip{background:var(--glass);border:1px solid var(--gedge)}
@@ -179,7 +180,7 @@ body.noglass #modal{background:var(--bg)}
 </head>
 <body data-size="m">
 <div id="banner" aria-live="assertive"></div>
-<header><div class="hd"><h1 id="hi">Hello 🌸</h1><p id="dt"></p></div><button class="gear" onclick="openSettings()" aria-label="Settings">⚙️</button></header>
+<header><div class="hd"><h1 id="hi">Hello <img class="logo" src="favicon.svg" alt=""></h1><p id="dt"></p></div><button class="gear" onclick="openSettings()" aria-label="Settings">⚙️</button></header>
 <main id="app"></main>
 <nav class="tabs" id="tabs"></nav>
 <div id="modalwrap" hidden><div class="scrim" onclick="closeModal()"></div><div id="modal" role="dialog" aria-modal="true"></div></div>
@@ -299,8 +300,8 @@ function toggleTask(id,ds){const t=S.tasks.find(x=>x.id===id);if(!t)return;
 function addTask(){
   const raw=$('#nt').value.trim();if(!raw)return;
   const p=parseQuick(raw);
-  const d=p.date||($('#ntd')&&$('#ntd').value)||todayStr(),tm=p.time||($('#ntt')&&$('#ntt').value)||'',rep=p.rep||($('#ntr')&&$('#ntr').value)||'';
-  const nid=uid();S.tasks.push({id:nid,t:p.t,done:false,doneOn:{},date:d,time:tm,rep});lastAdd=nid;save();render();setTimeout(()=>{const e=$('#nt');if(e)e.focus()},0)}
+  const d=p.date||($('#ntd')&&$('#ntd').value)||todayStr(),tm=(($('#ntt')&&$('#ntt').value)||p.time||''),rep=p.rep||($('#ntr')&&$('#ntr').value)||'';
+  const nid=uid();S.tasks.push({id:nid,t:p.t,done:false,doneOn:{},date:d,time:tm,rep});lastAdd=nid;save();$('#nt').value='';['ntd','ntt','ntr'].forEach(i=>{const e=$('#'+i);if(e)e.value=i==='ntd'?e.defaultValue:''});render();setTimeout(()=>{const e=$('#nt');if(e)e.focus()},0)}
 function clearDoneTasks(){snap();const td=todayStr();S.tasks=S.tasks.filter(t=>t.rep||!t.done);S.tasks.forEach(t=>{if(t.rep&&t.doneOn)delete t.doneOn[td]});save();render();toast('Cleared',true)}
 function moveToday(id){const t=S.tasks.find(x=>x.id===id);if(t){t.date=todayStr();save();render();toast('Moved to today')}}
 
@@ -497,7 +498,7 @@ function apptModal(id){
   const r=v.remind==null?60:v.remind;
   openModal(`<h2>${a?'Edit appointment':'New appointment'}</h2><form onsubmit="saveAppt(event,'${a?a.id:''}')">
     <label>What is it?</label><div class="add" style="margin:0"><input id="at" value="${esc(v.title)}" placeholder="e.g. Baby clinic" required>${micBtn('at')}</div>
-    <div class="grid2"><div><label>Date</label><input type="date" id="ad" value="${esc(v.date)}" required></div><div><label>Time</label><input type="time" id="atm" value="${esc(v.time||'')}"></div></div>
+    <div class="grid2"><div><label>Date</label><input type="date" id="ad" value="${esc(v.date)}" required></div><div><label>Time</label><input type="time" lang="en-GB" step="60" id="atm" value="${esc(v.time||'')}"></div></div>
     <label>How long?</label><select id="adu">${[30,60,90,120].map(m=>`<option value="${m}" ${(v.dur||60)===m?'selected':''}>${m<60?m+' minutes':m===60?'1 hour':m===90?'1½ hours':'2 hours'}</option>`).join('')}</select>
     <label>Remind me (needs a time)</label><select id="arm">${[[0,'At the time'],[15,'15 minutes before'],[30,'30 minutes before'],[60,'1 hour before'],[120,'2 hours before'],[1440,'The day before'],[-1,'No reminder']].map(o=>`<option value="${o[0]}" ${r===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
     <label>Where (optional)</label><input id="ap" value="${esc(v.place||'')}" placeholder="Address or clinic">
@@ -534,7 +535,7 @@ function delNote(id){snap();S.notes=S.notes.filter(n=>n.id!==id);save();closeMod
 function taskModal(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;
   openModal(`<h2>Edit reminder</h2><form onsubmit="saveTask(event,'${t.id}')">
   <label>Reminder</label><div class="add" style="margin:0"><input id="mtt" value="${esc(t.t)}" required>${micBtn('mtt')}</div>
-  <div class="grid2"><div><label>Day</label><input type="date" id="mtd" value="${esc(t.date)}" required></div><div><label>Time (gives an alert)</label><input type="time" id="mttm" value="${esc(t.time||'')}"></div></div>
+  <div class="grid2"><div><label>Day</label><input type="date" id="mtd" value="${esc(t.date)}" required></div><div><label>Time (gives an alert)</label><input type="time" lang="en-GB" step="60" id="mttm" value="${esc(t.time||'')}"></div></div>
   <label>Repeat</label><select id="mtr">${Object.keys(REP).map(k=>`<option value="${k}" ${(t.rep||'')===k?'selected':''}>${REP[k]}</option>`).join('')}</select>
   <div class="acts"><a class="a-cal" href="${gcal({title:t.t,date:t.date,time:t.time,dur:15})}" target="_blank" rel="noopener">📲 Add to Google Calendar</a></div>
   <div class="mbtns"><button class="btn">Save</button><button type="button" class="btn danger" onclick="delTask('${t.id}')">Delete</button><button type="button" class="btn alt" onclick="closeModal()">Cancel</button></div></form>`)}
@@ -596,7 +597,7 @@ function tick(){
     if(now>=at&&now<st.getTime()+36e5)fire(key,'📅 '+a.title,(r?'In '+(r>=1440?'a day':r>=60?(r/60)+(r>60?' hours':' hour'):r+' minutes')+' · ':'Now · ')+fmtTime(a.time)+(a.place?' · '+a.place:''),null,ds)})}
 
 /* ---------- views ---------- */
-function greeting(){const h=new Date().getHours();return (h<12?'Good morning':h<18?'Good afternoon':'Good evening')+(S.name?', '+esc(S.name):'')+' 🌸'}
+function greeting(){const h=new Date().getHours();return (h<12?'Good morning':h<18?'Good afternoon':'Good evening')+(S.name?', '+esc(S.name):'')+' <img class="logo" src="favicon.svg" alt="">'}
 function vToday(){
   const td=todayStr(),tasks=tasksFor(td);
   const open=tasks.filter(t=>!isDone(t,td)),done=tasks.filter(t=>isDone(t,td));
@@ -615,8 +616,8 @@ function vToday(){
     ${open.length?open.map(row).join(''):tasks.length?'<div class="empty">All done for today. Well done! 🎉</div>':'<div class="empty">All clear. Add something below.</div>'}
     <div class="add"><input id="nt" placeholder="e.g. Call the GP at 3pm" onkeydown="if(event.key==='Enter')addTask()" autocomplete="off">${micBtn('nt')}<button class="btn" onclick="addTask()">Add</button></div>
     <div class="meta" style="margin:6px 4px 0">Try “Bins tomorrow”, “Vitamins every day” or “Nursery on Friday at 9am”</div>
-    <details style="margin-top:8px"><summary class="meta">Set a different day / time / repeat</summary>
-      <div class="grid2"><div><label>Day</label><input type="date" id="ntd" value="${td}"></div><div><label>Time (gives an alert)</label><input type="time" id="ntt"></div></div>
+    <details id="ndet" style="margin-top:8px"><summary class="meta">Set a different day / time / repeat</summary>
+      <div class="grid2"><div><label>Day</label><input type="date" id="ntd" value="${td}"></div><div><label>Time (gives an alert)</label><input type="time" lang="en-GB" step="60" id="ntt"></div></div>
       <label>Repeat</label><select id="ntr">${Object.keys(REP).map(k=>`<option value="${k}">${REP[k]}</option>`).join('')}</select></details>
     ${done.length?`<div class="acts"><button class="a-del" onclick="showDone=!showDone;render()">${showDone?'Hide':'Show'} ticked (${done.length})</button><button class="a-del" onclick="clearDoneTasks()">Clear ticked</button></div>${showDone?done.map(row).join(''):''}`:''}
   </div>
@@ -664,14 +665,19 @@ const TABS=[['today','🌸','Today'],['lists','🛒','Lists'],['appts','📅','A
 function render(){
   const act=document.activeElement&&document.activeElement.id;const vals={};
   document.querySelectorAll('#app input,#app textarea').forEach(e=>{if(e.id&&e.value&&e.type!=='date'&&e.type!=='time')vals[e.id]=e.value});
+  /* keep the task day/time/repeat the user picked (and the panel open) so a re-render can't flip a PM time back */
+  const draft={},ndet=document.getElementById('ndet'),detOpen=!!(ndet&&ndet.open);
+  ['ntd','ntt','ntr'].forEach(id=>{const e=document.getElementById(id);if(e&&(id==='ntr'?e.value:e.value!==e.defaultValue))draft[id]=e.value});
   document.body.dataset.size=S.settings.size;document.body.classList.toggle('dark',!!S.settings.dark);
   $('#hi').innerHTML=greeting();
   $('#dt').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   $('#app').innerHTML=({today:vToday,lists:vLists,appts:vAppts,notes:vNotes})[tab]()+`<div class="sync">${syncMsg}</div>`;
   Object.keys(vals).forEach(k=>{const e=document.getElementById(k);if(e)e.value=vals[k]});
+  Object.keys(draft).forEach(k=>{const e=document.getElementById(k);if(e)e.value=draft[k]});
+  if(detOpen){const d=document.getElementById('ndet');if(d)d.open=true}
   document.body.classList.toggle('noglass',S.settings.glass===false||autoNoGlass);
   const appEl=$('#app');appEl.classList.remove('enter');
-  if(animTab){animTab=false;[...appEl.children].forEach((c,i)=>c.style.setProperty('--i',Math.min(i,8)));void appEl.offsetWidth;appEl.classList.add('enter')}
+  if(animTab){animTab=false}
   if(lastAdd){const b=document.querySelector('[data-pop="'+lastAdd+'"]'),r=b&&b.closest('.row');if(r)r.classList.add('slidein');lastAdd=null}
   if(act){const e=document.getElementById(act);if(e&&e.focus&&e.id.indexOf('mic-')!==0){e.focus();if(e.type==='text'&&e.setSelectionRange){try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
   $('#tabs').innerHTML=TABS.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="tab='${t[0]}';animTab=true;window.scrollTo(0,0);render()"><span>${t[1]}</span>${t[2]}</button>`).join('')}
