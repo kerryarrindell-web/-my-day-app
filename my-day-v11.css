@@ -201,3 +201,11 @@ body:not(.dark) .bg-pills{background:linear-gradient(145deg,#f4d0e1,#fff0d7)!imp
 body:not(.dark) .bg-home-notes{background:linear-gradient(145deg,#fff0d7,#f4cbb5)!important;border-color:#dfb9a5!important}
 button:focus-visible,a:focus-visible{outline:3px solid #9872b8;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.bg-led,.bg-accent-card,.bg-home-hero,.bg-verse,.tabs{animation:none!important;transition:none!important}}
+
+/* Bloom daily planning */
+#app .bloom-journey,#app .bloom-inbox{border-radius:22px!important;box-shadow:0 5px 16px #49394812!important}
+body:not(.dark) #app .bloom-journey{background:linear-gradient(145deg,#cce5cb,#fff0d7)!important;color:#354b3b!important}
+body:not(.dark) #app .bloom-inbox{background:linear-gradient(145deg,#ded0f5,#f4d0e1)!important;color:#493948!important}
+body.dark #app .bloom-journey,body.dark #app .bloom-inbox{background:linear-gradient(145deg,#392c49,#44354b)!important;color:#f5eaf4!important}
+.bloom-journey button[aria-pressed=true]{outline:2px solid var(--pri);outline-offset:2px;font-weight:800}
+.bloom-inbox-row{padding:12px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.bloom-inbox summary{cursor:pointer;padding:8px 0}.bloom-inbox button,.bloom-journey button{min-height:44px}
