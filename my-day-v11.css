@@ -182,3 +182,22 @@ body:not(.dark) .bg-coming-up{background:linear-gradient(145deg,#d4c5f2,#eee4ff)
 body:not(.dark) .bg-pills{background:linear-gradient(145deg,#f0c2d5,#fbe4ed)!important;border-color:#d58fab!important;box-shadow:0 0 13px rgba(210,95,157,.14)!important}
 body:not(.dark) .bg-home-notes{background:linear-gradient(145deg,#f6d3a2,#fff0d8)!important;border-color:#dea966!important;box-shadow:0 0 13px rgba(177,116,69,.13)!important}
 body:not(.dark) .bg-verse{background:linear-gradient(135deg,#514080,#7257a6)!important}
+
+/* Bloom development: restrained lighting, softer surfaces, consistent hero/faith palette. */
+body:not(.dark) .bg-home-hero,body:not(.dark) .bg-verse{background:linear-gradient(135deg,#70496b,#9271a3)!important;color:#fff!important}
+body.dark .bg-home-hero,body.dark .bg-verse{background:linear-gradient(135deg,#392c49,#644765)!important}
+.bg-led,.bg-accent-card,.bg-verse,.bg-home-notes,.bg-coming-up,.bg-pills{box-shadow:0 1px 2px #4939480d,0 5px 18px #49394812!important;border-radius:22px!important}
+.bg-accent-card[data-tone]{box-shadow:0 5px 16px #49394812!important}
+.tabs{box-shadow:0 1px 0 #b38ba233,0 8px 24px #49394820!important}
+.bg-calendar{box-shadow:0 6px 22px #49394824;border-color:#a18cbb}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="rose"]{--md-card-bg:#f7e8ed;--md-card-edge:#dfb7ca}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="lavender"]{--md-card-bg:#e8e0f5;--md-card-edge:#c7b7df}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="mint"]{--md-card-bg:#dce8d8;--md-card-edge:#b4cbb0}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="peach"]{--md-card-bg:#f1d5c6;--md-card-edge:#dfb9a5}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="berry"]{--md-card-bg:#f7e8ed;--md-card-edge:#dfb7ca}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="honey"]{--md-card-bg:#fff7ec;--md-card-edge:#e5cba7}
+body:not(.dark) .bg-coming-up{background:linear-gradient(145deg,#e8e0f5,#f7f2fc)!important;border-color:#c7b7df!important}
+body:not(.dark) .bg-pills{background:linear-gradient(145deg,#f7e8ed,#fff7ec)!important;border-color:#dfb7ca!important}
+body:not(.dark) .bg-home-notes{background:linear-gradient(145deg,#fff7ec,#f1d5c6)!important;border-color:#dfb9a5!important}
+button:focus-visible,a:focus-visible{outline:3px solid #9872b8;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.bg-led,.bg-accent-card,.bg-home-hero,.bg-verse,.tabs{animation:none!important;transition:none!important}}
