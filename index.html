@@ -730,7 +730,7 @@ function validBackup(p){
     &&(p.settings==null||obj(p.settings))
     &&(p.routines==null||(records(p.routines)&&p.routines.every(r=>records(r.items))))
     &&(p.pills==null||records(p.pills))
-    &&['wins','rlog','meals','notified','snooze','bloomEnergy'].every(k=>p[k]==null||obj(p[k]))
+    &&['wins','rlog','meals','notified','snooze','bloomEnergy','meTime'].every(k=>p[k]==null||obj(p[k]))
     &&(p.bloomInbox==null||(records(p.bloomInbox)&&p.bloomInbox.every(x=>typeof x.text==='string')));
 }
 function doRestore(){const f=$('#bkf').files[0],t=$('#bkt').value.trim();
@@ -965,7 +965,7 @@ const TABS=[['today','🌸','Today'],['lists','🛒','Lists'],['appts','📅','A
 function render(){
   if(tab==='notes')tab='today';
   const act=document.activeElement&&document.activeElement.id;const vals={};
-  document.querySelectorAll('#app input,#app textarea').forEach(e=>{if(e.id&&e.value&&e.type!=='date'&&e.type!=='time')vals[e.id]=e.value});
+  document.querySelectorAll('#app input,#app textarea').forEach(e=>{if(e.id&&e.id!=='bloom-journal-text'&&e.value&&e.type!=='date'&&e.type!=='time')vals[e.id]=e.value});
   /* keep the task day/time/repeat the user picked (and the panel open) so a re-render can't flip a PM time back */
   const draft={},ndet=document.getElementById('ndet'),detOpen=!!(ndet&&ndet.open);
   ['ntd','ntt','ntr'].forEach(id=>{const e=document.getElementById(id);if(e&&(id==='ntr'?e.value:e.value!==e.defaultValue))draft[id]=e.value});
