@@ -364,13 +364,9 @@ let animTab=false,lastAdd=null,motiOff=0,motiHelp=false,noteQ='',openRt=null,pen
 function norm(o){const d=DEF();const n=Object.assign(d,o||{});n.settings=Object.assign(DEF().settings,(o&&o.settings)||{});
   n.notified=n.notified||{};n.snooze=n.snooze||{};
   const cut=Date.now()-4*864e5;for(const k in n.notified)if(n.notified[k]<cut)delete n.notified[k];
-  const old=addDays(todayStr(),-45);
-  n.tasks=n.tasks.filter(t=>!(t.done&&!t.rep&&t.date<old));
-  n.wins=n.wins||{};for(const k in n.wins)if(k<old)delete n.wins[k];
-  n.rlog=n.rlog||{};n.meals=n.meals||{};n.pills=Array.isArray(n.pills)?n.pills:[];n.routines=n.routines||DEF().routines;
-  for(const k in n.rlog)if(k<old)delete n.rlog[k];
-  const oldM=addDays(todayStr(),-14);for(const k in n.meals)if(k<oldM)delete n.meals[k];
-  n.tasks.forEach(t=>{if(t.doneOn)for(const k in t.doneOn)if(k<old)delete t.doneOn[k]});
+  // Bloom: retain user history; only expire transient notification metadata.
+  n.wins=n.wins||{};n.rlog=n.rlog||{};n.meals=n.meals||{};
+  n.pills=Array.isArray(n.pills)?n.pills:[];n.routines=n.routines||DEF().routines;
   return n}
 function save(){const j=JSON.stringify(S);mem=j;try{localStorage.setItem(KEY,j);syncMsg='Saved on this phone'}catch(e){syncMsg='Not saved — phone storage unavailable. Export a backup now.';console.warn('My Day: local storage write failed',e)}}
 (function(){let j=null;try{j=localStorage.getItem(KEY)}catch(e){}if(j){try{S=norm(JSON.parse(j))}catch(e){}}
@@ -726,7 +722,16 @@ function openSettings(){
 function enableNotify(){if(!('Notification' in window))return;Notification.requestPermission().then(p=>{S.settings.notify=(p==='granted');save();openSettings();if(p==='granted')toast('Phone alerts on')})}
 function backup(){if(!download('my-day-backup-'+todayStr()+'.json',JSON.stringify(S,null,1),'application/json'))toast('Couldn’t download. Try Copy backup.')}
 function restoreModal(){openModal(`<h2>Restore a backup</h2><label>Choose a backup file</label><input type="file" id="bkf" accept=".json,application/json"><label>…or paste backup text</label><textarea id="bkt" rows="5"></textarea><div class="meta" style="margin-top:8px">This replaces what is on this phone now.</div><div class="mbtns"><button class="btn" onclick="doRestore()">Restore</button><button class="btn alt" onclick="closeModal()">Cancel</button></div>`)}
-function validBackup(p){return p&&typeof p==='object'&&!Array.isArray(p)&&Array.isArray(p.lists)&&p.lists.every(l=>l&&typeof l==='object'&&typeof l.name==='string'&&Array.isArray(l.items))&&Array.isArray(p.tasks)&&p.tasks.every(t=>t&&typeof t==='object')&&Array.isArray(p.appts)&&Array.isArray(p.notes)&&(!p.settings||(typeof p.settings==='object'&&!Array.isArray(p.settings)))&&(!p.routines||Array.isArray(p.routines))}
+function validBackup(p){
+  const obj=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
+  const records=x=>Array.isArray(x)&&x.every(obj);
+  return obj(p)&&records(p.lists)&&p.lists.every(l=>typeof l.name==='string'&&records(l.items))
+    &&records(p.tasks)&&records(p.appts)&&records(p.notes)
+    &&(p.settings==null||obj(p.settings))
+    &&(p.routines==null||(records(p.routines)&&p.routines.every(r=>records(r.items))))
+    &&(p.pills==null||records(p.pills))
+    &&['wins','rlog','meals','notified','snooze'].every(k=>p[k]==null||obj(p[k]));
+}
 function doRestore(){const f=$('#bkf').files[0],t=$('#bkt').value.trim();
   const apply=x=>{try{const p=JSON.parse(x);if(!validBackup(p))throw 0;snap();S=norm(p);save();closeModal();render();toast('Backup restored',true)}catch(e){toast('That doesn’t look like a My Day backup')}};
   if(f){const r=new FileReader();r.onload=()=>apply(r.result);r.readAsText(f)}else if(t)apply(t);else toast('Choose a file or paste the text first')}
