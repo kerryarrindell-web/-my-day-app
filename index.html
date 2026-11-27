@@ -348,6 +348,7 @@ body:not(.dark) #app .card.bg-active-list,body:not(.dark) #app .card.bg-active-l
 const $=s=>document.querySelector(s);
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeWebLink=(value,fallback='')=>{try{const u=new URL(String(value));return ['https:','http:'].includes(u.protocol)?u.href:fallback}catch(e){return fallback}};
 const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const todayStr=()=>ymd(new Date());
@@ -842,7 +843,7 @@ function vToday(){
       <label>Repeat</label><select id="ntr">${Object.keys(REP).map(k=>`<option value="${k}">${REP[k]}</option>`).join('')}</select></details>
     ${done.length?`<div class="acts"><button class="a-del" onclick="showDone=!showDone;render()">${showDone?'Hide':'Show'} ticked (${done.length})</button><button class="a-del" onclick="clearDoneTasks()">Clear ticked</button></div>${showDone?done.map(row).join(''):''}`:''}
   </div>
-  ${S.settings.babyUrl?`<div class="card"><a class="btn" style="display:block;text-align:center;text-decoration:none" href="${esc(S.settings.babyUrl)}" target="_blank" rel="noopener">👶 Open baby tracker</a></div>`:''}
+  ${safeWebLink(S.settings.babyUrl)?`<div class="card"><a class="btn" style="display:block;text-align:center;text-decoration:none" href="${esc(safeWebLink(S.settings.babyUrl))}" target="_blank" rel="noopener">👶 Open baby tracker</a></div>`:''}
 `}
 function listChips(sel){return `<div class="chips">${S.lists.map(x=>`<button class="chip ${x.id===sel?'on':''}" onclick="curList='${x.id}';confirmDel=false;render()">${x.emoji} ${esc(x.name)}</button>`).join('')}<button class="chip ${sel==='meals'?'on':''}" onclick="curList='meals';render()">🍽️ Meals</button></div>`}
 function listOverviewTiles(){
@@ -885,7 +886,7 @@ function vAppts(){
   return `<div class="bg-section-hero"><span>✦ YOUR SCHEDULE</span><h2>Appointments</h2><p>Important dates, beautifully organised.</p></div>${bgCalendar()}${bloomTomorrow()}<button class="btn" style="width:100%;margin:10px 0" onclick="apptModal(null,bgDay)">➕ Add an appointment</button>
   <div class="card"><h2>📅 Upcoming</h2>${up.length?up.map(apptCard).join(''):'<div class="empty">No appointments yet.</div>'}
     <div class="tip">💡 Tap <b>Add to Google Calendar</b>, then <b>Save</b> in the page that opens. Google will then send phone reminders even when this app is closed.</div>
-    <div class="acts"><a class="a-cal" href="${esc(S.settings.cal)}" target="_blank" rel="noopener">Open my Google Calendar</a></div></div>
+    <div class="acts"><a class="a-cal" href="${esc(safeWebLink(S.settings.cal,'https://calendar.google.com/'))}" target="_blank" rel="noopener">Open my Google Calendar</a></div></div>
   ${past.length?`<button class="chip" onclick="showPast=!showPast;render()">${showPast?'Hide':'Show'} past (${past.length})</button>${showPast?`<div class="card">${past.map(apptCard).join('')}</div>`:''}`:''}`}
 function vNotes(){
   return `<div class="card"><h2>📌 Sticky notes</h2>
