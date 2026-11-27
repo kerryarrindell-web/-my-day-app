@@ -34,7 +34,7 @@ test('offline shell reload preserves energy and prayer',async({page,context})=>{
 test('day and night hero and verse gradients match',async({page})=>{
  await page.goto('http://127.0.0.1:8080/');
  for(const dark of [false,true]){
- await page.evaluate(d=>{S.settings.dark=d;render()},dark);
+ await page.evaluate(d=>{S.settings.dark=d;S.settings.theme=d?'midnight':'blossom';render()},dark);
  const hero=await page.locator('.bg-home-hero').first().evaluate(e=>getComputedStyle(e).backgroundImage);
  const verse=await page.locator('.bg-verse').first().evaluate(e=>getComputedStyle(e).backgroundImage);
  expect(hero).toEqual(verse);
@@ -45,10 +45,14 @@ test('day and night hero and verse gradients match',async({page})=>{
 test('LED glow is restricted to night mode',async({page})=>{
  await page.goto('http://127.0.0.1:8080/');
  const card=page.locator('.bloom-journey').first();
- await page.evaluate(()=>{S.settings.dark=false;render()});
+ await page.evaluate(()=>{S.settings.dark=false;S.settings.theme='blossom';render()});
  const day=await card.evaluate(e=>getComputedStyle(e).boxShadow);
- await page.evaluate(()=>{S.settings.dark=true;render()});
+ const dayLed=await page.evaluate(()=>document.body.classList.contains('bloom-led'));
+ await page.evaluate(()=>{S.settings.dark=true;S.settings.theme='midnight';render()});
  const night=await card.evaluate(e=>getComputedStyle(e).boxShadow);
+ const nightLed=await page.evaluate(()=>document.body.classList.contains('bloom-led')&&document.body.dataset.theme==='midnight');
+ expect(dayLed).toBe(false);
+ expect(nightLed).toBe(true);
  expect(day).not.toContain('inset');
  expect(night).toContain('inset');
  expect(day).not.toEqual(night);

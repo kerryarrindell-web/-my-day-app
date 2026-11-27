@@ -1,6 +1,6 @@
 const PREFIX='myday-bloom:'+self.registration.scope+':';
-const CACHE=PREFIX+'008';
-const FILES=['./','index.html','my-day-v11.js','my-day-v11.css','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','favicon.svg','myday-opening.mp4'];
+const CACHE=PREFIX+'009';
+const FILES=['./','index.html','my-day-v11.js','my-day-v11.css','bloom-themes.css','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','favicon.svg','myday-opening.mp4'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(new URL(f,self.registration.scope),{cache:'reload'}))))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k.startsWith(PREFIX)).map(k=>caches.delete(k))))));
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url),scope=new URL(self.registration.scope);if(u.origin!==scope.origin||!u.pathname.startsWith(scope.pathname))return;const relative=u.pathname.slice(scope.pathname.length);const asset=e.request.mode==='navigate'&&(relative===''||relative==='index.html')?'index.html':relative;if(!FILES.includes(asset))return;e.respondWith(caches.open(CACHE).then(async c=>{const hit=await c.match(new URL(asset,scope).href);return hit||fetch(e.request)}));});
