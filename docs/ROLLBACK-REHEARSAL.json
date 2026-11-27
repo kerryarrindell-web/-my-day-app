@@ -1,0 +1,53 @@
+{
+  "steps": [
+    {
+      "name": "bloom_seed_persisted",
+      "pass": true,
+      "bloomState": {
+        "key": "myday-v1",
+        "energy": "Tired",
+        "noteText": [
+          "Synthetic rollback note"
+        ],
+        "hasBloomExtra": true,
+        "rawLen": 562
+      }
+    },
+    {
+      "name": "rollback_candidate_accepts_bloom_shaped_data",
+      "pass": true,
+      "rollbackState": {
+        "energy": "Tired",
+        "notes": [
+          "Synthetic rollback note"
+        ],
+        "unknownFieldSurvived": true,
+        "shopping": {
+          "Main": [
+            {
+              "id": "syn-s",
+              "text": "Synthetic bread",
+              "done": false
+            }
+          ]
+        },
+        "appts": [
+          "Synthetic clinic"
+        ],
+        "journal": {
+          "2099-06-01": {
+            "text": "Synthetic reflection"
+          }
+        },
+        "appVisible": true,
+        "bodyLen": 1140
+      }
+    }
+  ],
+  "ok": true,
+  "isolation": {
+    "bloomOrigin": "http://127.0.0.1:3851",
+    "rollbackOrigin": "http://127.0.0.1:3852",
+    "productionGithubPagesUntouched": true
+  }
+}
