@@ -69,3 +69,26 @@ test('storage failure is reported instead of claiming a successful save',async({
  await page.goto('http://127.0.0.1:8080/');
  expect(await page.evaluate(()=>{const original=Storage.prototype.setItem;try{Storage.prototype.setItem=function(){throw new Error('synthetic quota failure')};return save()}finally{Storage.prototype.setItem=original}})).toBe(false);
 });
+
+test('small mobile viewport has no horizontal page overflow',async({page})=>{
+ await page.setViewportSize({width:360,height:800});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('http://127.0.0.1:8080/');
+ for(const section of ['today','appts','me','lists']){
+ await page.evaluate(t=>{tab=t;render()},section);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ }
+});
+test('journal entries persist independently by date',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{tab='me';meNavigate('journal')});
+ const field=page.locator('#bloom-journal-text');
+ await field.fill('Synthetic reflection today');
+ await page.getByRole('button',{name:'Save reflection',exact:true}).click();
+ await page.evaluate(()=>bloomJournalSelect(addDays(todayStr(),-1)));
+ await expect(field).not.toHaveValue('Synthetic reflection today');
+ await field.fill('Synthetic reflection yesterday');
+ await page.getByRole('button',{name:'Save reflection',exact:true}).click();
+ await page.evaluate(()=>bloomJournalSelect(todayStr()));
+ await expect(field).toHaveValue('Synthetic reflection today');
+});
