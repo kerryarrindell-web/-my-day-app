@@ -107,3 +107,11 @@ test('reduced motion disables screen transition',async({page})=>{
  expect(await page.evaluate(()=>document.querySelector('#app').getAnimations().length)).toBe(0);
  await expect(page.locator('#myday-opening')).toBeHidden();
 });
+
+test('unsafe imported external links cannot become executable links',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{S.settings.babyUrl='javascript:alert(1)';S.settings.cal='javascript:alert(1)';render()});
+ await expect(page.getByText('Open baby tracker',{exact:false})).toHaveCount(0);
+ await page.evaluate(()=>{tab='appts';render()});
+ await expect(page.getByText('Open my Google Calendar')).toHaveAttribute('href','https://calendar.google.com/');
+});
