@@ -16,3 +16,5 @@ test('storage key unchanged',()=>assert.ok(html.includes("const KEY='myday-v1'")
 test('unsafe nested backup keys rejected',()=>{const d=DEF();d.settings=JSON.parse('{"__proto__":{"polluted":true}}');assert.equal(validBackup(d),false)});
 test('empty shopping lists rejected',()=>{const d=DEF();d.lists=[];assert.equal(validBackup(d),false)});
 test('Bloom data survives migration',()=>{const d=DEF();d.bloomInbox=[{id:'a',text:'remember'}];d.bloomEnergy={'2026-11-27':'okay'};d.bloomFaith=[1];d.meTime={'2026-11-27':{reflection:'hello'}};assert.equal(validBackup(d),true);const n=norm(JSON.parse(JSON.stringify(d)));for(const k of ['bloomInbox','bloomEnergy','bloomFaith','meTime'])assert.equal(JSON.stringify(n[k]),JSON.stringify(d[k]))});
+
+test('reject imported identifiers that escape HTML handlers',()=>{const d=DEF();d.notes=[{id:"x');alert(1);//",text:'test'}];assert.equal(validBackup(d),false);d.notes[0].id='safe-id_123';assert.equal(validBackup(d),true)});
