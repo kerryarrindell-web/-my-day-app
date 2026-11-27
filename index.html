@@ -924,9 +924,9 @@ function meCelebrate(){celebrate('one');if(!reduceMotion){const f=document.creat
 function meEntries(kind){const m=meToday(),items=kind==='moments'?m.moments:m.littleWins;return (items||[]).length?items.map(x=>`<div class="md131-entry"><span>${kind==='moments'?'💜':'🌟'} ${esc(x.text)}</span><button aria-label="Remove entry" onclick="meDelete('${kind}','${x.id}')">×</button></div>`).join(''):'<p class="meta">Nothing added yet. There is no rush 💗</p>'}
 let bloomTimerEnd=0,bloomTimerHandle=null;
 function bloomTimerPaint(){
- const el=document.getElementById('bloom-timer-clock');if(!el)return;
+ const el=document.getElementById('bloom-timer-clock');
  const left=Math.max(0,Math.ceil((bloomTimerEnd-Date.now())/1000));
- el.textContent=bloomTimerEnd?(left?Math.floor(left/60)+':'+String(left%60).padStart(2,'0'):'Finished ♡'):'Ready when you are';
+ if(el)el.textContent=bloomTimerEnd?(left?Math.floor(left/60)+':'+String(left%60).padStart(2,'0'):'Finished ♡'):'Ready when you are';
  if(!left&&bloomTimerHandle){clearInterval(bloomTimerHandle);bloomTimerHandle=null}
 }
 function bloomTimerStart(minutes){
