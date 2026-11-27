@@ -727,7 +727,7 @@ function restoreModal(){openModal(`<h2>Restore a backup</h2><label>Choose a back
 function validBackup(p){
   const obj=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
   const records=x=>Array.isArray(x)&&x.every(obj);
-  const safe=x=>!x||typeof x!=='object'||Object.keys(x).every(k=>!['__proto__','constructor','prototype'].includes(k)&&safe(x[k]));
+  const safe=x=>!x||typeof x!=='object'||Object.keys(x).every(k=>!['__proto__','constructor','prototype'].includes(k)&&(k!=='id'||(typeof x[k]==='string'&&/^[a-zA-Z0-9_-]{1,128}$/.test(x[k])))&&safe(x[k]));
   return obj(p)&&safe(p)&&records(p.lists)&&p.lists.length>0&&p.lists.every(l=>typeof l.name==='string'&&records(l.items))
     &&records(p.tasks)&&records(p.appts)&&records(p.notes)
     &&(p.settings==null||obj(p.settings))
@@ -790,7 +790,7 @@ function bloomInboxAction(index,action){
   const items=S.bloomInbox;if(!Array.isArray(items)||!Number.isInteger(index)||!items[index]||!['today','tomorrow','note','remove'].includes(action))return;
   const item=items[index];snap();
   if(action==='today'||action==='tomorrow')S.tasks.push({id:uid(),t:item.text,done:false,doneOn:{},date:addDays(todayStr(),action==='tomorrow'?1:0),time:'',rep:''});
-  if(action==='note')S.notes.unshift({id:uid(),text:item.text,color:'#fff3a8',pin:false,img:''});
+  if(action==='note')S.notes.unshift({id:uid(),text:item.text,color:'#fff3a8',pin:true,img:''});
   items.splice(index,1);save();render();toast('Inbox updated',true);
 }
 function bloomInbox(){
