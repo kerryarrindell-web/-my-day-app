@@ -16,3 +16,13 @@ jobs:
           node-version: '22'
       - run: node --test tests/*.test.cjs
       - run: node --check my-day-v11.js && node --check sw.js
+      - name: Install isolated browser test tooling
+        run: npm install --no-save --package-lock=false @playwright/test@1.51.1
+      - run: npx playwright install --with-deps chromium
+      - name: Run browser smoke tests
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 &
+          server=$!
+          trap 'kill $server' EXIT
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8080/ >/dev/null && break; sleep 1; done
+          npx playwright test tests/browser.spec.cjs --workers=1
