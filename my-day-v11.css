@@ -209,3 +209,12 @@ body:not(.dark) #app .bloom-inbox{background:linear-gradient(145deg,#ded0f5,#f4d
 body.dark #app .bloom-journey,body.dark #app .bloom-inbox{background:linear-gradient(145deg,#392c49,#44354b)!important;color:#f5eaf4!important}
 .bloom-journey button[aria-pressed=true]{outline:2px solid var(--pri);outline-offset:2px;font-weight:800}
 .bloom-inbox-row{padding:12px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.bloom-inbox summary{cursor:pointer;padding:8px 0}.bloom-inbox button,.bloom-journey button{min-height:44px}
+
+body:not(.dark) #app .bg-home-hero,body:not(.dark) #app .bg-verse{background:linear-gradient(135deg,#70496b,#9271a3)!important;color:#fff!important;border-color:#c5a5c9!important}
+body.dark #app .bg-home-hero,body.dark #app .bg-verse{background:linear-gradient(135deg,#392c49,#49354d)!important;color:#f5eaf4!important;border-color:#72566e!important}
+#app .bg-home-hero,#app .bg-verse,#app .bg-led,#app .bg-accent-card{box-shadow:0 0 6px #a78ab326,0 5px 16px #49394812!important}
+.bloom-daily-prayer{padding:18px;border-radius:18px;line-height:1.65;background:#fff0d7;color:#493948;border:1px solid #dfb9a5}
+body.dark .bloom-daily-prayer{background:#49354d;color:#f5eaf4;border-color:#72566e}
+.bloom-daily-prayer h3{margin:0 0 8px}.bloom-daily-prayer p{margin:8px 0}
+.bloom-inbox textarea{width:100%;box-sizing:border-box}
+@media(prefers-reduced-motion:reduce){#app .bloom-journey,#app .bloom-inbox,#app .bloom-daily-prayer{animation:none!important;transition:none!important}}
