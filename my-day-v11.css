@@ -218,3 +218,7 @@ body.dark .bloom-daily-prayer{background:#49354d;color:#f5eaf4;border-color:#725
 .bloom-daily-prayer h3{margin:0 0 8px}.bloom-daily-prayer p{margin:8px 0}
 .bloom-inbox textarea{width:100%;box-sizing:border-box}
 @media(prefers-reduced-motion:reduce){#app .bloom-journey,#app .bloom-inbox,#app .bloom-daily-prayer{animation:none!important;transition:none!important}}
+
+/* Static, restrained illuminated perimeter; no animated glow. */
+body:not(.dark) #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up){box-shadow:inset 0 0 0 1px #ffffff85,0 0 0 1px #b58cbd70,0 0 8px #b58cbd38,0 5px 16px #49394812!important}
+body.dark #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up){box-shadow:inset 0 0 0 1px #ad83b52b,0 0 0 1px #ad83b54d,0 0 7px #ad83b526!important}
