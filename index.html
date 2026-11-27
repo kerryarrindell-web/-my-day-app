@@ -361,7 +361,8 @@ let S=DEF(),mem=null;
 let animTab=false,lastAdd=null,motiOff=0,motiHelp=false,noteQ='',openRt=null,pendingImg='',editImg='',tab='today',curList='groc',showForm=false,showPast=false,showDone=false,openCat=null,confirmDel=false,noteColor='#fff3a8',lastSnap=null,alerts=[],installEvt=null,syncMsg='Saved on this phone';
 
 /* ---------- storage ---------- */
-function norm(o){const d=DEF();const n=Object.assign(d,o||{});n.settings=Object.assign(DEF().settings,(o&&o.settings)||{});
+function safeFields(o){return Object.fromEntries(Object.entries(o||{}).filter(([k])=>!['__proto__','constructor','prototype'].includes(k)))}
+function norm(o){const d=DEF();const n=Object.assign(d,safeFields(o));n.settings=Object.assign(DEF().settings,safeFields(o&&o.settings));
   n.notified=n.notified||{};n.snooze=n.snooze||{};
   const cut=Date.now()-4*864e5;for(const k in n.notified)if(n.notified[k]<cut)delete n.notified[k];
   // Bloom: retain user history; only expire transient notification metadata.
@@ -726,7 +727,8 @@ function restoreModal(){openModal(`<h2>Restore a backup</h2><label>Choose a back
 function validBackup(p){
   const obj=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
   const records=x=>Array.isArray(x)&&x.every(obj);
-  return obj(p)&&records(p.lists)&&p.lists.every(l=>typeof l.name==='string'&&records(l.items))
+  const safe=x=>!x||typeof x!=='object'||Object.keys(x).every(k=>!['__proto__','constructor','prototype'].includes(k)&&safe(x[k]));
+  return obj(p)&&safe(p)&&records(p.lists)&&p.lists.length>0&&p.lists.every(l=>typeof l.name==='string'&&records(l.items))
     &&records(p.tasks)&&records(p.appts)&&records(p.notes)
     &&(p.settings==null||obj(p.settings))
     &&(p.routines==null||(records(p.routines)&&p.routines.every(r=>records(r.items))))
