@@ -56,6 +56,12 @@ test('LED glow is restricted to night mode',async({page})=>{
  expect(day).not.toContain('inset');
  expect(night).toContain('inset');
  expect(day).not.toEqual(night);
+ await page.evaluate(()=>{S.settings.dark=false;S.settings.theme='blossom';render()});
+ const navDay=await page.locator('#tabs').evaluate(e=>getComputedStyle(e).boxShadow);
+ expect(navDay.includes('140, 100, 200')||navDay.includes('140,100,200')).toBe(false);
+ await page.evaluate(()=>{S.settings.dark=true;S.settings.theme='midnight';render()});
+ const navNight=await page.locator('#tabs').evaluate(e=>getComputedStyle(e).boxShadow);
+ expect(navNight.includes('140, 100, 200')||navNight.includes('140,100,200')).toBe(true);
 });
 
 test('inbox converts a thought into a pinned sticky note',async({page})=>{

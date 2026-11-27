@@ -82,13 +82,18 @@ body[data-theme] .bloom-daily-prayer{
   border-radius:22px!important;padding:20px!important;line-height:1.7;
 }
 
-/* Calendar themed */
+/* Calendar themed — light themes stay airy; midnight stays deep */
 body[data-theme] .bg-calendar{
-  background:linear-gradient(160deg,color-mix(in srgb,var(--hero-a) 88%,#111),color-mix(in srgb,var(--hero-b) 70%,#222))!important;
-  color:#fff!important;border:0!important;border-radius:28px!important;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--hero-a) 72%,var(--card)),color-mix(in srgb,var(--hero-b) 55%,var(--surface-2)))!important;
+  color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 28%,var(--line))!important;border-radius:28px!important;
 }
-body[data-theme] .bg-day{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.22)!important;color:#fff!important}
+body[data-theme] .bg-calendar h2,body[data-theme] .bg-calendar .bg-weekday,body[data-theme] .bg-calendar .bg-selected-events,body[data-theme] .bg-calendar .bg-legend{color:inherit!important}
+body[data-theme] .bg-day{background:color-mix(in srgb,var(--card) 70%,transparent)!important;border-color:color-mix(in srgb,var(--pri) 18%,var(--line))!important;color:var(--ink)!important}
 body[data-theme] .a-cal{background:color-mix(in srgb,var(--pri) 16%,var(--card))!important;color:var(--pri)!important}
+body[data-theme="midnight"] .bg-calendar{
+  background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important;border-color:rgba(186,150,220,.35)!important;
+}
+body[data-theme="midnight"] .bg-day{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.2)!important;color:#fff!important}
 
 /* Five-tab nav — labelled, clear, not obscuring */
 .tabs,#tabs{
@@ -116,7 +121,7 @@ body[data-theme="midnight"] .tabs button.on{color:#fff!important;background:line
 /* Theme gallery */
 .bloom-theme-gallery{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
 .bloom-theme-card{
-  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
   width:100%;text-align:left;border:1.5px solid var(--line);border-radius:20px;padding:12px 14px;
   background:var(--card);color:var(--ink);cursor:pointer;font:inherit;
   transition:transform 140ms cubic-bezier(.2,.75,.25,1),border-color .2s,box-shadow .2s;
@@ -135,8 +140,11 @@ body[data-theme="midnight"] .tabs button.on{color:#fff!important;background:line
 .bloom-mini:after{content:"";position:absolute;left:8px;width:28px;bottom:7px;height:8px;border-radius:999px;background:rgba(255,255,255,.45)}
 .bloom-theme-meta strong{display:block;font-size:.95em}
 .bloom-theme-meta span{display:block;font-size:.78em;color:var(--mute);margin-top:2px}
-.bloom-theme-check{font-size:1.1em;opacity:.35}
-.bloom-theme-card[aria-pressed="true"] .bloom-theme-check{opacity:1;color:var(--pri)}
+.bloom-theme-check{
+  position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;font-size:.85em;opacity:0;background:var(--pri);color:#fff;font-weight:800;
+}
+.bloom-theme-card[aria-pressed="true"] .bloom-theme-check{opacity:1}
 
 /* Me Time garden */
 .bloom-garden-stage{
@@ -187,13 +195,22 @@ body.bloom-led .bloom-daily-prayer:after{
   -webkit-mask-composite:xor;mask-composite:exclude;opacity:.92;
   animation:none!important;
 }
-body.bloom-led .tabs,#tabs{
+body.bloom-led .tabs,
+body.bloom-led #tabs{
   border-color:rgba(180,150,230,.55)!important;
   box-shadow:0 0 0 1px rgba(150,120,210,.18),0 0 18px rgba(140,100,200,.28),0 0 28px rgba(70,190,185,.12),0 16px 40px rgba(0,0,0,.45)!important;
 }
-body.bloom-led .tabs:before{
+body.bloom-led .tabs:before,
+body.bloom-led #tabs:before{
   content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:1px solid rgba(140,220,210,.22);
 }
+body:not(.bloom-led) .tabs,
+body:not(.bloom-led) #tabs{
+  box-shadow:0 12px 32px rgba(40,20,40,.14)!important;
+  border-color:color-mix(in srgb,var(--pri) 22%,var(--line))!important;
+}
+body:not(.bloom-led) .tabs:before,
+body:not(.bloom-led) #tabs:before{content:none!important}
 
 /* Light themes: explicitly no LED */
 body:not(.bloom-led) .card:after,
@@ -267,15 +284,11 @@ body:not(.bloom-led):not(.dark) #app :is(.bg-home-hero,.bg-verse,.bg-accent-card
 .tabs button span,#tabs button .tab-ico{font-size:1.35em!important;line-height:1!important}
 #md11-fab{bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;z-index:35!important}
 /* Calendar theme integration */
-body[data-theme] .bg-calendar{
-  background:linear-gradient(145deg,color-mix(in srgb,var(--hero-a) 70%,#1c2947),color-mix(in srgb,var(--hero-b) 35%,#262a50))!important;
-  border-color:color-mix(in srgb,var(--pri) 40%,#a284e4)!important;
-}
-body[data-theme="blossom"] .bg-calendar{background:linear-gradient(145deg,#5a2d4a,#8a4568)!important}
-body[data-theme="lavender"] .bg-calendar{background:linear-gradient(145deg,#3d2f6a,#6a55a8)!important}
-body[data-theme="sage"] .bg-calendar{background:linear-gradient(145deg,#1e3f34,#3f8f6e)!important}
-body[data-theme="peach"] .bg-calendar{background:linear-gradient(145deg,#6a3a22,#c86a3a)!important}
-body[data-theme="midnight"] .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important}
+body[data-theme="blossom"] .bg-calendar{background:linear-gradient(145deg,#ffe4ef,#f7cfe0)!important}
+body[data-theme="lavender"] .bg-calendar{background:linear-gradient(145deg,#ebe4fb,#d4c5f2)!important}
+body[data-theme="sage"] .bg-calendar{background:linear-gradient(145deg,#e4f5ec,#bfe3d0)!important}
+body[data-theme="peach"] .bg-calendar{background:linear-gradient(145deg,#ffe9d6,#f6d3a2)!important}
+body[data-theme="midnight"] .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important}
 /* Typography polish */
 body[data-theme]{font-family:'Figtree',system-ui,sans-serif}
 body[data-theme] h1,body[data-theme] h2,body[data-theme] .hd h1{
@@ -318,3 +331,15 @@ body[data-theme] .row.done .chk{background:var(--pri)!important}
 /* Contrast: mute text stronger */
 body[data-theme] .meta,body[data-theme] .empty{color:color-mix(in srgb,var(--ink) 55%,var(--mute))!important}
 body[data-theme="midnight"] .meta,body[data-theme="midnight"] .empty{color:#cbb8c8!important}
+
+/* Light calendar text/controls (override legacy white-on-dark calendar) */
+body:not([data-theme="midnight"]) .bg-calendar,
+body:not([data-theme="midnight"]) .bg-calendar h2,
+body:not([data-theme="midnight"]) .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]) .bg-calendar .bg-legend,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events strong,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events p{color:var(--ink)!important}
+body:not([data-theme="midnight"]) .bg-calendar .bg-arrow{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 80%,transparent)!important;border-color:var(--line)!important}
+body:not([data-theme="midnight"]) .bg-day strong{color:var(--ink)!important}
+body:not([data-theme="midnight"]) .bg-day.bg-selected{border-color:var(--pri)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent)!important}
