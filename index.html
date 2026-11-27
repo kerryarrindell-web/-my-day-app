@@ -340,7 +340,7 @@ body:not(.dark) #app .card.bg-active-list,body:not(.dark) #app .card.bg-active-l
 <header><div class="hd"><h1 id="hi">Hello <img class="logo" src="favicon.svg" alt=""></h1><p id="dt"></p></div><button class="gear" onclick="openSettings()" aria-label="Settings">⚙️</button></header>
 <main id="app"></main>
 <nav class="tabs" id="tabs"></nav>
-<div id="modalwrap" hidden><div class="scrim" onclick="closeModal()"></div><div id="modal" role="dialog" aria-modal="true"></div></div>
+<div id="modalwrap" hidden><div class="scrim" onclick="closeModal(true)"></div><div id="modal" role="dialog" aria-modal="true"></div></div>
 <div id="toast" hidden></div>
 <div id="cheer" role="status" aria-live="polite"></div>
 
@@ -465,10 +465,12 @@ const curL=()=>S.lists.find(x=>x.id===curList)||S.lists[0];
 function toggleItem(id){const l=curL(),i=l.items.find(x=>x.id===id);if(i){i.done=!i.done;winAdd(i.done?1:-1);save();finish(id,i.done);
   if(i.done)celebrate(l.items.every(x=>x.done)?(l.id==='groc'?'shop':'list'):'one',id)}}
 function delItem(id){snap();const l=curL();l.items=l.items.filter(x=>x.id!==id);save();render();toast('Removed',true)}
-function addItem(){const v=$('#ni').value.trim();if(!v)return;const l=curL();
+function addItem(){const el=$('#ni');if(!el)return;const v=el.value.trim();if(!v)return;const l=curL();
   v.split(/,|\band\b|\n/i).map(s=>s.trim()).filter(Boolean).forEach(s=>{const t=cap(s);if(!l.items.some(i=>i.t.toLowerCase()===t.toLowerCase()&&!i.done))l.items.push({id:uid(),t,done:false});
     if(l.id==='groc'&&!CAT.some(c=>c[2].some(n=>n.toLowerCase()===t.toLowerCase()))&&!(S.custom||[]).some(n=>n.toLowerCase()===t.toLowerCase())){S.custom=S.custom||[];S.custom.push(t)}});
-  lastAdd=l.items.length?l.items[l.items.length-1].id:null;save();render();setTimeout(()=>{const e=$('#ni');if(e)e.focus()},0)}
+  lastAdd=l.items.length?l.items[l.items.length-1].id:null;
+  if(!save()){toast('Not saved — free up phone storage and try again');return}
+  el.value='';render();setTimeout(()=>{const e=$('#ni');if(e){e.value='';e.focus()}},0)}
 function clearDoneItems(){snap();const l=curL();l.items=l.items.filter(i=>!i.done);save();render();toast('Removed ticked items',true)}
 function uncheckAll(){curL().items.forEach(i=>i.done=false);save();render()}
 function newListGo(){const v=$('#nl').value.trim();if(!v)return;const id=uid();S.lists.push({id,name:v,emoji:'📝',items:[]});curList=id;save();render()}
@@ -702,18 +704,24 @@ function delTask(id){snap();S.tasks=S.tasks.filter(x=>x.id!==id);save();closeMod
 
 /* ---------- modal & settings ---------- */
 let modalT=null;
-function openModal(h){clearTimeout(modalT);$('#modal').classList.remove('out');$('#modalwrap').classList.remove('out');$('#modal').style.transform='';$('#modal').innerHTML=h;$('#modalwrap').hidden=false;$('#modal').scrollTop=0;const i=$('#modal input[type=text],#modal input:not([type])');if(i&&!i.value)setTimeout(()=>i.focus(),50)}
-function hideModal(){const m=$('#modal'),w=$('#modalwrap');w.hidden=true;w.classList.remove('out');m.classList.remove('out');m.style.transform='';m.style.transition='';m.style.animation='';m.innerHTML='';if(recog){try{recog.stop()}catch(e){}}}
-function closeModal(){const w=$('#modalwrap');if(w.hidden)return;clearTimeout(modalT);if(reduceMotion){hideModal();return}w.classList.add('out');$('#modal').classList.add('out');modalT=setTimeout(hideModal,230)}
+let modalOpenedAt=0,scrimUnlockT=null;
+function openModal(h){clearTimeout(modalT);clearTimeout(scrimUnlockT);const wrap=$('#modalwrap'),modal=$('#modal'),scrim=wrap&&wrap.querySelector('.scrim'),wasOpen=wrap&&!wrap.hidden;
+  modal.classList.remove('out');wrap.classList.remove('out');modal.style.transform='';modal.innerHTML=h;wrap.hidden=false;modal.scrollTop=0;
+  if(!wasOpen){modalOpenedAt=Date.now();if(scrim){scrim.style.pointerEvents='none';scrimUnlockT=setTimeout(()=>{if(scrim)scrim.style.pointerEvents=''},reduceMotion?0:520)}}
+  else if(scrim&&Date.now()-modalOpenedAt<520){scrim.style.pointerEvents='none'}
+  const i=$('#modal input[type=text],#modal input:not([type])');if(i&&!i.value)setTimeout(()=>i.focus(),50)}
+function hideModal(){clearTimeout(scrimUnlockT);const m=$('#modal'),w=$('#modalwrap'),scrim=w&&w.querySelector('.scrim');w.hidden=true;w.classList.remove('out');m.classList.remove('out');m.style.transform='';m.style.transition='';m.style.animation='';m.innerHTML='';if(scrim)scrim.style.pointerEvents='';if(recog){try{recog.stop()}catch(e){}}}
+function closeModal(fromScrim){const w=$('#modalwrap');if(w.hidden)return;if(fromScrim&&Date.now()-modalOpenedAt<520)return;clearTimeout(modalT);if(reduceMotion){hideModal();return}w.classList.add('out');$('#modal').classList.add('out');modalT=setTimeout(hideModal,230)}
+function setSetting(key,value){S.settings[key]=value;if(!save()){toast('Not saved — free up phone storage and try again');return}render();openSettings()}
 function openSettings(){
   const s=S.settings,perm=('Notification' in window)?Notification.permission:'none';
   openModal(`<h2>Settings</h2>
   <label>Your name (so I can say hello)</label><div class="add" style="margin:0"><input id="nm" value="${esc(S.name)}" placeholder="Your name"><button class="btn alt" onclick="S.name=$('#nm').value.trim();save();render();toast('Saved')">Save</button></div>
-  <label>Text size</label><div class="seg">${[['m','Normal'],['l','Large'],['xl','Extra large']].map(x=>`<button class="${s.size===x[0]?'on':''}" onclick="S.settings.size='${x[0]}';save();render();openSettings()">${x[1]}</button>`).join('')}</div>
-  <label>Daily boost on Today</label><div class="seg"><button class="${s.moti!==false?'on':''}" onclick="S.settings.moti=true;save();render();openSettings()">Show</button><button class="${s.moti===false?'on':''}" onclick="S.settings.moti=false;save();render();openSettings()">Hide</button></div>
-  <label>Celebrations when I tick things off</label><div class="seg"><button class="${s.cheer!==false?'on':''}" onclick="S.settings.cheer=true;save();render();openSettings()">On</button><button class="${s.cheer===false?'on':''}" onclick="S.settings.cheer=false;save();render();openSettings()">Off</button></div>
-  <label>Glass effects</label><div class="seg"><button class="${s.glass!==false?'on':''}" onclick="S.settings.glass=true;save();render();openSettings()">Full</button><button class="${s.glass===false?'on':''}" onclick="S.settings.glass=false;save();render();openSettings()">Simple (faster)</button></div>
-  <label>Light or dark</label><div class="seg"><button class="${!s.dark?'on':''}" onclick="S.settings.dark=false;save();render();openSettings()">Light</button><button class="${s.dark?'on':''}" onclick="S.settings.dark=true;save();render();openSettings()">Dark</button></div>
+  <label>Text size</label><div class="seg">${[['m','Normal'],['l','Large'],['xl','Extra large']].map(x=>`<button type="button" class="${s.size===x[0]?'on':''}" onclick="setSetting('size','${x[0]}')">${x[1]}</button>`).join('')}</div>
+  <label>Daily boost on Today</label><div class="seg"><button type="button" class="${s.moti!==false?'on':''}" onclick="setSetting('moti',true)">Show</button><button type="button" class="${s.moti===false?'on':''}" onclick="setSetting('moti',false)">Hide</button></div>
+  <label>Celebrations when I tick things off</label><div class="seg"><button type="button" class="${s.cheer!==false?'on':''}" onclick="setSetting('cheer',true)">On</button><button type="button" class="${s.cheer===false?'on':''}" onclick="setSetting('cheer',false)">Off</button></div>
+  <label>Glass effects</label><div class="seg"><button type="button" class="${s.glass!==false?'on':''}" onclick="setSetting('glass',true)">Full</button><button type="button" class="${s.glass===false?'on':''}" onclick="setSetting('glass',false)">Simple (faster)</button></div>
+  <label>Light or dark</label><div class="seg"><button type="button" class="${!s.dark?'on':''}" onclick="event.stopPropagation();setSetting('dark',false)">Light</button><button type="button" class="${s.dark?'on':''}" onclick="event.stopPropagation();setSetting('dark',true)">Dark</button></div>
   <label>My Google Calendar link</label><input id="cal" value="${esc(s.cal)}" onchange="S.settings.cal=/^https?:/i.test(this.value.trim())?this.value.trim():'https://calendar.google.com/';save();render()">
   <label>Baby tracker link (adds a button on Today)</label><input id="bu" value="${esc(s.babyUrl||'')}" placeholder="https://…" onchange="S.settings.babyUrl=/^https?:/i.test(this.value.trim())?this.value.trim():'';save();render()">
   <label>Alerts</label>${'Notification' in window&&perm!=='denied'?`<button class="btn ${s.notify&&perm==='granted'?'sage':'alt'}" onclick="enableNotify()">${s.notify&&perm==='granted'?'✓ Phone alerts are on':'Turn on phone alerts'}</button>`:'<div class="meta">Phone alerts aren’t available here. You’ll still get a banner when the app is open.</div>'}

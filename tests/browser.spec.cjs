@@ -115,3 +115,39 @@ test('unsafe imported external links cannot become executable links',async({page
  await page.evaluate(()=>{tab='appts';render()});
  await expect(page.getByText('Open my Google Calendar')).toHaveAttribute('href','https://calendar.google.com/');
 });
+
+test('dark mode toggle applies during settings sheet slide-in',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{localStorage.setItem('myday-opening','1');S.settings.dark=false;S.settings.openingSeen=true;render()});
+ await page.locator('.gear').click();
+ await expect(page.locator('#modalwrap')).toBeVisible();
+ // Click Dark immediately while sheetin (~500ms) is still running
+ await page.getByRole('button',{name:'Dark',exact:true}).click({trial:false});
+ await expect.poll(async()=>page.evaluate(()=>!!(S.settings.dark&&document.body.classList.contains('dark')))).toBe(true);
+ await expect(page.locator('#modalwrap')).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Settings'})).toBeVisible();
+});
+
+test('scrim cannot dismiss settings during sheet slide-in',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.locator('.gear').click();
+ await expect(page.locator('#modalwrap')).toBeVisible();
+ await page.locator('#modalwrap .scrim').click({force:true,position:{x:8,y:8}});
+ await expect(page.locator('#modalwrap')).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Settings'})).toBeVisible();
+});
+
+test('grocery input clears only after a successful save',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{tab='lists';curList='groc';render()});
+ await page.locator('#ni').fill('Synthetic milk');
+ await page.getByRole('button',{name:'Add',exact:true}).click();
+ await expect(page.locator('#app')).toContainText('Synthetic milk');
+ await expect(page.locator('#ni')).toHaveValue('');
+ // Failed save keeps the typed text for retry
+ await page.locator('#ni').fill('Synthetic bread');
+ await page.evaluate(()=>{const o=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new Error('synthetic quota')};window.__restoreSetItem=()=>{Storage.prototype.setItem=o}});
+ await page.getByRole('button',{name:'Add',exact:true}).click();
+ await expect(page.locator('#ni')).toHaveValue('Synthetic bread');
+ await page.evaluate(()=>window.__restoreSetItem());
+});
