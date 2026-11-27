@@ -53,3 +53,19 @@ test('LED glow is restricted to night mode',async({page})=>{
  expect(night).toContain('inset');
  expect(day).not.toEqual(night);
 });
+
+test('inbox converts a thought into a pinned sticky note',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.locator('.bloom-inbox summary').first().click();
+ await page.locator('#bloom-inbox-input').fill('Synthetic reminder');
+ await page.locator('.bloom-inbox').first().getByRole('button',{name:'Save',exact:true}).click();
+ await page.locator('.bloom-inbox summary').first().click();
+ await page.locator('.bloom-inbox').first().getByRole('button',{name:'Sticky note',exact:true}).click();
+ expect(await page.evaluate(()=>S.notes.some(n=>n.text==='Synthetic reminder'&&n.pin))).toBe(true);
+ await page.reload();
+ expect(await page.evaluate(()=>S.notes.some(n=>n.text==='Synthetic reminder'&&n.pin))).toBe(true);
+});
+test('storage failure is reported instead of claiming a successful save',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ expect(await page.evaluate(()=>{const original=Storage.prototype.setItem;try{Storage.prototype.setItem=function(){throw new Error('synthetic quota failure')};return save()}finally{Storage.prototype.setItem=original}})).toBe(false);
+});
