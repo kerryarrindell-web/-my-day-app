@@ -3,7 +3,8 @@
 **Status:** Isolated acceptance deploy ready. Production remains **NO-GO** until physical-device acceptance and explicit owner approval.
 
 ## Mobile preview URL
-- **Isolated HTTPS origin:** confirm the Cursor Publish dialog (choose **public** so phones can install without Cursor sign-in). The live preview URL appears on the app pill after confirmation — do not use any `kerryarrindell-web.github.io/...` path for this acceptance pass (same-origin localStorage risk with production).
+- **Isolated HTTPS origin (proposed):** Cursor app slug `my-day-bloom` — confirm Publish on this agent chat (or https://cursor.com/agents/bc-e0035c99-be7d-45ec-873c-d5682564b2a6). Choose **public** so Samsung/iPhone can install without Cursor sign-in, and accept publishing terms in the dialog. The exact HTTPS URL appears on the app pill after confirmation.
+- Do **not** use any `kerryarrindell-web.github.io/...` path for this acceptance pass (same origin / shared `localStorage` with production).
 - Local lab preview used for measurements: `http://127.0.0.1:3847/` (this VM only).
 
 ## Deployment version
