@@ -225,3 +225,8 @@ body.dark #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom
 
 /* Daytime: ordinary elevation only; LED reserved for dark mode. */
 body:not(.dark) #app :is(.bg-led,.bg-accent-card,.bg-section-hero,.bg-home-hero,.bg-verse,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up,.bloom-journey,.bloom-inbox,.md131-colour-card){box-shadow:0 1px 2px #4939480d,0 5px 16px #49394812!important}
+
+/* Bloom premium interaction: compositor-friendly press feedback, no continuous animation. */
+#app button,#tabs button,.gear,#modal button{touch-action:manipulation;transition:transform 140ms cubic-bezier(.2,.75,.25,1)}
+#app button:active:not(:disabled),#tabs button:active:not(:disabled),.gear:active,#modal button:active:not(:disabled){transform:scale(.97)}
+@media(prefers-reduced-motion:reduce){#app button,#tabs button,.gear,#modal button{transition:none!important;transform:none!important}}
