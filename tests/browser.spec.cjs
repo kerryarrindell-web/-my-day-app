@@ -18,3 +18,26 @@ test('energy selection persists across reload',async({page})=>{
  await page.reload();
  await expect(page.getByRole('button',{name:'Tired',exact:true}).first()).toHaveAttribute('aria-pressed','true');
 });
+
+test('offline shell reload preserves energy and prayer',async({page,context})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(async()=>{await navigator.serviceWorker.ready});
+ await page.reload();
+ await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+ await page.getByRole('button',{name:'Tired',exact:true}).first().click();
+ await context.setOffline(true);
+ await page.reload();
+ await expect(page.getByRole('button',{name:'Tired',exact:true}).first()).toHaveAttribute('aria-pressed','true');
+ await page.evaluate(()=>{tab='me';meNavigate('faith')});
+ await expect(page.locator('.bloom-daily-prayer')).toContainText('Amen.');
+});
+test('day and night hero and verse gradients match',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ for(const dark of [false,true]){
+ await page.evaluate(d=>{S.settings.dark=d;render()},dark);
+ const hero=await page.locator('.bg-home-hero').first().evaluate(e=>getComputedStyle(e).backgroundImage);
+ const verse=await page.locator('.bg-verse').first().evaluate(e=>getComputedStyle(e).backgroundImage);
+ expect(hero).toEqual(verse);
+ expect(await page.locator('.bloom-journey').first().evaluate(e=>getComputedStyle(e).boxShadow)).not.toBe('none');
+ }
+});
