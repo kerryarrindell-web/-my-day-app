@@ -284,11 +284,25 @@ body:not(.bloom-led):not(.dark) #app :is(.bg-home-hero,.bg-verse,.bg-accent-card
 .tabs button span,#tabs button .tab-ico{font-size:1.35em!important;line-height:1!important}
 #md11-fab{bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;z-index:35!important}
 /* Calendar theme integration */
-body[data-theme="blossom"] .bg-calendar{background:linear-gradient(145deg,#ffe4ef,#f7cfe0)!important}
-body[data-theme="lavender"] .bg-calendar{background:linear-gradient(145deg,#ebe4fb,#d4c5f2)!important}
-body[data-theme="sage"] .bg-calendar{background:linear-gradient(145deg,#e4f5ec,#bfe3d0)!important}
-body[data-theme="peach"] .bg-calendar{background:linear-gradient(145deg,#ffe9d6,#f6d3a2)!important}
-body[data-theme="midnight"] .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important}
+body[data-theme="blossom"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ffe4ef,#f7cfe0)!important;color:var(--ink)!important;border:1.5px solid #e5b0c8!important}
+body[data-theme="lavender"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ebe4fb,#d4c5f2)!important;color:var(--ink)!important;border:1.5px solid #c7b6e8!important}
+body[data-theme="sage"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#e4f5ec,#bfe3d0)!important;color:var(--ink)!important;border:1.5px solid #9ecbb3!important}
+body[data-theme="peach"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ffe9d6,#f6d3a2)!important;color:var(--ink)!important;border:1.5px solid #e2b78a!important}
+body[data-theme="midnight"].dark #app .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important;border:1px solid rgba(186,150,220,.4)!important}
+body:not([data-theme="midnight"]) #app .bg-calendar h2,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-legend{color:var(--ink)!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day{background:color-mix(in srgb,var(--card) 82%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 20%,var(--line))!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day strong{color:var(--ink)!important}
+/* keep colour-coded event days vivid on light calendars */
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health{background:linear-gradient(140deg,#9e437a,#bc548d)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family{background:linear-gradient(140deg,#6044ae,#8467cf)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal{background:linear-gradient(140deg,#147d78,#2a9b91)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other{background:linear-gradient(140deg,#966026,#c28a4b)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other strong{color:#fff!important}
 /* Typography polish */
 body[data-theme]{font-family:'Figtree',system-ui,sans-serif}
 body[data-theme] h1,body[data-theme] h2,body[data-theme] .hd h1{
