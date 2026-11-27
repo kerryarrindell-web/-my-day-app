@@ -1,6 +1,7 @@
-const CACHE='myday-prod-bloom-dev-001';
+const PREFIX='myday-bloom:'+self.registration.scope+':';
+const CACHE=PREFIX+'002';
 const FILES=['./','index.html','my-day-v11.js','my-day-v11.css','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','favicon.svg','myday-opening.mp4'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&(k.startsWith('myday-prod-')||k.startsWith('myday-v'))).map(k=>caches.delete(k))))));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==location.origin||!u.href.startsWith(self.registration.scope))return;const relative=u.pathname.slice(new URL(self.registration.scope).pathname.length);const asset=e.request.mode==='navigate'&&(relative===''||relative==='index.html')?'index.html':relative;if(!FILES.includes(asset))return;e.respondWith(caches.open(CACHE).then(async c=>{const hit=await c.match(new URL(asset,self.registration.scope).href);return hit||fetch(e.request)}));});
-self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>cs[0]?cs[0].focus():self.clients.openWindow('./')))});
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(new URL(f,self.registration.scope),{cache:'reload'}))))));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k.startsWith(PREFIX)).map(k=>caches.delete(k))))));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url),scope=new URL(self.registration.scope);if(u.origin!==scope.origin||!u.pathname.startsWith(scope.pathname))return;const relative=u.pathname.slice(scope.pathname.length);const asset=e.request.mode==='navigate'&&(relative===''||relative==='index.html')?'index.html':relative;if(!FILES.includes(asset))return;e.respondWith(caches.open(CACHE).then(async c=>{const hit=await c.match(new URL(asset,scope).href);return hit||fetch(e.request)}));});
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{const c=cs.find(x=>x.url.startsWith(self.registration.scope));return c?c.focus():self.clients.openWindow(self.registration.scope)}))});
