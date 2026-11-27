@@ -972,6 +972,7 @@ function vMeTime(){const m=meToday(),count=(m.littleWins||[]).length, moods=[['�
  return `${top}${back}<div class="card md131-panel orange"><h2>🎲 Play Corner</h2><p>Something gentle to try when you're bored. No scores, no pressure.</p><div class="md131-surprise">🎁<p>${mePrompt<0?'A surprise is waiting for you!':esc(ME_PROMPTS[mePrompt])}</p></div><button class="btn md131-action" onclick="mePrompt=(mePrompt+1+Math.floor(Math.random()*(ME_PROMPTS.length-1)))%ME_PROMPTS.length;render()">✨ Surprise me!</button></div>`;
 }
 const TABS=[['today','🌸','Today'],['lists','🛒','Lists'],['appts','📅','Appts'],['me','💗','Me Time']];
+let bloomMotionScreen='';
 function render(){
   if(tab==='notes')tab='today';
   const act=document.activeElement&&document.activeElement.id;const vals={};
@@ -1005,6 +1006,9 @@ function render(){
   if(detOpen){const d=document.getElementById('ndet');if(d)d.open=true}
   document.body.classList.toggle('noglass',S.settings.glass===false||autoNoGlass);
   const appEl=$('#app');appEl.classList.remove('enter');
+  const motionScreen=tab+(tab==='me'?':'+meSection:'');
+  if(bloomMotionScreen&&bloomMotionScreen!==motionScreen&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&appEl.animate){appEl.animate([{opacity:.82,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'cubic-bezier(.2,.75,.25,1)'})}
+  bloomMotionScreen=motionScreen;
   if(animTab){animTab=false}
   if(lastAdd){const b=document.querySelector('[data-pop="'+lastAdd+'"]'),r=b&&b.closest('.row');if(r)r.classList.add('slidein');lastAdd=null}
   if(act){const e=document.getElementById(act);if(e&&e.focus&&e.id.indexOf('mic-')!==0){e.focus();if(e.type==='text'&&e.setSelectionRange){try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
