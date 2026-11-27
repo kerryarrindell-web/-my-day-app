@@ -40,6 +40,13 @@
 - Offline shell covered by browser test
 - PWA manifest `scope`/`start_url` relative; SW cache prefix `myday-bloom:` scoped to registration scope
 
+## Visual QA (lab Chrome ~392×801 — [Bloom PWA visual QA](bc-0081833a-e929-53d4-9692-afff4b9ddb05))
+**All premium checks PASS** (synthetic data only): skippable opening; vibrant light home without journey LED glow; muted plum dark with static inset LED; Today / Lists / Appts / Me Time interactive; Garden, Journal, Faith (KJV Psalm 46:10); shopping add/tick/remove. Idle faith screen ~60 FPS, worst frame 17ms, zero residual Web Animations.
+
+Minor (non-blocking): settings sheet Dark toggle can miss if clicked during slide-in; grocery input may retain text after add.
+
+Walkthrough artifacts: `bloom-opening.webp`, `bloom-light-home.webp`, `bloom-dark-home.webp`, `bloom-calendar.webp`, `bloom-garden.webp`, `bloom-journal.webp`, `bloom-faith.webp`, `bloom-shopping.webp`.
+
 ## Performance measurements (MEASURED — lab Chromium 390×844)
 
 > Physical Samsung Chrome / iPhone Safari FPS must still be measured on device. Figures below are **lab-measured**, not estimates, and not physical-device results.
