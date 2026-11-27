@@ -92,3 +92,18 @@ test('journal entries persist independently by date',async({page})=>{
  await page.evaluate(()=>bloomJournalSelect(todayStr()));
  await expect(field).toHaveValue('Synthetic reflection today');
 });
+
+test('rapid navigation settles without persistent screen animation',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{for(const t of ['me','appts','lists','today','me','today']){tab=t;render()}});
+ await page.waitForFunction(()=>document.querySelector('#app').getAnimations().every(a=>a.playState!=='running'));
+ await expect(page.locator('#app')).toContainText('How are you feeling?');
+ expect(await page.evaluate(()=>getComputedStyle(document.querySelector('#app')).opacity)).toBe('1');
+});
+test('reduced motion disables screen transition',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{tab='me';render()});
+ expect(await page.evaluate(()=>document.querySelector('#app').getAnimations().length)).toBe(0);
+ await expect(page.locator('#myday-opening')).toBeHidden();
+});
