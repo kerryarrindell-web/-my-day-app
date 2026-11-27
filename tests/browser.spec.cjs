@@ -41,3 +41,15 @@ test('day and night hero and verse gradients match',async({page})=>{
  expect(await page.locator('.bloom-journey').first().evaluate(e=>getComputedStyle(e).boxShadow)).not.toBe('none');
  }
 });
+
+test('LED glow is restricted to night mode',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ const card=page.locator('.bloom-journey').first();
+ await page.evaluate(()=>{S.settings.dark=false;render()});
+ const day=await card.evaluate(e=>getComputedStyle(e).boxShadow);
+ await page.evaluate(()=>{S.settings.dark=true;render()});
+ const night=await card.evaluate(e=>getComputedStyle(e).boxShadow);
+ expect(day).not.toContain('inset');
+ expect(night).toContain('inset');
+ expect(day).not.toEqual(night);
+});
