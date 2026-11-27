@@ -369,7 +369,7 @@ function norm(o){const d=DEF();const n=Object.assign(d,safeFields(o));n.settings
   n.wins=n.wins||{};n.rlog=n.rlog||{};n.meals=n.meals||{};
   n.pills=Array.isArray(n.pills)?n.pills:[];n.routines=n.routines||DEF().routines;
   return n}
-function save(){const j=JSON.stringify(S);mem=j;try{localStorage.setItem(KEY,j);syncMsg='Saved on this phone'}catch(e){syncMsg='Not saved — phone storage unavailable. Export a backup now.';console.warn('My Day: local storage write failed',e)}}
+function save(){const j=JSON.stringify(S);mem=j;try{localStorage.setItem(KEY,j);syncMsg='Saved on this phone';return true}catch(e){syncMsg='Not saved — phone storage unavailable. Export a backup now.';console.warn('My Day: local storage write failed',e);return false}}
 (function(){let j=null;try{j=localStorage.getItem(KEY)}catch(e){}if(j){try{S=norm(JSON.parse(j))}catch(e){}}
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}})();
 function snap(){lastSnap=JSON.stringify(S)}
@@ -738,7 +738,7 @@ function validBackup(p){
     &&(p.bloomInbox==null||(records(p.bloomInbox)&&p.bloomInbox.every(x=>typeof x.text==='string')));
 }
 function doRestore(){const f=$('#bkf').files[0],t=$('#bkt').value.trim();
-  const apply=x=>{try{const p=JSON.parse(x);if(!validBackup(p))throw 0;snap();S=norm(p);save();closeModal();render();toast('Backup restored',true)}catch(e){toast('That doesn’t look like a My Day backup')}};
+  const apply=x=>{try{const p=JSON.parse(x);if(!validBackup(p))throw 0;const previous=S;const previousMem=mem;snap();S=norm(p);if(!save()){S=previous;mem=previousMem;toast('Restore not saved — free up phone storage and try again');return}closeModal();render();toast('Backup restored',true)}catch(e){toast('That doesn’t look like a My Day backup')}};
   if(f){const r=new FileReader();r.onload=()=>apply(r.result);r.readAsText(f)}else if(t)apply(t);else toast('Choose a file or paste the text first')}
 function wipeAsk(){openModal(`<h2>Erase everything?</h2><p>This removes every reminder, list, note and appointment from this phone. Save a backup first if you’re unsure.</p><div class="mbtns"><button class="btn danger" onclick="snap();S=DEF();save();closeModal();render();toast('All cleared',true)">Yes, erase</button><button class="btn alt" onclick="closeModal()">No, go back</button></div>`)}
 
@@ -784,7 +784,7 @@ function pillDelete(id){S.pills=(S.pills||[]).filter(x=>x.id!==id);save();closeM
 function bloomInboxAdd(){
   const el=document.getElementById('bloom-inbox-input'),v=el.value.trim();if(!v)return;
   if(!Array.isArray(S.bloomInbox))S.bloomInbox=[];
-  snap();S.bloomInbox.push({id:uid(),text:v});el.value='';save();render();toast('Saved to inbox',true);
+  snap();S.bloomInbox.push({id:uid(),text:v});el.value='';const saved=save();render();toast(saved?'Saved to inbox':'Not saved to phone — export a backup now',true);
 }
 function bloomInboxAction(index,action){
   const items=S.bloomInbox;if(!Array.isArray(items)||!Number.isInteger(index)||!items[index]||!['today','tomorrow','note','remove'].includes(action))return;
@@ -943,7 +943,7 @@ function bloomJournalSelect(day){if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||day>todayS
 function bloomJournalSave(){
  const day=bloomJournalDay||todayStr(),el=document.getElementById('bloom-journal-text');if(!el)return;
  S.meTime=S.meTime||{};const m=S.meTime[day]||{mood:'',done:[],moments:[],littleWins:[]};
- m.reflection=el.value.slice(0,4000);S.meTime[day]=m;save();toast('Reflection saved on this phone');
+ m.reflection=el.value.slice(0,4000);S.meTime[day]=m;const saved=save();toast(saved?'Reflection saved on this phone':'Reflection not saved — export a backup now');
 }
 function bloomReflectionCard(){
  const day=bloomJournalDay||todayStr(),m=(S.meTime||{})[day]||{};
