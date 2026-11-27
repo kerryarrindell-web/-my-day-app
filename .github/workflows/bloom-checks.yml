@@ -26,3 +26,14 @@ jobs:
           trap 'kill $server' EXIT
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8080/ >/dev/null && break; sleep 1; done
           npx playwright test tests/browser.spec.cjs --workers=1
+
+      - name: Package isolated acceptance candidate
+        run: |
+          mkdir -p bloom-preview
+          cp index.html my-day-v11.js my-day-v11.css manifest.webmanifest sw.js icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png favicon.svg myday-opening.mp4 bloom-preview/
+          (cd bloom-preview && sha256sum * > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: my-day-bloom-acceptance
+          path: bloom-preview/
+          retention-days: 14
