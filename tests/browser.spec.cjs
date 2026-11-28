@@ -370,3 +370,74 @@ test('gift fields reject angle-bracket injection on save',async({page})=>{
  expect(g.cost).toBe('£1');
  await expect(page.locator('#app script')).toHaveCount(0);
 });
+
+test('Christmas atmosphere decorations render with clearance and theme isolation',async({page,context})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(async()=>{
+  const regs=await navigator.serviceWorker.getRegistrations();
+  for(const r of regs)await r.unregister();
+  const keys=await caches.keys();
+  for(const k of keys)await caches.delete(k);
+ });
+ await page.reload({waitUntil:'networkidle'});
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ await page.evaluate(()=>{setBloomTheme('blossom');tab='today';render()});
+ await expect(page.locator('body')).not.toHaveClass(/bloom-xmas/);
+ const hidden=await page.locator('#xmas-atmosphere').evaluate(e=>getComputedStyle(e).visibility);
+ expect(hidden).toBe('hidden');
+ for(const id of ['xmas-rose','xmas-enchanted','xmas-midnight']){
+  await page.evaluate(th=>{S.settings.xmasFx=true;setBloomTheme(th);tab='today';render()},id);
+  await expect(page.locator('body')).toHaveClass(/bloom-xmas/);
+  await expect(page.locator('.xmas-rail')).toBeVisible();
+  await expect(page.locator('.xmas-rail .xmas-rail-svg')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-garland')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-garland svg')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-corner.tl')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-edge-lights')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-side.left')).toBeVisible();
+  await expect(page.locator('#xmas-atmosphere .xa-ambient')).toBeVisible();
+  const flakes=await page.locator('#xa-snow .xa-flake').count();
+  expect(flakes).toBeGreaterThan(10);
+  const baubles=await page.locator('#xa-ornaments .xa-bauble').count();
+  expect(baubles).toBeGreaterThan(3);
+  const stars=await page.locator('#xa-stars .xa-star').count();
+  expect(stars).toBeGreaterThan(5);
+  await expect(page.locator('.xmas-greet .xg-lights')).toBeVisible();
+  const pe=await page.locator('#xmas-atmosphere').evaluate(e=>getComputedStyle(e).pointerEvents);
+  expect(pe).toBe('none');
+  await expect(page.locator('#tabs')).toBeVisible();
+  const zOk=await page.evaluate(()=>{
+   const atm=getComputedStyle(document.getElementById('xmas-atmosphere')).zIndex;
+   const tabs=getComputedStyle(document.getElementById('tabs')).zIndex;
+   return Number(tabs)>Number(atm);
+  });
+  expect(zOk).toBe(true);
+  const fab=page.locator('#md11-fab');
+  if(await fab.count()){
+   const clear=await page.evaluate(()=>{
+    const f=document.getElementById('md11-fab'),t=document.getElementById('tabs');
+    const fr=f.getBoundingClientRect(),tr=t.getBoundingClientRect();
+    return fr.bottom <= tr.top + 1;
+   });
+   expect(clear).toBe(true);
+  }
+ }
+ await page.evaluate(()=>setXmasFx(false));
+ await expect(page.locator('body')).toHaveClass(/xmas-fx-off/);
+ const calmVis=await page.locator('#xmas-atmosphere').evaluate(e=>getComputedStyle(e).visibility);
+ expect(calmVis).toBe('hidden');
+ await page.evaluate(()=>setXmasFx(true));
+ await page.evaluate(()=>{setBloomTheme('lavender');tab='today';render()});
+ await expect(page.locator('body')).not.toHaveClass(/bloom-xmas/);
+});
+
+test('reduced motion disables Christmas snowfall animation',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  const s=document.getElementById('myday-opening');if(s)s.hidden=true;
+  S.settings.xmasFx=true;setBloomTheme('xmas-enchanted');render();
+ });
+ const anim=await page.locator('#xa-snow .xa-flake').first().evaluate(e=>getComputedStyle(e).animationName);
+ expect(anim==='none'||anim==='').toBeTruthy();
+});

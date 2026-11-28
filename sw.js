@@ -1,5 +1,5 @@
 const PREFIX='myday-bloom:'+self.registration.scope+':';
-const CACHE=PREFIX+'014';
+const CACHE=PREFIX+'015';
 const FILES=['./','index.html','my-day-v11.js','my-day-v11.css','bloom-themes.css','bloom-christmas.css','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','favicon.svg','myday-opening.mp4'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(new URL(f,self.registration.scope),{cache:'reload'}))))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k.startsWith(PREFIX)).map(k=>caches.delete(k))))));
