@@ -1,0 +1,161 @@
+{
+  "base": "http://127.0.0.1:8080/",
+  "measuredAt": "2026-11-27T00:49:39.431Z",
+  "engine": "Playwright Chromium mobile 390x844",
+  "classification": "MEASURED (lab Chromium; not physical Samsung/iPhone)",
+  "metrics": {
+    "transitionApi": {
+      "codedDurationMs": 220,
+      "usesWaapi": true,
+      "respectsReducedMotionInSource": true
+    },
+    "nav_to_me": {
+      "wallMs": 282.7,
+      "frameCount": 17,
+      "avgFrameMs": 16.6,
+      "maxFrameMs": 16.8,
+      "avgFps": 60.2,
+      "longFramesOver22ms": 0
+    },
+    "nav_to_lists": {
+      "wallMs": 296.1,
+      "frameCount": 18,
+      "avgFrameMs": 16.44,
+      "maxFrameMs": 16.8,
+      "avgFps": 60.8,
+      "longFramesOver22ms": 0
+    },
+    "nav_to_appts": {
+      "wallMs": 298,
+      "frameCount": 18,
+      "avgFrameMs": 16.52,
+      "maxFrameMs": 16.7,
+      "avgFps": 60.5,
+      "longFramesOver22ms": 0
+    },
+    "nav_to_today": {
+      "wallMs": 296.9,
+      "frameCount": 18,
+      "avgFrameMs": 16.47,
+      "maxFrameMs": 16.8,
+      "avgFps": 60.7,
+      "longFramesOver22ms": 0
+    },
+    "rapidNav": {
+      "runningAnimationsAfterSettle": 0,
+      "animationNames": []
+    },
+    "themes": {
+      "dayBoxShadow": "",
+      "nightBoxShadow": "",
+      "dayHasInsetLed": false,
+      "nightHasInsetLed": false,
+      "dayBg": "rgb(253, 246, 240)",
+      "nightBg": "rgb(29, 23, 25)",
+      "lightModeVibrant": false
+    },
+    "reducedMotion": {
+      "prefersReducedMotion": true,
+      "animationsStartedDuringNav": 0,
+      "wallMs": 261.7
+    },
+    "opening": {
+      "overlayPresentOnFreshLoad": true,
+      "skipControlPresent": true,
+      "videoPresent": true,
+      "skipped": true,
+      "stillVisibleAfterSkip": false,
+      "dismissedMeasured": true
+    },
+    "screens": {
+      "today": {
+        "hasContent": true
+      },
+      "appts": {
+        "hasContent": true
+      },
+      "me": {
+        "hasContent": true
+      },
+      "lists": {
+        "hasContent": true
+      },
+      "garden": {
+        "interactive": true,
+        "sample": "YOUR LITTLE CORNER\nMe Time 🌸\n\nGood morning, lovely! 💕 How are you doing today?\n\n← Back to Me Time\n"
+      },
+      "journal": {
+        "interactive": true,
+        "sample": "YOUR LITTLE CORNER\nMe Time 🌸\n\nGood morning, lovely! 💕 How are you doing today?\n\n← Back to Me Time\n"
+      },
+      "shopping": {
+        "hasSyntheticMilk": false
+      },
+      "calendar": {
+        "hasCalendarUi": true
+      }
+    },
+    "faith": {
+      "prayerSnippet": "Today’s prayer · Patience\n\nHeavenly Father, help me respond calmly when plans change. May I find comfort in Your presence. Amen.\n\nA new prayer each day · read whenever you wish.",
+      "hasAmen": true,
+      "amenMarkersInDocument": 366,
+      "hasKjvCue": true
+    },
+    "prayerCorpus": {
+      "hasBloomPrayersArray": true,
+      "uniqueDayMarkers": 0,
+      "amenCount": 365,
+      "likely365": true
+    },
+    "themesMeasured": {
+      "day": {
+        "sel": "bg-home-hero bg-led",
+        "shadow": "rgba(160, 89, 142, 0.18) 0px 5px 18px 0px, rgba(255, 255, 255, 0.267) 0px 1px 0px 0px inset"
+      },
+      "night": {
+        "sel": "bg-home-hero bg-led",
+        "shadow": "rgba(173, 131, 181, 0.17) 0px 0px 0px 1px inset, rgba(173, 131, 181, 0.3) 0px 0px 0px 1px, rgba(173, 131, 181, 0.15) 0px 0px 7px 0px"
+      },
+      "dayInset": true,
+      "nightInset": true
+    },
+    "openingMeasured": {
+      "skipText": "Skip",
+      "beforeOpacity": "1",
+      "afterDisplay": "none",
+      "afterVis": "hidden",
+      "afterOp": "0",
+      "dismissed": true
+    },
+    "prayerEntries": 365,
+    "ledBloomJourney": {
+      "day": "rgba(73, 57, 72, 0.05) 0px 1px 2px 0px, rgba(73, 57, 72, 0.07) 0px 5px 16px 0px",
+      "night": "rgba(173, 131, 181, 0.17) 0px 0px 0px 1px inset, rgba(173, 131, 181, 0.3) 0px 0px 0px 1px, rgba(173, 131, 181, 0.15) 0px 0px 7px 0px",
+      "dayInset": false,
+      "nightInset": true
+    },
+    "screenProbes": {
+      "gardenHasUi": true,
+      "gardenSample": "YOUR LITTLE CORNER\nMe Time 🌸\n\nGood morning, lovely! 💕 How are you doing today?\n\n← Back to Me Time\n🌷 My Blossom Garden\n\nEvery little win helps your garden blo",
+      "journalHasUi": true,
+      "journalSample": "YOUR LITTLE CORNER\nMe Time 🌸\n\nGood morning, lovely! 💕 How are you doing today?\n\n← Back to Me Time\nMy private reflections\n\nSaved on this device; included in yo",
+      "listsSample": "🛒 Groceries\n🍼 Baby\n✅ To do\n🍽️ Meals\n🛒 Groceries\n🎤\nAdd\nEmpty list. Type or speak what you need 🎤\nRename\nDelete list\n⚡ Quick add\nTap a category, then tap it"
+    }
+  },
+  "summary": {
+    "transitionMsCoded": 220,
+    "avgFpsDuringNav": [
+      60.2,
+      60.8,
+      60.5,
+      60.7
+    ],
+    "longFrames": 0,
+    "residualAnimationsAfterRapidNav": 0,
+    "prayers": 365,
+    "ledDayInsetOnJourney": false,
+    "ledNightInsetOnJourney": true,
+    "openingSkippable": true,
+    "reducedMotionDisablesNavAnimation": true
+  }
+}

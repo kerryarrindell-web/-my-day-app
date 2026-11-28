@@ -182,3 +182,51 @@ body:not(.dark) .bg-coming-up{background:linear-gradient(145deg,#d4c5f2,#eee4ff)
 body:not(.dark) .bg-pills{background:linear-gradient(145deg,#f0c2d5,#fbe4ed)!important;border-color:#d58fab!important;box-shadow:0 0 13px rgba(210,95,157,.14)!important}
 body:not(.dark) .bg-home-notes{background:linear-gradient(145deg,#f6d3a2,#fff0d8)!important;border-color:#dea966!important;box-shadow:0 0 13px rgba(177,116,69,.13)!important}
 body:not(.dark) .bg-verse{background:linear-gradient(135deg,#514080,#7257a6)!important}
+
+/* Bloom development: restrained lighting, softer surfaces, consistent hero/faith palette. */
+body:not(.dark) .bg-home-hero,body:not(.dark) .bg-verse{background:linear-gradient(135deg,#70496b,#9271a3)!important;color:#fff!important}
+body.dark .bg-home-hero,body.dark .bg-verse{background:linear-gradient(135deg,#392c49,#644765)!important}
+.bg-led,.bg-accent-card,.bg-verse,.bg-home-notes,.bg-coming-up,.bg-pills{box-shadow:0 1px 2px #4939480d,0 5px 18px #49394812!important;border-radius:22px!important}
+.bg-accent-card[data-tone]{box-shadow:0 5px 16px #49394812!important}
+.tabs{box-shadow:0 1px 0 #b38ba233,0 8px 24px #49394820!important}
+.bg-calendar{box-shadow:0 6px 22px #49394824;border-color:#a18cbb}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="rose"]{--md-card-bg:#f4d0e1;--md-card-edge:#dfb7ca}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="lavender"]{--md-card-bg:#ded0f5;--md-card-edge:#c7b7df}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="mint"]{--md-card-bg:#cce5cb;--md-card-edge:#b4cbb0}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="peach"]{--md-card-bg:#f4cbb5;--md-card-edge:#dfb9a5}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="berry"]{--md-card-bg:#f4d0e1;--md-card-edge:#dfb7ca}
+body:not(.dark)[data-section="today"] #app .md131-colour-card[data-tone="honey"]{--md-card-bg:#fff0d7;--md-card-edge:#e5cba7}
+body:not(.dark) .bg-coming-up{background:linear-gradient(145deg,#ded0f5,#f7f2fc)!important;border-color:#c7b7df!important}
+body:not(.dark) .bg-pills{background:linear-gradient(145deg,#f4d0e1,#fff0d7)!important;border-color:#dfb7ca!important}
+body:not(.dark) .bg-home-notes{background:linear-gradient(145deg,#fff0d7,#f4cbb5)!important;border-color:#dfb9a5!important}
+button:focus-visible,a:focus-visible{outline:3px solid #9872b8;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.bg-led,.bg-accent-card,.bg-home-hero,.bg-verse,.tabs{animation:none!important;transition:none!important}}
+
+/* Bloom daily planning */
+#app .bloom-journey,#app .bloom-inbox{border-radius:22px!important;box-shadow:0 5px 16px #49394812!important}
+body:not(.dark) #app .bloom-journey{background:linear-gradient(145deg,#cce5cb,#fff0d7)!important;color:#354b3b!important}
+body:not(.dark) #app .bloom-inbox{background:linear-gradient(145deg,#ded0f5,#f4d0e1)!important;color:#493948!important}
+body.dark #app .bloom-journey,body.dark #app .bloom-inbox{background:linear-gradient(145deg,#392c49,#44354b)!important;color:#f5eaf4!important}
+.bloom-journey button[aria-pressed=true]{outline:2px solid var(--pri);outline-offset:2px;font-weight:800}
+.bloom-inbox-row{padding:12px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.bloom-inbox summary{cursor:pointer;padding:8px 0}.bloom-inbox button,.bloom-journey button{min-height:44px}
+
+body:not(.dark) #app .bg-home-hero,body:not(.dark) #app .bg-verse{background:linear-gradient(135deg,#70496b,#9271a3)!important;color:#fff!important;border-color:#c5a5c9!important}
+body.dark #app .bg-home-hero,body.dark #app .bg-verse{background:linear-gradient(135deg,#392c49,#49354d)!important;color:#f5eaf4!important;border-color:#72566e!important}
+#app .bg-home-hero,#app .bg-verse,#app .bg-led,#app .bg-accent-card{box-shadow:0 0 6px #a78ab326,0 5px 16px #49394812!important}
+.bloom-daily-prayer{padding:18px;border-radius:18px;line-height:1.65;background:#fff0d7;color:#493948;border:1px solid #dfb9a5}
+body.dark .bloom-daily-prayer{background:#49354d;color:#f5eaf4;border-color:#72566e}
+.bloom-daily-prayer h3{margin:0 0 8px}.bloom-daily-prayer p{margin:8px 0}
+.bloom-inbox textarea{width:100%;box-sizing:border-box}
+@media(prefers-reduced-motion:reduce){#app .bloom-journey,#app .bloom-inbox,#app .bloom-daily-prayer{animation:none!important;transition:none!important}}
+
+/* Static, restrained illuminated perimeter; no animated glow. */
+body:not(.dark) #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up){box-shadow:0 1px 2px #4939480d,0 5px 16px #49394812!important}
+body.dark #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up){box-shadow:inset 0 0 0 1px #ad83b52b,0 0 0 1px #ad83b54d,0 0 7px #ad83b526!important}
+
+/* Daytime: ordinary elevation only; LED reserved for dark mode. */
+body:not(.dark) #app :is(.bg-led,.bg-accent-card,.bg-section-hero,.bg-home-hero,.bg-verse,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up,.bloom-journey,.bloom-inbox,.md131-colour-card){box-shadow:0 1px 2px #4939480d,0 5px 16px #49394812!important}
+
+/* Bloom premium interaction: compositor-friendly press feedback, no continuous animation. */
+#app button,#tabs button,.gear,#modal button{touch-action:manipulation;transition:transform 140ms cubic-bezier(.2,.75,.25,1)}
+#app button:active:not(:disabled),#tabs button:active:not(:disabled),.gear:active,#modal button:active:not(:disabled){transform:scale(.97)}
+@media(prefers-reduced-motion:reduce){#app button,#tabs button,.gear,#modal button{transition:none!important;transform:none!important}}

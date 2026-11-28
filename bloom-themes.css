@@ -1,0 +1,477 @@
+/* My Day 2.0 Bloom — premium visual system (presentation only) */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;600;700;800&display=swap');
+
+:root{
+  --font-display:'Fraunces',ui-serif,Georgia,serif;
+  --font-ui:'Figtree',Nunito,system-ui,sans-serif;
+  --radius-card:26px;
+  --radius-ctl:16px;
+  --nav-clear:calc(118px + env(safe-area-inset-bottom,0px));
+  --led-a:rgba(196,157,255,.78);
+  --led-b:rgba(168,120,210,.45);
+  --led-c:rgba(120,210,200,.42);
+  --led-halo:rgba(130,90,180,.28);
+}
+
+html{color-scheme:light}
+body{font-family:var(--font-ui)!important;letter-spacing:.01em}
+body.dark,body[data-theme="midnight"]{color-scheme:dark}
+h1,h2,h3,.bg-home-hero h2,#hi{
+  font-family:var(--font-display)!important;
+  font-weight:700;
+  letter-spacing:-.02em;
+}
+body{padding-bottom:var(--nav-clear)!important}
+#app{padding:14px 16px var(--nav-clear)!important;max-width:560px;margin:0 auto}
+
+/* —— Theme tokens —— */
+body[data-theme="blossom"]{
+  --bg:#fff4f8;--card:#ffffff;--ink:#3a2436;--mute:#8a657c;--pri:#d45684;--pri2:#fce3ee;
+  --sage:#5fa88a;--sage2:#e4f5ec;--line:#f0d7e2;--shadow:0 10px 28px rgba(170,70,110,.10);
+  --inp:#fff;--tip:#fff6e8;--tipink:#7a5520;--hero-a:#c45d8a;--hero-b:#e8a0c0;--surface-2:#ffe9f1;
+  --tab-bg:rgba(255,255,255,.88);--accent-grad:linear-gradient(135deg,#f7c0d6,#ffe8f1);
+}
+body[data-theme="lavender"]{
+  --bg:#f5f1fb;--card:#ffffff;--ink:#32284a;--mute:#756891;--pri:#7b63c4;--pri2:#ebe4fb;
+  --sage:#5fa88a;--sage2:#e4f5ec;--line:#e2d8f2;--shadow:0 10px 28px rgba(90,70,150,.11);
+  --inp:#fff;--tip:#f7f2ff;--tipink:#5a4580;--hero-a:#6a55a8;--hero-b:#b39ddb;--surface-2:#eee6ff;
+  --tab-bg:rgba(255,255,255,.9);--accent-grad:linear-gradient(135deg,#d4c5f2,#f3edff);
+}
+body[data-theme="sage"]{
+  --bg:#f2f7f3;--card:#ffffff;--ink:#24352c;--mute:#5f7a6a;--pri:#3f8f6e;--pri2:#dff3e8;
+  --sage:#3f8f6e;--sage2:#e4f5ec;--line:#d5e6db;--shadow:0 10px 28px rgba(40,100,70,.10);
+  --inp:#fff;--tip:#f4fae8;--tipink:#4a6230;--hero-a:#2f6f56;--hero-b:#7cbc9a;--surface-2:#e5f4eb;
+  --tab-bg:rgba(255,255,255,.9);--accent-grad:linear-gradient(135deg,#bfe3d0,#eef8f2);
+}
+body[data-theme="peach"]{
+  --bg:#fff6ef;--card:#ffffff;--ink:#3c2a20;--mute:#8a6b55;--pri:#d97845;--pri2:#fde7d4;
+  --sage:#5fa88a;--sage2:#e4f5ec;--line:#f0ddcf;--shadow:0 10px 28px rgba(160,90,40,.10);
+  --inp:#fff;--tip:#fff8e6;--tipink:#7a5520;--hero-a:#c86a3a;--hero-b:#f0b27a;--surface-2:#ffe9d6;
+  --tab-bg:rgba(255,255,255,.9);--accent-grad:linear-gradient(135deg,#f6d3a2,#fff1e0);
+}
+body[data-theme="midnight"]{
+  --bg:#17131c;--card:#261f2c;--ink:#f4eaf2;--mute:#b7a3b4;--pri:#e09aba;--pri2:#3a2a38;
+  --sage:#7cc4a0;--sage2:#21352b;--line:#3a303c;--shadow:none;
+  --inp:#1e1822;--tip:#3b3220;--tipink:#e8d29a;--hero-a:#4a3558;--hero-b:#7a4e72;--surface-2:#322838;
+  --tab-bg:rgba(28,22,34,.94);--accent-grad:linear-gradient(145deg,#392c49,#49354d);
+  --glass:rgba(48,37,45,.62);--glass2:rgba(30,24,36,.92);--gedge:rgba(255,255,255,.12);
+}
+
+body[data-theme]{background:radial-gradient(120% 80% at 10% -10%,var(--surface-2),transparent 55%),var(--bg)!important;color:var(--ink)!important}
+body[data-theme] .card,#app .card{
+  background:var(--card)!important;border:1px solid color-mix(in srgb,var(--pri) 18%,var(--line))!important;
+  border-radius:var(--radius-card)!important;box-shadow:var(--shadow)!important;padding:18px!important;
+}
+body[data-theme] .btn{border-radius:999px!important;font-weight:800!important;min-height:46px}
+body[data-theme] .btn.alt{background:color-mix(in srgb,var(--pri) 12%,var(--card))!important;color:var(--pri)!important}
+body[data-theme] input,body[data-theme] textarea,body[data-theme] select{
+  border-radius:var(--radius-ctl)!important;border-color:var(--line)!important;background:var(--inp)!important;
+}
+
+/* Heroes */
+body[data-theme] .bg-home-hero,body[data-theme] .bg-verse,body[data-theme] .bg-section-hero{
+  background:linear-gradient(135deg,var(--hero-a),var(--hero-b))!important;color:#fff!important;
+  border:0!important;border-radius:28px!important;padding:22px!important;
+  box-shadow:0 14px 34px color-mix(in srgb,var(--hero-a) 35%,transparent)!important;
+}
+body[data-theme] .bg-home-hero h2,body[data-theme] .bg-verse h2,body[data-theme] .bg-home-hero p,body[data-theme] .bg-verse blockquote{color:#fff!important}
+body[data-theme] .bloom-journey{background:var(--accent-grad)!important;border-radius:24px!important}
+body[data-theme] .bloom-inbox{background:color-mix(in srgb,var(--pri) 10%,var(--card))!important}
+body[data-theme] .bloom-daily-prayer{
+  background:var(--accent-grad)!important;border:1px solid color-mix(in srgb,var(--pri) 25%,var(--line))!important;
+  border-radius:22px!important;padding:20px!important;line-height:1.7;
+}
+
+/* Calendar themed — light themes stay airy; midnight stays deep */
+body[data-theme] .bg-calendar{
+  background:linear-gradient(160deg,color-mix(in srgb,var(--hero-a) 72%,var(--card)),color-mix(in srgb,var(--hero-b) 55%,var(--surface-2)))!important;
+  color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 28%,var(--line))!important;border-radius:28px!important;
+}
+body[data-theme] .bg-calendar h2,body[data-theme] .bg-calendar .bg-weekday,body[data-theme] .bg-calendar .bg-selected-events,body[data-theme] .bg-calendar .bg-legend{color:inherit!important}
+body[data-theme] .bg-day{background:color-mix(in srgb,var(--card) 70%,transparent)!important;border-color:color-mix(in srgb,var(--pri) 18%,var(--line))!important;color:var(--ink)!important}
+body[data-theme] .a-cal{background:color-mix(in srgb,var(--pri) 16%,var(--card))!important;color:var(--pri)!important}
+body[data-theme="midnight"] .bg-calendar{
+  background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important;border-color:rgba(186,150,220,.35)!important;
+}
+body[data-theme="midnight"] .bg-day{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.2)!important;color:#fff!important}
+
+/* Five-tab nav — labelled, clear, not obscuring */
+.tabs,#tabs{
+  left:8px!important;right:8px!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
+  width:auto!important;transform:none!important;
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;
+  padding:5px!important;border-radius:28px!important;background:var(--tab-bg)!important;
+  border:1px solid color-mix(in srgb,var(--pri) 22%,var(--line))!important;
+  box-shadow:0 12px 32px rgba(40,20,40,.16)!important;z-index:40!important;
+  -webkit-backdrop-filter:blur(18px) saturate(160%)!important;backdrop-filter:blur(18px) saturate(160%)!important;
+}
+.tabs button,#tabs button{
+  min-width:0!important;min-height:58px!important;padding:6px 2px!important;border-radius:22px!important;
+  color:var(--mute)!important;font-size:.62em!important;font-weight:800!important;letter-spacing:.01em;
+  background:transparent!important;border:0!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;gap:2px!important;
+}
+.tabs button span,#tabs button span{font-size:1.55em!important;line-height:1!important}
+.tabs button.on,#tabs button.on{
+  color:var(--pri)!important;background:color-mix(in srgb,var(--pri) 16%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45)!important;
+}
+body[data-theme="midnight"] .tabs button.on{color:#fff!important;background:linear-gradient(135deg,#6a4a78,#8a5a86)!important}
+
+/* Theme gallery */
+.bloom-theme-gallery{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
+.bloom-theme-card{
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  width:100%;text-align:left;border:1.5px solid var(--line);border-radius:20px;padding:12px 14px;
+  background:var(--card);color:var(--ink);cursor:pointer;font:inherit;
+  transition:transform 140ms cubic-bezier(.2,.75,.25,1),border-color .2s,box-shadow .2s;
+}
+.bloom-theme-card[aria-pressed="true"]{
+  border-color:var(--pri);box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent);
+}
+.bloom-theme-card:active{transform:scale(.98)}
+.bloom-swatches{display:flex;gap:5px}
+.bloom-swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.bloom-mini{
+  height:44px;border-radius:12px;border:1px solid rgba(0,0,0,.06);
+  background:var(--mini-bg,linear-gradient(135deg,#eee,#fafafa));position:relative;overflow:hidden;min-width:64px;
+}
+.bloom-mini:before{content:"";position:absolute;left:8px;right:8px;top:8px;height:10px;border-radius:6px;background:rgba(255,255,255,.55)}
+.bloom-mini:after{content:"";position:absolute;left:8px;width:28px;bottom:7px;height:8px;border-radius:999px;background:rgba(255,255,255,.45)}
+.bloom-theme-meta strong{display:block;font-size:.95em}
+.bloom-theme-meta span{display:block;font-size:.78em;color:var(--mute);margin-top:2px}
+.bloom-theme-check{
+  position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;font-size:.85em;opacity:0;background:var(--pri);color:#fff;font-weight:800;
+}
+.bloom-theme-card[aria-pressed="true"] .bloom-theme-check{opacity:1}
+
+/* Me Time garden */
+.bloom-garden-stage{
+  position:relative;min-height:220px;border-radius:24px;overflow:hidden;margin:12px 0;
+  background:linear-gradient(180deg,#9fd4ff 0%,#cfe9ff 38%,#b7dfa8 39%,#7cbc6a 72%,#4f8a4a 100%);
+  box-shadow:inset 0 -18px 0 rgba(60,100,50,.18);
+}
+body[data-theme="midnight"] .bloom-garden-stage{background:linear-gradient(180deg,#2a3350 0%,#3a4568 36%,#355240 37%,#2f5a3c 100%)}
+.bloom-garden-soil{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(#6b4a32,#4a3222)}
+.bloom-garden-flowers{position:absolute;inset:12px 10px 28%;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:8px}
+.bloom-garden-flower{font-size:1.85rem;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));transform-origin:50% 100%}
+.bloom-garden-flower.is-new{animation:bloom-pop .48s cubic-bezier(.2,.8,.2,1.2) both}
+@keyframes bloom-pop{from{opacity:0;transform:scale(.4) translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.bloom-garden-flower.is-new{animation:none!important}}
+.bloom-garden-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.bloom-prayer-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--pri) 14%,var(--card));color:var(--pri);font-weight:800;font-size:.78em;margin-bottom:10px}
+
+/* —— Midnight Plum static LED (Rota-inspired, no pulse) —— */
+body.bloom-led .card,
+body.bloom-led .bg-home-hero,
+body.bloom-led .bg-verse,
+body.bloom-led .bg-calendar,
+body.bloom-led .bloom-journey,
+body.bloom-led .bloom-inbox,
+body.bloom-led .bloom-daily-prayer,
+body.bloom-led .md131-panel,
+body.bloom-led .bg-accent-card{
+  position:relative!important;isolation:isolate;
+  border:1px solid rgba(186,150,220,.48)!important;
+  box-shadow:
+    0 0 0 1px rgba(170,145,210,.18),
+    0 0 14px rgba(150,100,190,.26),
+    0 0 26px rgba(90,180,175,.12),
+    inset 0 0 0 1px rgba(210,180,235,.22),
+    inset 0 1px 0 rgba(230,210,245,.14)!important;
+}
+body.bloom-led .card:after,
+body.bloom-led .bg-home-hero:after,
+body.bloom-led .bg-verse:after,
+body.bloom-led .bg-calendar:after,
+body.bloom-led .bloom-journey:after,
+body.bloom-led .bloom-inbox:after,
+body.bloom-led .bloom-daily-prayer:after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
+  border:1px solid transparent;
+  background:linear-gradient(125deg,rgba(210,170,255,.8) 0%,rgba(180,140,230,.35) 22%,transparent 42%,transparent 58%,rgba(90,210,200,.45) 82%,rgba(140,230,220,.7) 100%) border-box;
+  -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.92;
+  animation:none!important;
+}
+body.bloom-led .tabs,
+body.bloom-led #tabs{
+  border-color:rgba(180,150,230,.55)!important;
+  box-shadow:0 0 0 1px rgba(150,120,210,.18),0 0 18px rgba(140,100,200,.28),0 0 28px rgba(70,190,185,.12),0 16px 40px rgba(0,0,0,.45)!important;
+}
+body.bloom-led .tabs:before,
+body.bloom-led #tabs:before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:1px solid rgba(140,220,210,.22);
+}
+body:not(.bloom-led) .tabs,
+body:not(.bloom-led) #tabs{
+  box-shadow:0 12px 32px rgba(40,20,40,.14)!important;
+  border-color:color-mix(in srgb,var(--pri) 22%,var(--line))!important;
+}
+body:not(.bloom-led) .tabs:before,
+body:not(.bloom-led) #tabs:before{content:none!important}
+
+/* Light themes: explicitly no LED */
+body:not(.bloom-led) .card:after,
+body:not(.bloom-led) .bg-home-hero:after,
+body:not(.bloom-led) .bg-verse:after,
+body:not(.bloom-led) .bloom-journey:after{content:none!important;animation:none!important}
+body:not(.bloom-led) .bloom-journey{
+  box-shadow:0 1px 2px rgba(40,20,40,.05),0 8px 20px rgba(40,20,40,.08)!important;
+}
+
+/* Contrast / hierarchy */
+body[data-theme] .meta{color:var(--mute)!important}
+body[data-theme] header .hd h1{font-size:1.55rem}
+body[data-theme] .empty{opacity:.85}
+.bloom-more-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bloom-more-tile{
+  border:0;border-radius:20px;padding:16px;min-height:96px;text-align:left;color:#fff;font:inherit;font-weight:800;
+  background:linear-gradient(145deg,var(--hero-a),var(--hero-b));box-shadow:0 8px 20px rgba(0,0,0,.12);cursor:pointer;
+}
+.bloom-more-tile small{display:block;font-weight:600;opacity:.9;margin-top:6px;font-size:.78em}
+
+@media(max-width:380px){
+  .tabs button,#tabs button{font-size:.55em!important;min-height:54px!important}
+  .bloom-more-grid{grid-template-columns:1fr}
+}
+
+/* Specificity wins over my-day-v11 dark LED leftovers */
+body.bloom-led #app :is(.card,.bg-home-hero,.bg-verse,.bg-calendar,.bloom-journey,.bloom-inbox,.bloom-daily-prayer,.md131-panel,.bg-accent-card,.bg-pills,.bg-home-notes,.bg-coming-up){
+  border:1px solid rgba(186,150,220,.48)!important;
+  box-shadow:
+    0 0 0 1px rgba(170,145,210,.18),
+    0 0 14px rgba(150,100,190,.26),
+    0 0 26px rgba(90,180,175,.12),
+    inset 0 0 0 1px rgba(210,180,235,.22),
+    inset 0 1px 0 rgba(230,210,245,.14)!important;
+}
+body:not(.bloom-led) #app :is(.card,.bg-home-hero,.bg-verse,.bg-calendar,.bloom-journey,.bloom-inbox,.bloom-daily-prayer,.md131-panel,.bg-accent-card,.bg-pills,.bg-home-notes,.bg-coming-up){
+  /* no perimeter LED in light themes */
+}
+body:not(.bloom-led) #app .bloom-journey{
+  box-shadow:0 1px 2px rgba(40,20,40,.05),0 8px 20px rgba(40,20,40,.08)!important;
+}
+body.dark:not(.bloom-led) #app .bloom-journey,
+body:not(.dark) #app .bloom-journey{
+  /* keep non-LED soft shadow without inset for day */
+}
+body:not(.bloom-led).dark #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up),
+body:not(.bloom-led):not(.dark) #app :is(.bg-home-hero,.bg-verse,.bg-accent-card,.bloom-journey,.bloom-inbox,.bg-calendar,.bg-pills,.bg-home-notes,.bg-coming-up){
+  box-shadow:0 1px 2px #4939480d,0 5px 16px #49394812!important;
+}
+/* Premium tab bar clearance — all five labels visible; content never under nav */
+#app{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
+.tabs,#tabs{
+  left:8px!important;right:8px!important;width:auto!important;max-width:none!important;
+  transform:none!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
+  padding:5px!important;gap:2px!important;border-radius:26px!important;
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  background:var(--tab-bg)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid color-mix(in srgb,var(--line) 80%,transparent)!important;
+  z-index:40!important;overflow:visible!important;
+}
+.tabs button,#tabs button{
+  flex:1;min-width:0!important;max-width:none!important;border:0!important;background:transparent!important;color:var(--mute)!important;
+  font-weight:800!important;font-size:.58em!important;letter-spacing:0;border-radius:20px!important;
+  padding:6px 1px!important;min-height:56px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.tabs button.on,#tabs button.on{
+  background:color-mix(in srgb,var(--pri) 16%,var(--card))!important;color:var(--pri)!important;
+}
+.tabs button span,#tabs button .tab-ico{font-size:1.35em!important;line-height:1!important}
+#md11-fab{bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;z-index:35!important}
+/* Calendar theme integration */
+body[data-theme="blossom"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ffe4ef,#f7cfe0)!important;color:var(--ink)!important;border:1.5px solid #e5b0c8!important}
+body[data-theme="lavender"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ebe4fb,#d4c5f2)!important;color:var(--ink)!important;border:1.5px solid #c7b6e8!important}
+body[data-theme="sage"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#e4f5ec,#bfe3d0)!important;color:var(--ink)!important;border:1.5px solid #9ecbb3!important}
+body[data-theme="peach"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ffe9d6,#f6d3a2)!important;color:var(--ink)!important;border:1.5px solid #e2b78a!important}
+body[data-theme="midnight"].dark #app .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important;border:1px solid rgba(186,150,220,.4)!important}
+body:not([data-theme="midnight"]) #app .bg-calendar h2,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-legend{color:var(--ink)!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day{background:color-mix(in srgb,var(--card) 82%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 20%,var(--line))!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day strong{color:var(--ink)!important}
+/* keep colour-coded event days vivid on light calendars */
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health{background:linear-gradient(140deg,#9e437a,#bc548d)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family{background:linear-gradient(140deg,#6044ae,#8467cf)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal{background:linear-gradient(140deg,#147d78,#2a9b91)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other{background:linear-gradient(140deg,#966026,#c28a4b)!important;color:#fff!important}
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal strong,
+body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other strong{color:#fff!important}
+/* Typography polish */
+body[data-theme]{font-family:'Figtree',system-ui,sans-serif}
+body[data-theme] h1,body[data-theme] h2,body[data-theme] .hd h1{
+  font-family:'Fraunces',Georgia,serif;letter-spacing:-.02em;font-weight:700
+}
+body[data-theme] .card{
+  border-radius:22px!important;border:1px solid var(--line)!important;
+  box-shadow:var(--shadow)!important;background:var(--card)!important;color:var(--ink)!important;
+}
+body.bloom-led #app .card{/* LED rule above wins */}
+body[data-theme] .btn,body[data-theme] button.btn{
+  border-radius:14px!important;font-weight:800!important;
+}
+body[data-theme] header{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 92%,transparent),var(--bg))!important;
+}
+body[data-theme] .bg-home-hero{
+  background:linear-gradient(135deg,var(--hero-a),var(--hero-b))!important;color:#fff!important;
+  border:0!important;border-radius:26px!important;
+}
+
+/* Me Time premium hero */
+.bloom-me-hero,.md131-hero.bloom-me-hero{
+  background:linear-gradient(145deg,var(--hero-a),var(--hero-b))!important;
+  color:#fff!important;border-radius:28px!important;padding:22px!important;margin-bottom:14px;
+  box-shadow:0 14px 34px color-mix(in srgb,var(--hero-a) 30%,transparent);
+}
+.bloom-me-hero h2,.bloom-me-hero p,.bloom-me-hero .md131-eyebrow{color:#fff!important}
+.bloom-me-hero .md131-eyebrow{opacity:.85;letter-spacing:.12em;font-size:.72em;font-weight:800}
+.md131-grid{gap:12px!important}
+.md131-tile{border-radius:22px!important;min-height:128px!important}
+body[data-theme] .bg-section-hero{
+  background:linear-gradient(135deg,var(--hero-a),var(--hero-b))!important;color:#fff!important;
+  border-radius:28px!important;padding:20px!important;margin-bottom:14px;
+}
+body[data-theme] .bg-section-hero h2,body[data-theme] .bg-section-hero p,body[data-theme] .bg-section-hero span{color:#fff!important}
+body[data-theme] .chips .chip.on{background:var(--pri)!important;color:#fff!important}
+body[data-theme] .chk{border-color:var(--pri)!important}
+body[data-theme] .row.done .chk{background:var(--pri)!important}
+/* Contrast: mute text stronger */
+body[data-theme] .meta,body[data-theme] .empty{color:color-mix(in srgb,var(--ink) 55%,var(--mute))!important}
+body[data-theme="midnight"] .meta,body[data-theme="midnight"] .empty{color:#cbb8c8!important}
+
+/* Light calendar text/controls (override legacy white-on-dark calendar) */
+body:not([data-theme="midnight"]) .bg-calendar,
+body:not([data-theme="midnight"]) .bg-calendar h2,
+body:not([data-theme="midnight"]) .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]) .bg-calendar .bg-legend,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events strong,
+body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events p{color:var(--ink)!important}
+body:not([data-theme="midnight"]) .bg-calendar .bg-arrow{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 80%,transparent)!important;border-color:var(--line)!important}
+body:not([data-theme="midnight"]) .bg-day strong{color:var(--ink)!important}
+body:not([data-theme="midnight"]) .bg-day.bg-selected{border-color:var(--pri)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent)!important}
+
+/* —— Final visual corrections (device acceptance) —— */
+
+/* Subtle static floral / botanical corners — theme matched, no animation */
+.bloom-floral{position:relative;overflow:hidden}
+.bloom-floral:before,
+.bloom-floral:after{
+  position:absolute;pointer-events:none;z-index:0;opacity:.28;line-height:1;
+  font-size:clamp(1.6rem,5vw,2.4rem);user-select:none;
+}
+.bloom-floral:before{content:"❀";top:10px;right:14px}
+.bloom-floral:after{content:"✿";bottom:12px;left:12px;opacity:.22;font-size:clamp(1.2rem,4vw,1.8rem)}
+.bloom-floral > *{position:relative;z-index:1}
+body[data-theme="blossom"] .bloom-floral:before{content:"🌸";opacity:.32}
+body[data-theme="blossom"] .bloom-floral:after{content:"🌷";opacity:.24}
+body[data-theme="lavender"] .bloom-floral:before{content:"💜";opacity:.3}
+body[data-theme="lavender"] .bloom-floral:after{content:"✦";opacity:.22}
+body[data-theme="sage"] .bloom-floral:before{content:"🌿";opacity:.34}
+body[data-theme="sage"] .bloom-floral:after{content:"🍃";opacity:.24}
+body[data-theme="peach"] .bloom-floral:before{content:"🌼";opacity:.32}
+body[data-theme="peach"] .bloom-floral:after{content:"🌺";opacity:.22}
+body[data-theme="midnight"] .bloom-floral:before{content:"🌙";opacity:.28}
+body[data-theme="midnight"] .bloom-floral:after{content:"✦";opacity:.2;color:#e09aba}
+
+/* Home daily prayer card */
+.bloom-home-faith{
+  margin:12px 0 14px!important;padding:20px 18px!important;
+}
+.bloom-home-faith h2,.bloom-home-faith p,.bloom-home-faith .bloom-prayer-badge{color:#fff!important}
+.bloom-home-verse{
+  margin:14px 0 0;padding:12px 14px;border-radius:16px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+}
+.bloom-home-verse p{margin:0 0 6px;font-style:italic;line-height:1.55;color:#fff!important}
+.bloom-home-verse cite{display:block;font-style:normal;font-weight:800;font-size:.82em;opacity:.92;color:#fff!important}
+.bloom-verse-today{background:color-mix(in srgb,var(--pri) 12%,transparent);border-radius:12px;padding:8px}
+
+/* Me Time journal / faith buttons */
+.bloom-me-links{
+  display:flex;flex-direction:column;gap:12px!important;padding:16px!important;
+}
+.bloom-me-links .btn{
+  width:100%;min-height:52px!important;margin:0!important;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Panel contrast — garden, moments, wins, play (WCAG AA on tinted panels) */
+#app .md131-panel.green,
+#app .md131-panel.purple,
+#app .md131-panel.pink,
+#app .md131-panel.orange,
+body[data-theme] #app .md131-panel.green,
+body[data-theme] #app .md131-panel.purple,
+body[data-theme] #app .card.md131-panel.green,
+body[data-theme] #app .card.md131-panel.purple{
+  color:#fff!important;
+  border:0!important;
+}
+body[data-theme] #app .card.md131-panel.green{
+  background:linear-gradient(145deg,#1f6b5a,#2f8f78)!important;
+}
+body[data-theme] #app .card.md131-panel.purple{
+  background:linear-gradient(145deg,#5640a0,#7a5fc0)!important;
+}
+body[data-theme="midnight"] #app .card.md131-panel.green{
+  background:linear-gradient(145deg,#1a4a3e,#2a6b58)!important;
+}
+body[data-theme="midnight"] #app .card.md131-panel.purple{
+  background:linear-gradient(145deg,#3a2a68,#5a4588)!important;
+}
+#app .md131-panel :is(h2,h3,p,label,.md131-total,.meta),
+#app .md131-panel .md131-entry span,
+#app .md131-panel .md131-kind-note{
+  color:#fff!important;opacity:1!important;text-shadow:0 1px 0 rgba(0,0,0,.18);
+}
+#app .md131-panel .meta{color:rgba(255,255,255,.92)!important}
+#app .md131-panel input,
+#app .md131-panel textarea{
+  background:#fff!important;color:#24302c!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  caret-color:#24302c;
+}
+#app .md131-panel input::placeholder,
+#app .md131-panel textarea::placeholder{color:#5a6a64!important;opacity:1}
+#app .md131-panel .md131-action,
+#app .md131-panel .btn.md131-action{
+  background:#fff!important;color:#1e4a40!important;font-weight:800!important;
+  border:0!important;min-height:48px!important;
+}
+#app .md131-panel.purple .md131-action{color:#3d2f78!important}
+#app .md131-panel .btn.alt{
+  background:rgba(255,255,255,.22)!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;
+}
+#app .md131-panel .md131-entry{
+  background:rgba(255,255,255,.18)!important;color:#fff!important;
+}
+#app .md131-panel .md131-entry button{color:#fff!important}
+
+/* Nav + Quick Add clearance — content never permanently obscured */
+:root{--nav-clear:calc(132px + env(safe-area-inset-bottom,0px))}
+body{padding-bottom:var(--nav-clear)!important}
+#app{
+  padding:14px 16px calc(160px + env(safe-area-inset-bottom,0px))!important;
+}
+#md11-fab{
+  bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  right:16px!important;z-index:35!important;
+  max-width:128px!important;
+}
+.tabs,#tabs{z-index:40!important}
+
+/* General AA contrast helpers */
+body[data-theme] .meta{color:color-mix(in srgb,var(--ink) 62%,var(--mute))!important}
+body[data-theme="midnight"] .meta{color:#d2c0cf!important}
+body[data-theme] .empty{color:color-mix(in srgb,var(--ink) 58%,var(--mute))!important}
+body[data-theme] input::placeholder,body[data-theme] textarea::placeholder{
+  color:color-mix(in srgb,var(--ink) 45%,var(--mute))!important;opacity:1;
+}
