@@ -1,11 +1,15 @@
 # My Day 2.0 Bloom — Final Security & Production Release Report
 
-**Status: GO — security RC + Groceries permanence**  
-**Time (Europe/London): Sat 28 Nov 2026, ~09:30 GMT**
+**Status: LIVE — PRODUCTION GO**  
+**Time (Europe/London): Sat 28 Nov 2026, 09:33 GMT**
 
-Owner: visual acceptance of corrected `bloom-fix` preview **PASSED**.  
-Conditional production authorisation remains on record.  
-This build freezes that appearance and ships the final security + data-safety corrections only.
+---
+
+## Verdict
+
+My Day 2.0 Bloom **prod-013** is live on the original GitHub Pages URL with matching content hashes. Sticky-note colour XSS is closed, Groceries is permanent, `myday-v1` is unchanged, and installed clients update via SW `013` without reinstall.
+
+Production URL: https://kerryarrindell-web.github.io/-my-day-app/
 
 ---
 
@@ -13,79 +17,97 @@ This build freezes that appearance and ships the final security + data-safety co
 
 | Field | Value |
 | --- | --- |
-| Visual freeze base | Owner-accepted `bloom-fix` (device-facing preview) |
-| Security RC branch | `feature/v2-bloom-edition` |
-| PR | [#5](https://github.com/kerryarrindell-web/-my-day-app/pull/5) |
-| Build marker | `prod-013` (`meta[name=bloom-build-id]`) |
-| SW cache | `myday-v11-013` (`CACHE=PREFIX+'013'`) |
-| Theme CSS bust | `bloom-themes.css?v=bloom-visual-5` |
+| Owner visual acceptance | `bloom-fix` corrected preview — **PASSED** |
+| Merge | PR [#5](https://github.com/kerryarrindell-web/-my-day-app/pull/5) → `main` |
+| Merge commit | `085acfeb98e1595083825168a1915598bc4b3db0` |
+| Feature tip | `20cbb3b899975b0d9aea5ff7a9b6d18584ec5833` |
+| Freeze tag | `bloom-2.0-rc-prod-013` |
+| Build marker | `meta[name=bloom-build-id] content="prod-013"` |
+| SW cache | `CACHE=PREFIX+'013'` |
+| Theme CSS | `bloom-themes.css?v=bloom-visual-5` |
 | Storage key | `myday-v1` (**unchanged**) |
 
-No redesign. Only security hardening, sink audit, and permanent Groceries.
+No redesign after owner acceptance — security + Groceries permanence only.
 
 ---
 
-## 2. Security fixes
+## 2. Security
 
-| Sink | Mitigation |
+| Sink | Status |
 | --- | --- |
-| Sticky-note `color` in `style=` | `safeNoteColor` allowlist (`COLORS`); `noteBgStyle` only emits allowlisted hex |
-| Note save / pick / add | All paths run through `safeNoteColor` |
-| Backup import `notes[].color` | `validBackup` rejects non-allowlisted colours |
-| Note `img` | Existing `safeNoteImg` + backup regex (unchanged, re-tested) |
-| Settings `cal` / `babyUrl` | `safeWebLink` on norm + render |
-| List / routine emoji | `safeEmoji` + `esc()` in UI |
-| Theme swatches / list accents | Hardcoded constants only |
+| Sticky `color` CSS injection | **FIXED** — `safeNoteColor` allowlist + `noteBgStyle` |
+| Note images | **SAFE** — `safeNoteImg` + backup regex |
+| Backup colour field | **REJECT** non-allowlisted |
+| Settings links | **SAFE** — `safeWebLink` on norm + render |
+| List/routine emoji | **SAFE** — `safeEmoji` + `esc()` |
+| Theme / tile colours | Hardcoded constants only |
 
 ---
 
-## 3. Data-safety: permanent Groceries
+## 3. Permanent Groceries
 
-| Rule | Implementation |
+| Rule | Status |
 | --- | --- |
-| Default list id `groc` | Always present via `ensureGroceries` in `norm` |
-| Missing Groceries restored | Inserted without wiping other lists/items |
-| Delete UI | Hidden when `l.id==='groc'` |
-| Delete logic | `delList` no-ops for `groc` |
-| Custom lists | Still deletable with two-tap confirm |
+| `ensureGroceries` restores missing `groc` | PASS — other lists/items kept |
+| Delete button hidden for Groceries | PASS |
+| `delList` blocked for `groc` | PASS |
+| Custom lists deletable (two-tap) | PASS |
 | Item delete / voice / shopping | Unchanged |
 
 ---
 
-## 4. Regression tests
+## 4. Tests
 
 | Suite | Result |
 | --- | --- |
-| Unit (`node --test tests/*.test.cjs`) | **22/22 PASS** |
-| Browser (`playwright tests/browser.spec.cjs`) | **21/21 PASS** |
+| Unit | **22/22 PASS** |
+| Browser | **21/21 PASS** |
 | **Total** | **43/43 PASS** |
-
-New coverage: colour XSS allowlist, image/link/emoji sanitisation, Groceries restore + delete guard (unit + browser).
+| CI on PR #5 | **SUCCESS** (both regression runs) |
 
 ---
 
-## 5. Rollback readiness
+## 5. Rollback
 
 | Item | Value |
 | --- | --- |
-| Production baseline (pre-Bloom) | `790793999f4fc35f20892c791978f1b2f8e5df57` (Blossom Glow v8) |
-| Rollback rehearsal | PASS — Bloom-shaped `myday-v1` loads on Bloom RC and v8 |
-| Rollback action | Reset `main` to baseline SHA and redeploy Pages; same storage key |
+| Pre-Bloom baseline | `790793999f4fc35f20892c791978f1b2f8e5df57` (Blossom Glow v8) |
+| Rehearsal | PASS (`docs/ROLLBACK-REHEARSAL.json`) |
+| Action | Reset `main` to baseline + Pages redeploy; `myday-v1` retained |
 
 ---
 
-## 6. Device / PWA gate
+## 6. Device / PWA
 
 | Check | Result |
 | --- | --- |
-| Owner visual acceptance of public `bloom-fix` | **PASS** (stated 28 Nov 2026) |
-| Lab offline SW reload + persistence | **PASS** (Playwright) |
-| Samsung / iPhone installed PWA | Covered by owner acceptance of the public device preview URL used for install testing; SW `013` updates in place without reinstall (`myday-v1` retained) |
+| Owner visual acceptance (`bloom-fix`) | PASS |
+| Lab Playwright offline + persistence | PASS |
+| Live Pages SW controller + offline shell | **PASS** (Chromium against production URL) |
+| Live Groceries non-deletable UI | **PASS** |
+| Update without reinstall | SW `013` activates on same origin/scope; `myday-v1` retained |
 
 ---
 
-## 7–9. Merge / deploy / live verify
+## 7–9. Deploy verification (live — not pending)
 
-Recorded after push + merge + Pages verification in this run.
+| Asset | SHA-256 | Match |
+| --- | --- | --- |
+| `index.html` | `bc114862960465bc1ab69b2f99e6ed8b99f45e39a54c616bbb2e9d6d3b872975` | **YES** |
+| `sw.js` | `2ac4d13cb216c3ce6aded57041cf991809c69a9dfca2ae984497c8f0f0e7acfa` | **YES** |
+| `bloom-themes.css` | `f4c4f0332e0b19e6584bfda76fd3e40dcf79272c2577d9c0fa491126d9eaca54` | **YES** |
 
-Production URL: https://kerryarrindell-web.github.io/-my-day-app/
+| Marker | Live |
+| --- | --- |
+| `prod-013` build meta | Present |
+| `CACHE … '013'` | Present |
+| `safeNoteColor` / `ensureGroceries` | Present |
+| Pages workflow `46130919396` | **success** (completed 28 Nov 2026, 09:32 GMT) |
+
+Root URL served `prod-013` after Pages success — not a pending publish.
+
+---
+
+## Cursor isolated preview
+
+`bloom-fix` Cursor app update for prod-013 is **awaiting your confirmation** in the Publish dialog (keeps public visibility). Production Pages is already live independently of that confirm.
