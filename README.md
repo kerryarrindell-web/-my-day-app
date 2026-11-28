@@ -13,6 +13,9 @@ Choose an app-wide look from **More → Bloom themes**:
 | Sage Garden | Light | No |
 | Peach Sunrise | Light | No |
 | Midnight Plum | Dark | Soft static perimeter LED |
+| Christmas Rose | Light (Seasonal) | No |
+| Enchanted Christmas | Light (Seasonal) | No |
+| Midnight Christmas | Dark (Seasonal) | Soft static gold LED |
 
 Theme choice is saved in `localStorage` (`myday-v1`) and survives reload and offline restart. Settings **Dark** maps to Midnight Plum; **Light** returns to a light Bloom theme.
 

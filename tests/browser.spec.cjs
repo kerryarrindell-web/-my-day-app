@@ -266,3 +266,107 @@ test('Groceries list cannot be deleted and restores if missing',async({page})=>{
  const grocAlive=await page.evaluate(()=>!!S.lists.find(l=>l.id==='groc'));
  expect(grocAlive).toBe(true);
 });
+
+test('eight themes persist including Christmas Seasonal Collection',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ const ids=['blossom','lavender','sage','peach','midnight','xmas-rose','xmas-enchanted','xmas-midnight'];
+ for(const id of ids){
+  await page.evaluate(th=>{setBloomTheme(th);tab='more';render()},id);
+  await expect(page.locator('body')).toHaveAttribute('data-theme',id);
+  const led=await page.evaluate(()=>document.body.classList.contains('bloom-led'));
+  expect(led).toBe(id==='midnight'||id==='xmas-midnight');
+ }
+ await page.reload();
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ await expect(page.locator('body')).toHaveAttribute('data-theme','xmas-midnight');
+ await page.evaluate(()=>{tab='more';render()});
+ await expect(page.getByText(/Seasonal Collection/)).toBeVisible();
+});
+
+test('Christmas home shows countdown prayer and festive greeting',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  const s=document.getElementById('myday-opening');if(s)s.hidden=true;
+  setBloomTheme('xmas-rose');tab='today';render();
+ });
+ await expect(page.locator('.xmas-greet')).toContainText('Christmas Rose');
+ await expect(page.locator('.xmas-countdown')).toBeVisible();
+ const faith=page.locator('.bloom-home-faith').first();
+ await expect(faith).toContainText('Christmas prayer');
+ await expect(faith).toContainText('KJV');
+ const order=await page.evaluate(()=>{
+  const g=document.querySelector('.xmas-greet');
+  const c=document.querySelector('.xmas-countdown');
+  const f=document.querySelector('.bloom-home-faith');
+  const j=document.querySelector('.bloom-journey');
+  return !!(g&&c&&f&&j&&(g.compareDocumentPosition(c)&Node.DOCUMENT_POSITION_FOLLOWING)&&
+   (c.compareDocumentPosition(f)&Node.DOCUMENT_POSITION_FOLLOWING)&&
+   (f.compareDocumentPosition(j)&Node.DOCUMENT_POSITION_FOLLOWING));
+ });
+ expect(order).toBe(true);
+});
+
+test('Christmas gift list supports add edit delete without new tab',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  const s=document.getElementById('myday-opening');if(s)s.hidden=true;
+  tab='lists';curList='xmasgifts';render();
+ });
+ await page.locator('#xg-name').fill('Soft blanket');
+ await page.locator('#xg-for').fill('Mum');
+ await page.locator('#xg-cost').fill('£20');
+ await page.getByRole('button',{name:'Add gift',exact:true}).click();
+ await expect(page.locator('#app')).toContainText('Soft blanket');
+ await expect(page.locator('#app')).toContainText('Mum');
+ await page.locator('.xmas-gift-row').first().click();
+ await page.locator('#eg-name').fill('Cashmere socks');
+ await page.getByRole('button',{name:'Save',exact:true}).click();
+ await expect(page.locator('#app')).toContainText('Cashmere socks');
+ await page.getByRole('button',{name:'Delete Cashmere socks'}).click();
+ await expect(page.locator('#app')).not.toContainText('Cashmere socks');
+ const tabs=await page.locator('#tabs button').count();
+ expect(tabs).toBe(5);
+});
+
+test('festive garden preserves blossom count across theme switch',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  const s=document.getElementById('myday-opening');if(s)s.hidden=true;
+  S.meTime=S.meTime||{};S.meTime['2099-01-01']={littleWins:['a','b','c']};save();
+  setBloomTheme('blossom');tab='me';meNavigate('garden');
+ });
+ await expect(page.locator('.md131-total')).toContainText('3 blossoms');
+ await page.evaluate(()=>{setBloomTheme('xmas-enchanted');tab='me';meNavigate('garden')});
+ await expect(page.getByRole('heading',{name:'Festive Blossom Garden'})).toBeVisible();
+ await expect(page.locator('.md131-total')).toContainText('3 blossoms');
+ await expect(page.locator('.xmas-garden-stage')).toHaveCount(1);
+});
+
+test('Christmas opening uses seasonal stage for xmas themes',async({page})=>{
+ await page.addInitScript(()=>{
+  localStorage.setItem('myday-v1',JSON.stringify({settings:{theme:'xmas-enchanted',dark:false,size:'m'},lists:[{id:'groc',name:'Groceries',emoji:'🛒',items:[]}],tasks:[],appts:[],notes:[],xmasGifts:[]}));
+ });
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.goto('http://127.0.0.1:8080/');
+ const cls=await page.locator('#myday-opening').getAttribute('class');
+ expect(cls||'').toContain('xmas-open');
+ await expect(page.locator('#myday-xmas-opening')).toBeVisible();
+ await expect(page.locator('#myday-opening-video')).toBeHidden();
+});
+
+test('gift fields reject angle-bracket injection on save',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  S.xmasGifts=[];tab='lists';curList='xmasgifts';render();
+  document.getElementById('xg-name').value='Gift<script>';
+  document.getElementById('xg-for').value='A<b>B';
+  document.getElementById('xg-cost').value='£1>';
+  addGift();
+ });
+ const g=await page.evaluate(()=>S.xmasGifts[0]);
+ expect(g.t).toBe('Giftscript');
+ expect(g.for).toBe('AbB');
+ expect(g.cost).toBe('£1');
+ await expect(page.locator('#app script')).toHaveCount(0);
+});

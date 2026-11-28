@@ -289,20 +289,20 @@ body[data-theme="lavender"]:not(.dark) #app .bg-calendar{background:linear-gradi
 body[data-theme="sage"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#e4f5ec,#bfe3d0)!important;color:var(--ink)!important;border:1.5px solid #9ecbb3!important}
 body[data-theme="peach"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#ffe9d6,#f6d3a2)!important;color:var(--ink)!important;border:1.5px solid #e2b78a!important}
 body[data-theme="midnight"].dark #app .bg-calendar{background:linear-gradient(145deg,#1a1424,#3a2a48)!important;color:#f4eaf2!important;border:1px solid rgba(186,150,220,.4)!important}
-body:not([data-theme="midnight"]) #app .bg-calendar h2,
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-weekday,
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-legend{color:var(--ink)!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day{background:color-mix(in srgb,var(--card) 82%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 20%,var(--line))!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day strong{color:var(--ink)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar h2,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-legend{color:var(--ink)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day{background:color-mix(in srgb,var(--card) 82%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--pri) 20%,var(--line))!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day strong{color:var(--ink)!important}
 /* keep colour-coded event days vivid on light calendars */
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health{background:linear-gradient(140deg,#9e437a,#bc548d)!important;color:#fff!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family{background:linear-gradient(140deg,#6044ae,#8467cf)!important;color:#fff!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal{background:linear-gradient(140deg,#147d78,#2a9b91)!important;color:#fff!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other{background:linear-gradient(140deg,#966026,#c28a4b)!important;color:#fff!important}
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-health strong,
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-family strong,
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-personal strong,
-body:not([data-theme="midnight"]) #app .bg-calendar .bg-day.bg-other strong{color:#fff!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-health{background:linear-gradient(140deg,#9e437a,#bc548d)!important;color:#fff!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-family{background:linear-gradient(140deg,#6044ae,#8467cf)!important;color:#fff!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-personal{background:linear-gradient(140deg,#147d78,#2a9b91)!important;color:#fff!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-other{background:linear-gradient(140deg,#966026,#c28a4b)!important;color:#fff!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-health strong,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-family strong,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-personal strong,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) #app .bg-calendar .bg-day.bg-other strong{color:#fff!important}
 /* Typography polish */
 body[data-theme]{font-family:'Figtree',system-ui,sans-serif}
 body[data-theme] h1,body[data-theme] h2,body[data-theme] .hd h1{
@@ -347,16 +347,16 @@ body[data-theme] .meta,body[data-theme] .empty{color:color-mix(in srgb,var(--ink
 body[data-theme="midnight"] .meta,body[data-theme="midnight"] .empty{color:#cbb8c8!important}
 
 /* Light calendar text/controls (override legacy white-on-dark calendar) */
-body:not([data-theme="midnight"]) .bg-calendar,
-body:not([data-theme="midnight"]) .bg-calendar h2,
-body:not([data-theme="midnight"]) .bg-calendar .bg-weekday,
-body:not([data-theme="midnight"]) .bg-calendar .bg-legend,
-body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events,
-body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events strong,
-body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events p{color:var(--ink)!important}
-body:not([data-theme="midnight"]) .bg-calendar .bg-arrow{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 80%,transparent)!important;border-color:var(--line)!important}
-body:not([data-theme="midnight"]) .bg-day strong{color:var(--ink)!important}
-body:not([data-theme="midnight"]) .bg-day.bg-selected{border-color:var(--pri)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar h2,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-weekday,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-legend,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-selected-events,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-selected-events strong,
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-selected-events p{color:var(--ink)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-calendar .bg-arrow{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 80%,transparent)!important;border-color:var(--line)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-day strong{color:var(--ink)!important}
+body:not([data-theme="midnight"]):not([data-theme="xmas-midnight"]) .bg-day.bg-selected{border-color:var(--pri)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent)!important}
 
 /* —— Final visual corrections (device acceptance) —— */
 
@@ -475,3 +475,12 @@ body[data-theme] .empty{color:color-mix(in srgb,var(--ink) 58%,var(--mute))!impo
 body[data-theme] input::placeholder,body[data-theme] textarea::placeholder{
   color:color-mix(in srgb,var(--ink) 45%,var(--mute))!important;opacity:1;
 }
+
+/* Christmas midnight companions (do not merge with Midnight Plum tokens) */
+body[data-theme="xmas-midnight"]{color-scheme:dark}
+body[data-theme="xmas-midnight"] .bg-calendar{
+  background:linear-gradient(145deg,#151D1B,#2B4035)!important;color:#F5E5C7!important;
+}
+body[data-theme="xmas-midnight"] .bg-day{background:rgba(255,255,255,.1)!important;border-color:rgba(231,196,122,.25)!important;color:#F5E5C7!important}
+body[data-theme="xmas-midnight"] .meta,body[data-theme="xmas-midnight"] .empty{color:#c9d4c0!important}
+body[data-theme="xmas-midnight"].dark #app .bg-calendar{background:linear-gradient(145deg,#151D1B,#2B4035)!important;color:#F5E5C7!important;border:1px solid rgba(231,196,122,.35)!important}
