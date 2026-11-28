@@ -1,7 +1,7 @@
 name: Bloom checks
 on:
   push:
-    branches: [feature/v2-bloom-edition]
+    branches: [main, feature/v2-bloom-edition, feature/bloom-christmas-edition]
   pull_request:
     branches: [main]
 permissions:
@@ -30,7 +30,7 @@ jobs:
       - name: Package isolated acceptance candidate
         run: |
           mkdir -p bloom-preview
-          cp index.html my-day-v11.js my-day-v11.css manifest.webmanifest sw.js icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png favicon.svg myday-opening.mp4 bloom-preview/
+          cp index.html my-day-v11.js my-day-v11.css bloom-themes.css bloom-christmas.css manifest.webmanifest sw.js icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png favicon.svg myday-opening.mp4 bloom-preview/
           (cd bloom-preview && sha256sum * > SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:

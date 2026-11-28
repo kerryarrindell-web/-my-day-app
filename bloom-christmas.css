@@ -1,0 +1,474 @@
+/* My Day 2.0 — Bloom Christmas Edition visual system (SVG/CSS) */
+
+/* —— Theme tokens —— */
+body[data-theme="xmas-rose"]{
+  --bg:#FFF0F2;--card:#fffafb;--ink:#3a2430;--mute:#8a5a68;--pri:#943C54;--pri2:#F7DCE4;
+  --sage:#486A50;--sage2:#e4efe6;--line:#efd5dc;--shadow:0 10px 28px rgba(148,60,84,.12);
+  --inp:#fff;--tip:#fff6e8;--tipink:#6a4a20;--hero-a:#943C54;--hero-b:#c46a82;--surface-2:#ffe8ee;
+  --tab-bg:rgba(255,250,251,.92);--accent-grad:linear-gradient(135deg,#F7DCE4,#fff6f8);
+  --xmas-gold:#D6B477;--xmas-green:#486A50;--xmas-lite-a:#F7DCE4;--xmas-lite-b:#D6B477;--xmas-lite-c:#943C54;
+  --xmas-flake:rgba(214,180,119,.55);--xmas-garland:#486A50;
+  --xmas-orn-a:#F7DCE4;--xmas-orn-b:#943C54;
+}
+body[data-theme="xmas-enchanted"]{
+  --bg:#FFF9E9;--card:#fffdf7;--ink:#24352c;--mute:#5f6e58;--pri:#214F3C;--pri2:#DCE9DC;
+  --sage:#214F3C;--sage2:#e8f2ea;--line:#d9e4d0;--shadow:0 10px 28px rgba(33,79,60,.11);
+  --inp:#fff;--tip:#fff6e0;--tipink:#6a5520;--hero-a:#214F3C;--hero-b:#A83E42;--surface-2:#eef6ee;
+  --tab-bg:rgba(255,253,247,.92);--accent-grad:linear-gradient(135deg,#DCE9DC,#fff9e9);
+  --xmas-gold:#D9B975;--xmas-red:#A83E42;--xmas-lite-a:#D9B975;--xmas-lite-b:#A83E42;--xmas-lite-c:#214F3C;
+  --xmas-flake:rgba(33,79,60,.38);--xmas-garland:#214F3C;
+  --xmas-orn-a:#A83E42;--xmas-orn-b:#D9B975;
+}
+body[data-theme="xmas-midnight"]{
+  --bg:#151D1B;--card:#1e2a26;--ink:#F5E5C7;--mute:#b8c4b0;--pri:#E7C47A;--pri2:#2B4035;
+  --sage:#6fa88a;--sage2:#24352c;--line:#2f3c36;--shadow:none;
+  --inp:#1a2420;--tip:#3a3220;--tipink:#E7C47A;--hero-a:#2B4035;--hero-b:#38282D;--surface-2:#1c2824;
+  --tab-bg:rgba(21,29,27,.94);--accent-grad:linear-gradient(145deg,#2B4035,#38282D);
+  --glass:rgba(40,52,46,.62);--glass2:rgba(22,30,28,.92);--gedge:rgba(231,196,122,.22);
+  --led-a:rgba(231,196,122,.82);--led-b:rgba(231,196,122,.48);--led-c:rgba(245,229,199,.38);
+  --led-halo:rgba(231,196,122,.28);--xmas-gold:#E7C47A;
+  --xmas-lite-a:#E7C47A;--xmas-lite-b:#F5E5C7;--xmas-lite-c:#8fbf9a;
+  --xmas-flake:rgba(245,229,199,.55);--xmas-garland:#3a5a48;
+  --xmas-orn-a:#E7C47A;--xmas-orn-b:#F5E5C7;
+}
+body.dark,body[data-theme="xmas-midnight"]{color-scheme:dark}
+
+body[data-theme="xmas-rose"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#F7DCE4,#ffe8ee)!important;color:var(--ink)!important;border:1.5px solid #e5b0c0!important}
+body[data-theme="xmas-enchanted"]:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#DCE9DC,#fff4d8)!important;color:var(--ink)!important;border:1.5px solid #b8d0b4!important}
+body[data-theme="xmas-midnight"].dark #app .bg-calendar{background:linear-gradient(145deg,#151D1B,#2B4035)!important;color:#F5E5C7!important;border:1px solid rgba(231,196,122,.35)!important}
+body[data-theme="xmas-rose"] #app .card.md131-panel.green{background:linear-gradient(135deg,#486A50,#6a8a70)!important;color:#fff!important}
+body[data-theme="xmas-enchanted"] #app .card.md131-panel.green{background:linear-gradient(135deg,#214F3C,#3a6e52)!important;color:#fff!important}
+body[data-theme="xmas-midnight"] #app .card.md131-panel.green{background:linear-gradient(135deg,#2B4035,#1a2822)!important;color:#F5E5C7!important}
+body[data-theme="xmas-rose"] #app .card.md131-panel.purple,
+body[data-theme="xmas-enchanted"] #app .card.md131-panel.purple{background:linear-gradient(135deg,#943C54,#A83E42)!important;color:#fff!important}
+body[data-theme="xmas-midnight"] #app .card.md131-panel.purple{background:linear-gradient(135deg,#38282D,#2B4035)!important;color:#F5E5C7!important}
+
+/* Prayer / verse cards match each Christmas theme (not generic purple) */
+body[data-theme="xmas-rose"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#943C54 0%,#c46a82 55%,#486A50 130%)!important;
+  color:#fff!important;border:1.5px solid color-mix(in srgb,#D6B477 45%,transparent)!important;
+  box-shadow:0 10px 28px rgba(148,60,84,.18),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+body[data-theme="xmas-enchanted"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#214F3C 0%,#3a6e52 48%,#A83E42 120%)!important;
+  color:#fff!important;border:1.5px solid color-mix(in srgb,#D9B975 45%,transparent)!important;
+  box-shadow:0 10px 28px rgba(33,79,60,.16),inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+body[data-theme="xmas-midnight"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#2B4035 0%,#38282D 55%,#1a2420 100%)!important;
+  color:#F5E5C7!important;border:1px solid rgba(231,196,122,.4)!important;
+  box-shadow:0 0 0 1px rgba(231,196,122,.25),0 0 18px rgba(231,196,122,.18)!important;
+}
+body[data-theme="xmas-rose"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#fff6f8,#F7DCE4)!important;color:#3a2430!important;
+  border:1px solid color-mix(in srgb,#943C54 28%,#efd5dc)!important;
+}
+body[data-theme="xmas-enchanted"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#fffdf7,#DCE9DC)!important;color:#24352c!important;
+  border:1px solid color-mix(in srgb,#214F3C 28%,#d9e4d0)!important;
+}
+body[data-theme="xmas-midnight"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#24352c,#1e2a26)!important;color:#F5E5C7!important;
+  border:1px solid rgba(231,196,122,.35)!important;
+}
+body[data-theme="xmas-rose"] #app .bloom-daily-prayer :is(h3,p),
+body[data-theme="xmas-enchanted"] #app .bloom-daily-prayer :is(h3,p){color:inherit!important}
+body[data-theme="xmas-midnight"] #app .bloom-daily-prayer :is(h3,p,blockquote,cite){color:#F5E5C7!important}
+body[data-theme="xmas-midnight"] .meta,body[data-theme="xmas-midnight"] .empty{color:#c9d4c0!important}
+body[data-theme="xmas-midnight"] .tabs button.on{color:#151D1B!important;background:linear-gradient(135deg,#E7C47A,#d4b068)!important}
+
+/* Soft festive paper texture (non-emoji) */
+body.bloom-xmas{
+  background-image:
+    radial-gradient(120% 70% at 8% -8%, color-mix(in srgb,var(--xmas-gold) 28%,transparent), transparent 52%),
+    radial-gradient(90% 60% at 100% 0%, color-mix(in srgb,var(--pri) 18%,transparent), transparent 48%),
+    radial-gradient(80% 50% at 50% 100%, color-mix(in srgb,var(--xmas-garland) 12%,transparent), transparent 55%),
+    radial-gradient(1.6px 1.6px at 12% 18%, color-mix(in srgb,var(--xmas-gold) 45%,transparent), transparent),
+    radial-gradient(1.4px 1.4px at 72% 42%, color-mix(in srgb,var(--pri) 35%,transparent), transparent),
+    radial-gradient(1.2px 1.2px at 40% 78%, color-mix(in srgb,var(--xmas-gold) 38%,transparent), transparent),
+    radial-gradient(1.3px 1.3px at 88% 66%, color-mix(in srgb,var(--xmas-lite-a) 40%,transparent), transparent),
+    var(--bg)!important;
+  background-attachment:fixed;
+}
+
+/* —— Atmosphere layer —— */
+#xmas-atmosphere{
+  position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  opacity:0;visibility:hidden;
+}
+body.bloom-xmas:not(.xmas-fx-off) #xmas-atmosphere{opacity:1!important;visibility:visible!important;display:block!important}
+/* Calm / non-Christmas: remove from layout so animations do not keep processing */
+body.bloom-xmas.xmas-fx-off #xmas-atmosphere,
+body:not(.bloom-xmas) #xmas-atmosphere{opacity:0!important;visibility:hidden!important;display:none!important}
+#xmas-atmosphere svg{display:block;width:100%;height:100%}
+#xmas-atmosphere .xa-ambient{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 28% at 50% 0%, color-mix(in srgb,var(--xmas-gold) 32%,transparent), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 0% 40%, color-mix(in srgb,var(--xmas-lite-a) 18%,transparent), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 100% 55%, color-mix(in srgb,var(--xmas-lite-b) 16%,transparent), transparent 70%);
+}
+#xmas-atmosphere .xa-snow{position:absolute;inset:0}
+#xmas-atmosphere .xa-flake{
+  position:absolute;top:-8%;width:16px;height:16px;opacity:.78;
+  background:var(--xmas-flake);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation:xaFall linear infinite;
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 55%,transparent));
+}
+#xmas-atmosphere .xa-flake.f2{width:11px;height:11px;opacity:.62}
+#xmas-atmosphere .xa-flake.f3{width:20px;height:20px;opacity:.48}
+#xmas-atmosphere .xa-garland{
+  position:absolute;left:0;right:0;top:0;height:86px;
+  filter:drop-shadow(0 4px 12px color-mix(in srgb,var(--xmas-lite-b) 55%,transparent));
+  animation:xaTwinkle 6.5s ease-in-out infinite;
+}
+#xmas-atmosphere .xa-garland-2{
+  position:absolute;left:4%;right:4%;top:68px;height:36px;opacity:.95;
+  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--xmas-lite-a) 60%,transparent));
+  animation:xaTwinkle 7.2s ease-in-out infinite reverse;
+}
+#xmas-atmosphere .xa-bulb{animation:xaBulb 5.5s ease-in-out infinite}
+#xmas-atmosphere .xa-bulb:nth-child(odd){animation-delay:.5s}
+#xmas-atmosphere .xa-side{
+  position:absolute;top:90px;bottom:120px;width:22px;
+  background:
+    radial-gradient(circle at 50% 8%, var(--xmas-lite-a) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 20%, var(--xmas-lite-b) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 32%, var(--xmas-lite-c) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 44%, var(--xmas-lite-a) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 56%, var(--xmas-lite-b) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 68%, var(--xmas-lite-c) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 80%, var(--xmas-lite-a) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 92%, var(--xmas-lite-b) 0 4px, transparent 5px),
+    linear-gradient(180deg, transparent, color-mix(in srgb,var(--xmas-garland) 55%,transparent) 8%, color-mix(in srgb,var(--xmas-garland) 55%,transparent) 92%, transparent);
+  filter:drop-shadow(0 0 8px color-mix(in srgb,var(--xmas-lite-b) 70%,transparent));
+  animation:xaTwinkle 6.8s ease-in-out infinite;
+  opacity:.92;
+}
+#xmas-atmosphere .xa-side.left{left:2px}
+#xmas-atmosphere .xa-side.right{right:2px;animation-delay:1.1s}
+#xmas-atmosphere .xa-corner{
+  position:absolute;width:148px;height:148px;opacity:1;
+  background-repeat:no-repeat;background-size:contain;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.22));
+}
+#xmas-atmosphere .xa-corner.tl{top:78px;left:-4px}
+#xmas-atmosphere .xa-corner.tr{top:78px;right:-4px;transform:scaleX(-1)}
+#xmas-atmosphere .xa-corner.bl{bottom:108px;left:-4px;transform:scaleY(-1)}
+#xmas-atmosphere .xa-corner.br{bottom:108px;right:-4px;transform:scale(-1)}
+body[data-theme="xmas-rose"] #xmas-atmosphere .xa-corner{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M10 96c22-8 36-28 40-52 12 6 26 8 40 4-14 20-16 40-10 58' stroke='%23486A50' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M18 88c10-4 18 0 22 8' stroke='%23486A50' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='48' cy='38' r='16' fill='%23F7DCE4' stroke='%23D6B477' stroke-width='3'/%3E%3Ccircle cx='48' cy='38' r='5' fill='%23943C54'/%3E%3Cpath d='M48 14v12' stroke='%23D6B477' stroke-width='3'/%3E%3Cpath d='M34 20c8 5 20 5 28 0' stroke='%23486A50' stroke-width='3' fill='none'/%3E%3Cpath d='M78 28c12 4 20 14 22 24' stroke='%23D6B477' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M72 54c10-2 18 6 16 16' stroke='%23943C54' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='86' cy='72' r='9' fill='%23943C54' stroke='%23D6B477' stroke-width='2'/%3E%3Ccircle cx='86' cy='72' r='3' fill='%23D6B477'/%3E%3Cpath d='M28 70c8-12 16-10 22 2-10 8-18 8-22-2z' fill='%23F7DCE4' stroke='%23943C54' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-enchanted"] #xmas-atmosphere .xa-corner{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M12 98c14-24 18-46 12-70 20 12 40 14 58 8-6 22-2 44 12 62' stroke='%23214F3C' stroke-width='5' stroke-linecap='round'/%3E%3Cellipse cx='34' cy='48' rx='16' ry='9' fill='%23214F3C' transform='rotate(-20 34 48)'/%3E%3Cellipse cx='58' cy='36' rx='14' ry='8' fill='%233a6e52' transform='rotate(18 58 36)'/%3E%3Ccircle cx='44' cy='44' r='11' fill='%23A83E42' stroke='%23D9B975' stroke-width='2.5'/%3E%3Ccircle cx='44' cy='44' r='3.5' fill='%23D9B975'/%3E%3Ccircle cx='72' cy='30' r='8' fill='%23D9B975'/%3E%3Cpath d='M24 68l8 4 4-8 4 8 8-4-4 8 4 8-8-4-4 8-4-8-8 4 4-8z' fill='%23214F3C'/%3E%3Ccircle cx='88' cy='58' r='10' fill='%23A83E42' stroke='%23D9B975' stroke-width='2'/%3E%3Cpath d='M88 42v8M80 48h16' stroke='%23214F3C' stroke-width='2.5'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-midnight"] #xmas-atmosphere .xa-corner{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M14 96c16-22 22-46 16-72 22 14 42 16 60 8' stroke='%23E7C47A' stroke-width='3.2' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M36 28l5 14 14 2-11 9 4 14-12-8-12 8 4-14-11-9 14-2z' fill='%23E7C47A'/%3E%3Ccircle cx='68' cy='48' r='12' fill='none' stroke='%23F5E5C7' stroke-width='2.5'/%3E%3Ccircle cx='68' cy='48' r='4' fill='%23E7C47A'/%3E%3Cpath d='M88 30l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z' fill='%23F5E5C7' opacity='.85'/%3E%3Cellipse cx='40' cy='68' rx='14' ry='7' fill='%233a5a48' transform='rotate(-18 40 68)'/%3E%3Ccircle cx='52' cy='78' r='7' fill='%23E7C47A' opacity='.75'/%3E%3C/svg%3E");
+}
+#xmas-atmosphere .xa-ornaments{position:absolute;inset:0}
+#xmas-atmosphere .xa-bauble{
+  position:absolute;width:22px;height:28px;
+  background:radial-gradient(circle at 35% 35%, #fff8, transparent 45%), var(--xmas-orn-a);
+  border-radius:50% 50% 48% 48%;
+  box-shadow:0 0 12px color-mix(in srgb,var(--xmas-gold) 55%,transparent), inset 0 -4px 8px rgba(0,0,0,.18);
+  animation:xaSway 7.5s ease-in-out infinite;
+}
+#xmas-atmosphere .xa-bauble:before{
+  content:"";position:absolute;left:50%;top:-6px;width:8px;height:8px;margin-left:-4px;
+  background:var(--xmas-gold);border-radius:2px;
+  box-shadow:0 -6px 0 -2px var(--xmas-garland);
+}
+#xmas-atmosphere .xa-bauble.b1{background:radial-gradient(circle at 35% 35%, #fff8, transparent 45%), var(--xmas-orn-b);width:18px;height:24px}
+#xmas-atmosphere .xa-bauble.b2{background:radial-gradient(circle at 35% 35%, #fff8, transparent 45%), var(--xmas-gold);width:16px;height:20px}
+#xmas-atmosphere .xa-stars{position:absolute;inset:0}
+#xmas-atmosphere .xa-star{
+  position:absolute;width:14px;height:14px;opacity:.7;
+  background:var(--xmas-gold);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  filter:drop-shadow(0 0 6px color-mix(in srgb,var(--xmas-gold) 70%,transparent));
+  animation:xaTwinkle 5.8s ease-in-out infinite;
+}
+#xmas-atmosphere .xa-edge-lights{
+  position:absolute;left:4px;right:4px;bottom:calc(84px + env(safe-area-inset-bottom,0px));height:30px;
+  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--xmas-lite-b) 75%,transparent));
+  animation:xaTwinkle 7s ease-in-out infinite reverse;
+}
+@keyframes xaFall{
+  0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}
+  15%{opacity:.55}
+  100%{transform:translate3d(10px,110vh,0) rotate(160deg);opacity:0}
+}
+@keyframes xaTwinkle{
+  0%,100%{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 40%,transparent));opacity:.88}
+  50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--xmas-lite-a) 55%,transparent));opacity:1}
+}
+@keyframes xaBulb{
+  0%,100%{opacity:.88}
+  50%{opacity:1}
+}
+@keyframes xaSway{
+  0%,100%{transform:rotate(-4deg) translateY(0)}
+  50%{transform:rotate(4deg) translateY(2px)}
+}
+/* Calm: hard-stop every seasonal animation (display:none alone is not enough for card lights) */
+body.bloom-xmas.xmas-fx-off #xmas-atmosphere *,
+body.bloom-xmas.xmas-fx-off .xmas-rail,
+body.bloom-xmas.xmas-fx-off .xmas-rail *,
+body.bloom-xmas.xmas-fx-off .xg-lights,
+body.bloom-xmas.xmas-fx-off .xmas-garden-stage:before,
+body:not(.bloom-xmas) #xmas-atmosphere *,
+body:not(.bloom-xmas) .xg-lights{animation:none!important;animation-play-state:paused!important}
+body.bloom-xmas.xmas-fx-off .xg-lights{opacity:0!important;visibility:hidden!important}
+body.xmas-fx-paused #xmas-atmosphere .xa-flake,
+body.xmas-fx-paused #xmas-atmosphere .xa-garland,
+body.xmas-fx-paused #xmas-atmosphere .xa-garland-2,
+body.xmas-fx-paused #xmas-atmosphere .xa-edge-lights,
+body.xmas-fx-paused #xmas-atmosphere .xa-side,
+body.xmas-fx-paused #xmas-atmosphere .xa-bauble,
+body.xmas-fx-paused #xmas-atmosphere .xa-star,
+body.xmas-fx-paused #xmas-atmosphere .xa-bulb,
+body.xmas-fx-paused .xg-lights,
+body.xmas-fx-paused #myday-opening.xmas-open *{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){
+  #xmas-atmosphere .xa-flake,
+  #xmas-atmosphere .xa-garland,
+  #xmas-atmosphere .xa-garland-2,
+  #xmas-atmosphere .xa-edge-lights,
+  #xmas-atmosphere .xa-side,
+  #xmas-atmosphere .xa-bauble,
+  #xmas-atmosphere .xa-star,
+  #xmas-atmosphere .xa-bulb,
+  .xg-lights{animation:none!important}
+  #xmas-atmosphere .xa-flake{opacity:.4;top:12%}
+}
+
+/* Content above snowfall; festive strip lives inside #app so it is never buried */
+body.bloom-xmas header{
+  position:relative;z-index:4;
+  background:color-mix(in srgb,var(--bg) 78%,transparent)!important;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid color-mix(in srgb,var(--xmas-gold) 28%,transparent);
+}
+body.bloom-xmas #app,
+body.bloom-xmas #modalwrap,
+body.bloom-xmas #toast,
+body.bloom-xmas #cheer,
+body.bloom-xmas #banner{position:relative;z-index:4}
+body.bloom-xmas #tabs{z-index:6}
+body.bloom-xmas #md11-fab{
+  z-index:7;bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+}
+body.bloom-xmas #md11-fab.fab-scroll-hide,
+#md11-fab.fab-scroll-hide{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transform:translateY(10px);
+}
+body.bloom-xmas #app{
+  padding-top:10px;
+  padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(160px + env(safe-area-inset-bottom,0px));
+}
+body.bloom-xmas #app .xmas-fab-clear{
+  height:calc(72px + env(safe-area-inset-bottom,0px));
+  pointer-events:none;visibility:hidden;
+}
+/* Keep prayer/verse copy clear of the fixed Quick Add chip (FAB stays reachable) */
+body.bloom-xmas #app .bloom-home-faith{
+  padding-right:120px!important;
+}
+body.bloom-xmas #app .bloom-home-faith.md131-colour-card h2:before{
+  background:var(--xmas-gold)!important;
+}
+
+/* In-flow festive rail — immediately visible on every tab */
+.xmas-rail{
+  position:relative;height:58px;margin:0 0 12px;border-radius:18px;overflow:hidden;
+  border:1.5px solid color-mix(in srgb,var(--xmas-gold) 50%,var(--line));
+  background:linear-gradient(180deg, color-mix(in srgb,var(--xmas-garland) 42%,var(--card)), color-mix(in srgb,var(--pri) 14%,var(--card)));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--xmas-gold) 28%,transparent),0 8px 18px rgba(0,0,0,.1);
+  pointer-events:none;
+}
+.xmas-rail-svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--xmas-lite-b) 55%,transparent))}
+.xmas-rail .xr-end{
+  position:absolute;top:6px;width:46px;height:46px;background-size:contain;background-repeat:no-repeat;z-index:1;
+}
+.xmas-rail .xr-end.left{left:4px}
+.xmas-rail .xr-end.right{right:4px;transform:scaleX(-1)}
+body[data-theme="xmas-rose"] .xmas-rail .xr-end{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='36' r='16' fill='%23F7DCE4' stroke='%23D6B477' stroke-width='3'/%3E%3Ccircle cx='32' cy='36' r='5' fill='%23943C54'/%3E%3Cpath d='M32 10v12' stroke='%23D6B477' stroke-width='3'/%3E%3Cpath d='M20 16c8 4 16 4 24 0' stroke='%23486A50' stroke-width='3' fill='none'/%3E%3Cpath d='M14 28c6-8 12-8 18 0' stroke='%23943C54' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-enchanted"] .xmas-rail .xr-end{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6l14 22H18z' fill='%23214F3C'/%3E%3Cpath d='M32 18l18 26H14z' fill='%233a6e52'/%3E%3Cpath d='M32 30l22 28H10z' fill='%23214F3C'/%3E%3Crect x='29' y='56' width='6' height='6' fill='%236b4226'/%3E%3Ccircle cx='24' cy='34' r='3' fill='%23A83E42'/%3E%3Ccircle cx='40' cy='40' r='3' fill='%23D9B975'/%3E%3Ccircle cx='32' cy='46' r='3' fill='%23A83E42'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-midnight"] .xmas-rail .xr-end{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4l5 14 14 2-11 9 4 14-12-8-12 8 4-14-11-9 14-2z' fill='%23E7C47A'/%3E%3Ccircle cx='32' cy='44' r='12' fill='none' stroke='%23F5E5C7' stroke-width='3'/%3E%3Ccircle cx='32' cy='44' r='4' fill='%23E7C47A'/%3E%3C/svg%3E");
+}
+body.bloom-xmas.xmas-fx-off .xmas-rail{display:none}
+body.bloom-led[data-theme="xmas-midnight"] .xmas-rail{
+  box-shadow:0 0 0 1.5px color-mix(in srgb,var(--led-a) 80%,transparent),0 0 18px var(--led-halo)!important;
+}
+
+
+/* Replace emoji floral with SVG bauble/ribbon accents on festive cards */
+body.bloom-xmas .bloom-floral:before,
+body.bloom-xmas .bloom-floral:after{
+  content:""!important;width:34px;height:34px;opacity:.85!important;
+  background-repeat:no-repeat;background-size:contain;font-size:0!important;
+}
+body[data-theme="xmas-rose"] .bloom-floral:before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='22' r='11' fill='%23F7DCE4' stroke='%23D6B477' stroke-width='2'/%3E%3Ccircle cx='20' cy='22' r='4' fill='%23943C54'/%3E%3Cpath d='M20 6v6' stroke='%23D6B477' stroke-width='2'/%3E%3Cpath d='M14 8c4 2 8 2 12 0' stroke='%23486A50' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-rose"] .bloom-floral:after{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M8 22c8-10 16-10 24 0-8 10-16 10-24 0z' fill='%23F7DCE4' stroke='%23943C54' stroke-width='1.5'/%3E%3Cpath d='M20 12v16' stroke='%23D6B477' stroke-width='2'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-enchanted"] .bloom-floral:before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 6l8 14H12z' fill='%23214F3C'/%3E%3Cpath d='M20 14l10 16H10z' fill='%233a6e52'/%3E%3Crect x='18' y='30' width='4' height='6' fill='%236b4226'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%23A83E42'/%3E%3Ccircle cx='24' cy='24' r='2' fill='%23D9B975'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-enchanted"] .bloom-floral:after{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='22' r='10' fill='%23A83E42' stroke='%23D9B975' stroke-width='2'/%3E%3Cpath d='M20 8v6M14 12h12' stroke='%23214F3C' stroke-width='2'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-midnight"] .bloom-floral:before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 4l3 9 9 1-7 6 2 9-7-5-7 5 2-9-7-6 9-1z' fill='%23E7C47A'/%3E%3C/svg%3E");
+}
+body[data-theme="xmas-midnight"] .bloom-floral:after{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='11' fill='none' stroke='%23E7C47A' stroke-width='2'/%3E%3Ccircle cx='20' cy='20' r='4' fill='%23F5E5C7'/%3E%3C/svg%3E");
+}
+
+/* Greeting / countdown / cards */
+.xmas-greet{
+  position:relative;overflow:hidden;border-radius:28px;padding:24px 18px 22px;margin:12px 0;
+  color:#fff!important;border:1.5px solid color-mix(in srgb,var(--xmas-gold,#D6B477) 55%,transparent)!important;
+  box-shadow:0 12px 30px rgba(80,40,50,.16),inset 0 1px 0 rgba(255,255,255,.25);
+}
+body[data-theme="xmas-rose"] .xmas-greet{background:linear-gradient(130deg,#943C54 0%,#b85a72 48%,#486A50 125%)!important}
+body[data-theme="xmas-enchanted"] .xmas-greet{background:linear-gradient(130deg,#214F3C 0%,#3a6e52 48%,#A83E42 120%)!important}
+body[data-theme="xmas-midnight"] .xmas-greet{background:linear-gradient(130deg,#2B4035 0%,#38282D 55%,#1a2420 100%)!important}
+.xmas-greet span{display:block;font-size:.72em;font-weight:800;letter-spacing:.12em;opacity:.92;margin-bottom:8px}
+.xmas-greet h2,.xmas-greet p,.xmas-greet button{color:#fff!important;position:relative;z-index:1}
+.xmas-greet h2{font-family:var(--font-display)!important;font-size:1.55rem;margin:0 0 8px;line-height:1.2}
+.xmas-greet p{margin:0 0 14px;opacity:.95;font-size:.95em}
+.xmas-greet button{
+  border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.18);color:#fff;border-radius:999px;
+  padding:10px 16px;font-weight:800;cursor:pointer
+}
+.xmas-greet .xg-shine{
+  position:absolute;inset:auto -20% -40% -20%;height:70%;pointer-events:none;opacity:.35;
+  background:radial-gradient(ellipse at center, color-mix(in srgb,var(--xmas-gold) 55%,transparent), transparent 70%);
+}
+.xmas-greet .xg-lights{
+  position:absolute;left:12px;right:12px;bottom:10px;height:10px;pointer-events:none;z-index:0;opacity:.9;
+  background:
+    radial-gradient(circle at 8% 50%, var(--xmas-lite-a) 0 2px, transparent 3px),
+    radial-gradient(circle at 22% 50%, var(--xmas-lite-b) 0 2px, transparent 3px),
+    radial-gradient(circle at 36% 50%, var(--xmas-lite-c) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 50%, var(--xmas-lite-a) 0 2px, transparent 3px),
+    radial-gradient(circle at 64% 50%, var(--xmas-lite-b) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 50%, var(--xmas-lite-c) 0 2px, transparent 3px),
+    radial-gradient(circle at 92% 50%, var(--xmas-lite-a) 0 2px, transparent 3px);
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 70%,transparent));
+  animation:xaTwinkle 6.2s ease-in-out infinite;
+}
+body.bloom-xmas:not(.xmas-fx-off) #app .card{
+  box-shadow:var(--shadow), inset 0 0 0 1px color-mix(in srgb,var(--xmas-gold) 28%,transparent)!important;
+}
+body.bloom-xmas:not(.xmas-fx-off) #app .bg-section-hero,
+body.bloom-xmas:not(.xmas-fx-off) #app .bg-home-hero{
+  box-shadow:0 10px 28px rgba(0,0,0,.12), inset 0 -12px 24px color-mix(in srgb,var(--xmas-gold) 18%,transparent)!important;
+}
+.xmas-countdown{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:20px;margin:10px 0 14px;
+  background:color-mix(in srgb,var(--pri) 10%,var(--card))!important;
+  border:1px solid color-mix(in srgb,var(--xmas-gold,#D6B477) 45%,var(--line))!important;
+  position:relative;overflow:hidden;
+}
+.xmas-countdown:before{
+  content:"";position:absolute;right:10px;top:8px;width:28px;height:28px;opacity:.55;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l2.4 7.2H26l-6 4.4 2.3 7.2L16 16.8 9.7 20.8 12 13.6 6 9.2h7.6z' fill='%23D6B477'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.xmas-countdown .xc-num{
+  min-width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--pri),color-mix(in srgb,var(--pri) 70%,#000));
+  color:#fff;font-weight:800;font-size:1.25rem;font-family:var(--font-display);
+  box-shadow:0 4px 12px color-mix(in srgb,var(--pri) 35%,transparent);
+}
+body[data-theme="xmas-midnight"] .xmas-countdown .xc-num{color:#151D1B;background:linear-gradient(145deg,#E7C47A,#c9a85e)}
+.xmas-countdown strong{display:block;font-size:1em;color:var(--ink)}
+.xmas-countdown span{font-size:.82em;color:var(--mute)}
+
+/* Garden festive stage frame */
+.xmas-garden-stage{position:relative;isolation:isolate}
+.xmas-garden-stage:before{
+  content:"";position:absolute;left:8px;right:8px;top:6px;height:22px;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 50%, var(--xmas-lite-a) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 50%, var(--xmas-lite-b) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 50%, var(--xmas-lite-c) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 50%, var(--xmas-lite-a) 0 2px, transparent 3px),
+    radial-gradient(circle at 90% 50%, var(--xmas-lite-b) 0 2px, transparent 3px);
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 55%,transparent));
+}
+.bloom-garden-flower.xmas-ornament{filter:saturate(1.08)}
+
+/* Gift list */
+.xmas-gift-row{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.xmas-gift-meta{font-size:.82em;color:var(--mute)}
+.xmas-gift-cost{font-weight:700;color:var(--pri)}
+
+/* Theme gallery seasonal */
+.bloom-theme-season{margin-top:18px;padding-top:8px;border-top:1px dashed color-mix(in srgb,var(--pri) 25%,var(--line))}
+.bloom-theme-season h3{margin:0 0 6px;font-size:1.05rem}
+.bloom-theme-card[data-season="christmas"] .bloom-mini{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--xmas-gold,#D6B477) 50%,transparent)}
+.xmas-fx-toggle{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.xmas-fx-toggle .seg{flex:1;min-width:180px}
+
+/* Midnight Christmas: stronger festive LED (distinct from fairy lights) */
+body.bloom-led[data-theme="xmas-midnight"] #app :is(.card,.bg-home-hero,.bg-verse,.bg-calendar,.bloom-journey,.bloom-inbox,.bloom-daily-prayer,.md131-panel,.bg-accent-card,.xmas-greet){
+  box-shadow:
+    0 0 0 1.5px color-mix(in srgb,var(--led-a) 75%,transparent),
+    0 0 22px var(--led-halo),
+    inset 0 0 24px color-mix(in srgb,var(--led-b) 22%,transparent)!important;
+}
+
+/* —— Opening experience —— */
+#myday-opening.xmas-open{
+  background:
+    radial-gradient(70% 50% at 50% 18%, rgba(231,196,122,.22), transparent 60%),
+    radial-gradient(90% 70% at 50% 100%, #1c2a24 0%, #0f1614 70%);
+  color:#F5E5C7;
+}
+#myday-opening.xmas-open .xmas-stage{
+  position:relative;width:min(90vw,360px);height:min(74vh,500px);
+  display:grid;place-items:end center;
+}
+#myday-opening.xmas-open .xmas-brand{
+  position:absolute;top:11%;left:0;right:0;text-align:center;z-index:3;
+}
+#myday-opening.xmas-open .xmas-brand strong{
+  display:block;font-family:var(--font-display),Georgia,serif;font-size:1.85rem;letter-spacing:.03em;
+  text-shadow:0 0 18px rgba(231,196,122,.45);
+}
+#myday-opening.xmas-open .xmas-brand span{opacity:.9;font-size:.95rem;letter-spacing:.08em}
+#myday-opening.xmas-open .xo-tree{width:210px;height:280px;position:relative;filter:drop-shadow(0 16px 28px rgba(0,0,0,.45))}
+#myday-opening.xmas-open .xo-tree svg{width:100%;height:100%}
+#myday-opening.xmas-open .xo-ornament{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  box-shadow:0 0 8px currentColor;animation:xaTwinkle 5.6s ease-in-out infinite;
+}
+#myday-opening.xmas-open .xo-snow{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+#myday-opening.xmas-open .xo-snow i{
+  position:absolute;top:-6%;width:6px;height:6px;border-radius:50%;background:#F5E5C7;opacity:.55;
+  animation:xaFall linear infinite;
+}
+#myday-opening.xmas-open .xo-star{
+  position:absolute;color:#E7C47A;font-size:12px;opacity:.7;animation:xaTwinkle 5.8s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  #myday-opening.xmas-open .xo-ornament,
+  #myday-opening.xmas-open .xo-snow i,
+  #myday-opening.xmas-open .xg-lights,
+  .xmas-greet .xg-lights{animation:none!important}
+}
