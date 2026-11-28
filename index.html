@@ -3,7 +3,7 @@
 <head>
   <link rel="stylesheet" href="my-day-v11.css?v=blossom-v7">
   <link rel="stylesheet" href="bloom-themes.css?v=bloom-visual-5">
-  <link rel="stylesheet" href="bloom-christmas.css?v=xmas-7">
+  <link rel="stylesheet" href="bloom-christmas.css?v=xmas-8">
 <meta charset="utf-8">
 <title>My Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1421,7 +1421,6 @@ function render(){
   if(lastAdd){const b=document.querySelector('[data-pop="'+lastAdd+'"]'),r=b&&b.closest('.row');if(r)r.classList.add('slidein');lastAdd=null}
   if(act){const e=document.getElementById(act);if(e&&e.focus&&e.id.indexOf('mic-')!==0){e.focus();if(e.type==='text'&&e.setSelectionRange){try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
   $('#tabs').innerHTML=TABS.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="tab='${t[0]}';animTab=true;window.scrollTo(0,0);render()"><span>${t[1]}</span>${t[2]}</button>`).join('');
-  if(typeof syncFabContentClearance==='function')requestAnimationFrame(syncFabContentClearance);
 }
 
 
@@ -1456,14 +1455,6 @@ function render(){
     else{m.style.transition='transform .35s cubic-bezier(.34,1.56,.64,1)';m.style.transform='';setTimeout(()=>{m.style.transition='';m.style.animation=''},360)}});
   const hd=document.querySelector('header');
   let fabScrollT=0;
-  function syncFabContentClearance(){
-    const fab=document.getElementById('md11-fab');if(!fab)return;
-    const faith=document.querySelector('.bloom-home-faith');
-    if(!faith||!isXmasTheme()){fab.classList.remove('fab-content-hide');return}
-    const fr=fab.getBoundingClientRect(),pr=faith.getBoundingClientRect();
-    const overlap=!(pr.right<fr.left||pr.left>fr.right||pr.bottom<fr.top||pr.top>fr.bottom);
-    fab.classList.toggle('fab-content-hide',overlap);
-  }
   addEventListener('scroll',()=>{
     const on=hd.classList.contains('scrolled');
     if(!on&&scrollY>40)hd.classList.add('scrolled');else if(on&&scrollY<12)hd.classList.remove('scrolled');
@@ -1471,11 +1462,9 @@ function render(){
     if(fab){
       fab.classList.add('fab-scroll-hide');
       clearTimeout(fabScrollT);
-      fabScrollT=setTimeout(()=>{fab.classList.remove('fab-scroll-hide');syncFabContentClearance()},220);
+      fabScrollT=setTimeout(()=>fab.classList.remove('fab-scroll-hide'),220);
     }
-    syncFabContentClearance();
   },{passive:true});
-  window.syncFabContentClearance=syncFabContentClearance;
 })();
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modalwrap').hidden)closeModal()});

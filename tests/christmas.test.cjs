@@ -10,7 +10,7 @@ test('Christmas build markers and SW 016',()=>{
  assert.ok(html.includes('content="xmas-016"'));
  assert.ok(sw.includes("CACHE=PREFIX+'016'"));
  assert.ok(sw.includes('bloom-christmas.css'));
- assert.ok(html.includes('bloom-christmas.css?v=xmas-7'));
+ assert.ok(html.includes('bloom-christmas.css?v=xmas-8'));
  assert.ok(html.includes('xa-garland-2'));
  assert.ok(html.includes('xmas-rail')||html.includes('xmasRail'));
  assert.ok(html.includes('xa-bauble')||html.includes('xa-ornaments'));
@@ -36,6 +36,8 @@ test('Calm mode clears seasonal nodes and stops animations',()=>{
  assert.ok(html.includes('fab-scroll-hide'));
  assert.ok(css.includes('fab-scroll-hide'));
  assert.ok(html.includes('xmas-fab-clear')||css.includes('xmas-fab-clear'));
+ assert.ok(css.includes('padding-right:120px')||css.includes('padding-right:120px!important'));
+ assert.ok(!html.includes('fab-content-hide'));
 });
 
 test('eight themes registered including seasonal trio',()=>{

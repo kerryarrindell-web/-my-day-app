@@ -472,6 +472,14 @@ test('Quick Add hides while scrolling and clears prayer card at rest',async({pag
  });
  await expect(page.locator('#md11-fab')).toBeVisible();
  await expect(page.locator('.xmas-fab-clear')).toBeAttached();
+ // FAB remains reachable at rest on Home (not permanently hidden over prayer)
+ const visibleAtRest=await page.locator('#md11-fab').evaluate(e=>{
+  const cs=getComputedStyle(e);
+  return cs.visibility!=='hidden' && Number(cs.opacity)>0.5 && !e.classList.contains('fab-content-hide');
+ });
+ expect(visibleAtRest).toBe(true);
+ const pad=await page.locator('.bloom-home-faith').evaluate(e=>parseFloat(getComputedStyle(e).paddingRight));
+ expect(pad).toBeGreaterThanOrEqual(100);
  await page.evaluate(()=>window.scrollTo(0,240));
  await page.waitForTimeout(40);
  const hiddenWhileScroll=await page.locator('#md11-fab').evaluate(e=>e.classList.contains('fab-scroll-hide'));

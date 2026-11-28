@@ -274,12 +274,12 @@ body.bloom-xmas #app .xmas-fab-clear{
   height:calc(72px + env(safe-area-inset-bottom,0px));
   pointer-events:none;visibility:hidden;
 }
-/* Keep prayer/verse copy clear of the fixed Quick Add chip */
+/* Keep prayer/verse copy clear of the fixed Quick Add chip (FAB stays reachable) */
 body.bloom-xmas #app .bloom-home-faith{
   padding-right:120px!important;
 }
-body.bloom-xmas #md11-fab.fab-content-hide{
-  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+body.bloom-xmas #app .bloom-home-faith.md131-colour-card h2:before{
+  background:var(--xmas-gold)!important;
 }
 
 /* In-flow festive rail — immediately visible on every tab */
