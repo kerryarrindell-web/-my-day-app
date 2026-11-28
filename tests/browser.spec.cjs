@@ -161,3 +161,63 @@ test('grocery input clears only after a successful save',async({page})=>{
  await expect(page.locator('#ni')).toHaveValue('Synthetic bread');
  await page.evaluate(()=>window.__restoreSetItem());
 });
+
+test('home shows daily prayer before check-in',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ const faith=page.locator('.bloom-home-faith').first();
+ const journey=page.locator('.bloom-journey').first();
+ await expect(faith).toBeVisible();
+ await expect(faith).toContainText('Amen.');
+ await expect(faith.locator('.bloom-home-verse')).toContainText('KJV');
+ const order=await page.evaluate(()=>{
+  const f=document.querySelector('.bloom-home-faith');
+  const j=document.querySelector('.bloom-journey');
+  return !!(f&&j&&(f.compareDocumentPosition(j)&Node.DOCUMENT_POSITION_FOLLOWING));
+ });
+ expect(order).toBe(true);
+});
+
+test('sticky note rejects unsafe image src in render',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  S.notes=[{id:'n1',text:'Synthetic',color:'#fff3a8',pin:false,img:'javascript:alert(1)'}];
+  tab='more';render();
+ });
+ const bad=await page.locator('.notes img').count();
+ expect(bad).toBe(0);
+ await page.evaluate(()=>{
+  S.notes=[{id:'n2',text:'Photo note',color:'#fff3a8',pin:false,img:'data:image/png;base64,iVBORw0KGgo='}];
+  tab='more';render();
+ });
+ await expect(page.locator('.notes img').first()).toHaveAttribute('src',/data:image\/png;base64,/);
+});
+
+test('garden and moments panels keep light text for contrast',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ for(const theme of ['blossom','lavender','sage','peach','midnight']){
+  await page.evaluate(th=>{setBloomTheme(th);tab='me';meNavigate('garden')},theme);
+  const color=await page.locator('.md131-panel.green h2').evaluate(e=>getComputedStyle(e).color);
+  const rgb=color.match(/\d+/g).map(Number);
+  const luminance=(0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])/255;
+  expect(luminance,'garden h2 '+theme).toBeGreaterThan(0.7);
+  await page.evaluate(()=>meNavigate('moments'));
+  const mColor=await page.locator('.md131-panel.purple h2').evaluate(e=>getComputedStyle(e).color);
+  const mrgb=mColor.match(/\d+/g).map(Number);
+  const mLum=(0.2126*mrgb[0]+0.7152*mrgb[1]+0.0722*mrgb[2])/255;
+  expect(mLum,'moments h2 '+theme).toBeGreaterThan(0.7);
+ }
+});
+
+test('quick add fab sits above tab bar clearance',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{tab='today';render();const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ await expect(page.locator('#md11-fab')).toBeVisible({timeout:5000});
+ const ok=await page.evaluate(()=>{
+  const fab=document.getElementById('md11-fab').getBoundingClientRect();
+  const tabs=document.getElementById('tabs').getBoundingClientRect();
+  return fab.bottom <= tabs.top - 4;
+ });
+ expect(ok).toBe(true);
+});

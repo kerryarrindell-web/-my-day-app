@@ -357,3 +357,121 @@ body:not([data-theme="midnight"]) .bg-calendar .bg-selected-events p{color:var(-
 body:not([data-theme="midnight"]) .bg-calendar .bg-arrow{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 80%,transparent)!important;border-color:var(--line)!important}
 body:not([data-theme="midnight"]) .bg-day strong{color:var(--ink)!important}
 body:not([data-theme="midnight"]) .bg-day.bg-selected{border-color:var(--pri)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 35%,transparent)!important}
+
+/* —— Final visual corrections (device acceptance) —— */
+
+/* Subtle static floral / botanical corners — theme matched, no animation */
+.bloom-floral{position:relative;overflow:hidden}
+.bloom-floral:before,
+.bloom-floral:after{
+  position:absolute;pointer-events:none;z-index:0;opacity:.28;line-height:1;
+  font-size:clamp(1.6rem,5vw,2.4rem);user-select:none;
+}
+.bloom-floral:before{content:"❀";top:10px;right:14px}
+.bloom-floral:after{content:"✿";bottom:12px;left:12px;opacity:.22;font-size:clamp(1.2rem,4vw,1.8rem)}
+.bloom-floral > *{position:relative;z-index:1}
+body[data-theme="blossom"] .bloom-floral:before{content:"🌸";opacity:.32}
+body[data-theme="blossom"] .bloom-floral:after{content:"🌷";opacity:.24}
+body[data-theme="lavender"] .bloom-floral:before{content:"💜";opacity:.3}
+body[data-theme="lavender"] .bloom-floral:after{content:"✦";opacity:.22}
+body[data-theme="sage"] .bloom-floral:before{content:"🌿";opacity:.34}
+body[data-theme="sage"] .bloom-floral:after{content:"🍃";opacity:.24}
+body[data-theme="peach"] .bloom-floral:before{content:"🌼";opacity:.32}
+body[data-theme="peach"] .bloom-floral:after{content:"🌺";opacity:.22}
+body[data-theme="midnight"] .bloom-floral:before{content:"🌙";opacity:.28}
+body[data-theme="midnight"] .bloom-floral:after{content:"✦";opacity:.2;color:#e09aba}
+
+/* Home daily prayer card */
+.bloom-home-faith{
+  margin:12px 0 14px!important;padding:20px 18px!important;
+}
+.bloom-home-faith h2,.bloom-home-faith p,.bloom-home-faith .bloom-prayer-badge{color:#fff!important}
+.bloom-home-verse{
+  margin:14px 0 0;padding:12px 14px;border-radius:16px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+}
+.bloom-home-verse p{margin:0 0 6px;font-style:italic;line-height:1.55;color:#fff!important}
+.bloom-home-verse cite{display:block;font-style:normal;font-weight:800;font-size:.82em;opacity:.92;color:#fff!important}
+.bloom-verse-today{background:color-mix(in srgb,var(--pri) 12%,transparent);border-radius:12px;padding:8px}
+
+/* Me Time journal / faith buttons */
+.bloom-me-links{
+  display:flex;flex-direction:column;gap:12px!important;padding:16px!important;
+}
+.bloom-me-links .btn{
+  width:100%;min-height:52px!important;margin:0!important;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Panel contrast — garden, moments, wins, play (WCAG AA on tinted panels) */
+#app .md131-panel.green,
+#app .md131-panel.purple,
+#app .md131-panel.pink,
+#app .md131-panel.orange,
+body[data-theme] #app .md131-panel.green,
+body[data-theme] #app .md131-panel.purple,
+body[data-theme] #app .card.md131-panel.green,
+body[data-theme] #app .card.md131-panel.purple{
+  color:#fff!important;
+  border:0!important;
+}
+body[data-theme] #app .card.md131-panel.green{
+  background:linear-gradient(145deg,#1f6b5a,#2f8f78)!important;
+}
+body[data-theme] #app .card.md131-panel.purple{
+  background:linear-gradient(145deg,#5640a0,#7a5fc0)!important;
+}
+body[data-theme="midnight"] #app .card.md131-panel.green{
+  background:linear-gradient(145deg,#1a4a3e,#2a6b58)!important;
+}
+body[data-theme="midnight"] #app .card.md131-panel.purple{
+  background:linear-gradient(145deg,#3a2a68,#5a4588)!important;
+}
+#app .md131-panel :is(h2,h3,p,label,.md131-total,.meta),
+#app .md131-panel .md131-entry span,
+#app .md131-panel .md131-kind-note{
+  color:#fff!important;opacity:1!important;text-shadow:0 1px 0 rgba(0,0,0,.18);
+}
+#app .md131-panel .meta{color:rgba(255,255,255,.92)!important}
+#app .md131-panel input,
+#app .md131-panel textarea{
+  background:#fff!important;color:#24302c!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  caret-color:#24302c;
+}
+#app .md131-panel input::placeholder,
+#app .md131-panel textarea::placeholder{color:#5a6a64!important;opacity:1}
+#app .md131-panel .md131-action,
+#app .md131-panel .btn.md131-action{
+  background:#fff!important;color:#1e4a40!important;font-weight:800!important;
+  border:0!important;min-height:48px!important;
+}
+#app .md131-panel.purple .md131-action{color:#3d2f78!important}
+#app .md131-panel .btn.alt{
+  background:rgba(255,255,255,.22)!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;
+}
+#app .md131-panel .md131-entry{
+  background:rgba(255,255,255,.18)!important;color:#fff!important;
+}
+#app .md131-panel .md131-entry button{color:#fff!important}
+
+/* Nav + Quick Add clearance — content never permanently obscured */
+:root{--nav-clear:calc(132px + env(safe-area-inset-bottom,0px))}
+body{padding-bottom:var(--nav-clear)!important}
+#app{
+  padding:14px 16px calc(160px + env(safe-area-inset-bottom,0px))!important;
+}
+#md11-fab{
+  bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  right:16px!important;z-index:35!important;
+  max-width:128px!important;
+}
+.tabs,#tabs{z-index:40!important}
+
+/* General AA contrast helpers */
+body[data-theme] .meta{color:color-mix(in srgb,var(--ink) 62%,var(--mute))!important}
+body[data-theme="midnight"] .meta{color:#d2c0cf!important}
+body[data-theme] .empty{color:color-mix(in srgb,var(--ink) 58%,var(--mute))!important}
+body[data-theme] input::placeholder,body[data-theme] textarea::placeholder{
+  color:color-mix(in srgb,var(--ink) 45%,var(--mute))!important;opacity:1;
+}
