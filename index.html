@@ -3,11 +3,11 @@
 <head>
   <link rel="stylesheet" href="my-day-v11.css?v=blossom-v7">
   <link rel="stylesheet" href="bloom-themes.css?v=bloom-visual-5">
-  <link rel="stylesheet" href="bloom-christmas.css?v=xmas-6">
+  <link rel="stylesheet" href="bloom-christmas.css?v=xmas-7">
 <meta charset="utf-8">
 <title>My Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="bloom-build-id" content="xmas-015">
+<meta name="bloom-build-id" content="xmas-016">
 <meta name="theme-color" content="#fdf6f0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -206,7 +206,7 @@ body:not(.dark) #app .md131-colour-card[data-tone=lavender]{--md-card-bg:#d4c5f2
 body:not(.dark) #app .md131-colour-card[data-tone=mint]{--md-card-bg:#bce3d5!important;--md-card-edge:#79bca6!important;--md-card-heading:#285c4e!important}
 body:not(.dark) #app .md131-colour-card[data-tone=peach]{--md-card-bg:#f6d3a2!important;--md-card-edge:#dea966!important;--md-card-heading:#74502c!important}
 body:not(.dark) #app .md131-colour-card[data-tone=berry]{--md-card-bg:#f0c2d5!important;--md-card-edge:#d58fab!important;--md-card-heading:#783d5b!important}
-body:not(.dark) #app .bg-verse{background:linear-gradient(130deg,#514080,#7257a6)!important;color:#fff!important;border:2px solid #bda1ed!important}
+body:not(.dark):not([data-theme^="xmas-"]) #app .bg-verse{background:linear-gradient(130deg,#514080,#7257a6)!important;color:#fff!important;border:2px solid #bda1ed!important}
 body:not(.dark) #app .bg-verse h2,body:not(.dark) #app .bg-verse blockquote,body:not(.dark) #app .bg-verse .meta{color:#fff!important}
 body:not(.dark) #app .bg-home-notes{background:linear-gradient(135deg,#f6d3a2,#fff0d8)!important;border:1.5px solid #dea966!important}
 body:not(.dark) #app .bg-coming-up{background:linear-gradient(135deg,#d4c5f2,#eee4ff)!important;border:1.5px solid #aa93d9!important}
@@ -223,7 +223,7 @@ body:not(.dark) #app .bg-calendar{background:linear-gradient(145deg,#262a50,#1c2
 body:not(.dark) #app .bg-home-notes{background:linear-gradient(125deg,#f5d4a5,#fff0d7)!important}
 body:not(.dark) #app .bg-coming-up{background:linear-gradient(125deg,#d3c4f4,#eee5ff)!important}
 body:not(.dark) #app .bg-pills{background:linear-gradient(125deg,#efbfd5,#ffe5ee)!important}
-body:not(.dark) #app .bg-verse{background:linear-gradient(125deg,#594187,#7958aa)!important}
+body:not(.dark):not([data-theme^="xmas-"]) #app .bg-verse{background:linear-gradient(125deg,#594187,#7958aa)!important}
 body:not(.dark) #app .md131-colour-card[data-tone="rose"]{background:linear-gradient(125deg,#f5c9dd,#ffebf2)!important}
 body:not(.dark) #app .md131-colour-card[data-tone="mint"]{background:linear-gradient(125deg,#bce3d5,#e9f8f1)!important}
 body:not(.dark) #app .md131-colour-card[data-tone="peach"]{background:linear-gradient(125deg,#f6d3a2,#fff1d8)!important}
@@ -241,9 +241,10 @@ body:not(.dark) #app .md131-colour-card[data-tone="berry"]{background:linear-gra
 </style>
 <style id="blossom-motion-colour-v6">
 /* Approved Today order: welcome -> Baby Tip -> Bible Verse; same plum/rose on first and third, distinct mint in middle. */
-body:not(.dark) #app .bg-home-hero,body:not(.dark) #app .bg-verse,
-body:not(.dark) #app .card.bg-verse,
-body:not(.dark) #app .md131-colour-card.bg-verse{
+body:not(.dark):not([data-theme^="xmas-"]) #app .bg-home-hero,
+body:not(.dark):not([data-theme^="xmas-"]) #app .bg-verse,
+body:not(.dark):not([data-theme^="xmas-"]) #app .card.bg-verse,
+body:not(.dark):not([data-theme^="xmas-"]) #app .md131-colour-card.bg-verse{
  background:linear-gradient(130deg,#80507d 0%,#9a598b 52%,#b96b9e 100%)!important;
  color:#fff!important;border:2px solid #dca5cd!important;
  box-shadow:0 5px 18px rgba(160,89,142,.18),inset 0 1px 0 #ffffff44!important;
@@ -312,6 +313,24 @@ body:not(.dark) #app .card.bg-active-list,body:not(.dark) #app .card.bg-active-l
 #app{padding-bottom:max(220px,calc(190px + env(safe-area-inset-bottom)))!important}
 @media(max-width:380px){#app .myday-list-grid{gap:9px!important}#app .myday-list-grid .myday-list-tile{padding:12px 10px!important;min-height:145px!important}#md11-fab{font-size:.8rem!important;padding:10px 12px!important}}
 @media(prefers-reduced-motion:reduce){#app .myday-list-tile{transition:none!important}}
+</style>
+<style id="xmas-prayer-theme-v1">
+/* Christmas prayer/verse cards — must follow blossom colour sheet */
+body[data-theme="xmas-rose"] #app :is(.bloom-home-faith,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+ background:linear-gradient(135deg,#943C54 0%,#c46a82 55%,#486A50 130%)!important;
+ color:#fff!important;border:1.5px solid rgba(214,180,119,.45)!important;
+ box-shadow:0 10px 28px rgba(148,60,84,.18),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+body[data-theme="xmas-enchanted"] #app :is(.bloom-home-faith,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+ background:linear-gradient(135deg,#214F3C 0%,#3a6e52 48%,#A83E42 120%)!important;
+ color:#fff!important;border:1.5px solid rgba(217,185,117,.45)!important;
+ box-shadow:0 10px 28px rgba(33,79,60,.16),inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+body[data-theme="xmas-midnight"] #app :is(.bloom-home-faith,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+ background:linear-gradient(135deg,#2B4035 0%,#38282D 55%,#1a2420 100%)!important;
+ color:#F5E5C7!important;border:1px solid rgba(231,196,122,.4)!important;
+ box-shadow:0 0 0 1px rgba(231,196,122,.25),0 0 18px rgba(231,196,122,.18)!important;
+}
 </style>
 </head>
 <body data-size="m">
@@ -387,12 +406,12 @@ body:not(.dark) #app .card.bg-active-list,body:not(.dark) #app .card.bg-active-l
    if(xmasEl)xmasEl.hidden=false;
    var snow=document.getElementById('xo-snow');
    if(snow&&!snow.childElementCount){
-     for(var i=0;i<18;i++){
+     for(var i=0;i<16;i++){
        var flake=document.createElement('i');
        flake.style.left=(4+Math.random()*92)+'%';
-       flake.style.animationDuration=(3.2+Math.random()*3.5)+'s';
-       flake.style.animationDelay=(Math.random()*2)+'s';
-       flake.style.width=flake.style.height=(3+Math.random()*5)+'px';
+       flake.style.animationDuration=(5.5+Math.random()*5)+'s';
+       flake.style.animationDelay=(Math.random()*2.5)+'s';
+       flake.style.width=flake.style.height=(3+Math.random()*4)+'px';
        snow.appendChild(flake);
      }
    }
@@ -1249,15 +1268,20 @@ function bloomThemeId(){
   return (S.settings&&S.settings.dark)?'midnight':'blossom';
 }
 function xmasFxOn(){return S.settings.xmasFx!==false}
+function clearXmasFxNodes(){
+  ['xa-snow','xa-ornaments','xa-stars'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.replaceChildren();
+  });
+}
 function ensureXmasSnow(){
   const host=document.getElementById('xa-snow');if(!host)return;
   if(!host.childElementCount){
-    for(let i=0;i<42;i++){
+    for(let i=0;i<28;i++){
       const el=document.createElement('span');
       el.className='xa-flake'+(i%3===0?' f3':i%2===0?' f2':'');
       el.style.left=(2+Math.random()*96)+'%';
-      el.style.animationDuration=(5+Math.random()*7)+'s';
-      el.style.animationDelay=(Math.random()*6)+'s';
+      el.style.animationDuration=(8+Math.random()*8)+'s';
+      el.style.animationDelay=(Math.random()*7)+'s';
       host.appendChild(el);
     }
   }
@@ -1268,19 +1292,19 @@ function ensureXmasSnow(){
       const el=document.createElement('span');
       el.className='xa-bauble b'+(i%3);
       el.style.left=p[0]+'%';el.style.top=p[1]+'%';
-      el.style.animationDelay=(i*.45)+'s';
+      el.style.animationDelay=(i*.55)+'s';
       orn.appendChild(el);
     });
   }
   const stars=document.getElementById('xa-stars');
   if(stars&&!stars.childElementCount){
-    for(let i=0;i<14;i++){
+    for(let i=0;i<12;i++){
       const el=document.createElement('span');
       el.className='xa-star';
       el.style.left=(6+Math.random()*88)+'%';
       el.style.top=(10+Math.random()*70)+'%';
-      el.style.animationDelay=(Math.random()*3)+'s';
-      el.style.animationDuration=(2.4+Math.random()*2.2)+'s';
+      el.style.animationDelay=(Math.random()*4)+'s';
+      el.style.animationDuration=(5.2+Math.random()*3.5)+'s';
       stars.appendChild(el);
     }
   }
@@ -1291,8 +1315,16 @@ function syncXmasAtmosphere(){
   document.body.classList.toggle('bloom-xmas',on);
   document.body.classList.toggle('xmas-fx-off',on&&!xmasFxOn());
   const atm=document.getElementById('xmas-atmosphere');
-  if(atm){atm.dataset.active=fx?'1':'0';atm.style.opacity=fx?'1':'0';atm.style.visibility=fx?'visible':'hidden'}
-  if(fx)ensureXmasSnow();
+  if(atm){
+    atm.dataset.active=fx?'1':'0';
+    if(fx){
+      atm.style.display='';atm.style.opacity='1';atm.style.visibility='visible';
+      ensureXmasSnow();
+    }else{
+      clearXmasFxNodes();
+      atm.style.opacity='0';atm.style.visibility='hidden';atm.style.display='none';
+    }
+  }else if(fx)ensureXmasSnow();
 }
 function applyBloomTheme(){
   const id=bloomThemeId(),th=BLOOM_THEMES[id];
@@ -1358,7 +1390,8 @@ function render(){
   $('#hi').innerHTML=greeting();
   $('#dt').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   applyBloomTheme();if(tab==='more'&&typeof vMore!=='function')tab='today';
-  $('#app').innerHTML=xmasRail()+({today:vToday,lists:vLists,appts:vAppts,me:vMeTime,more:vMore})[tab]()+`<div class="sync">${syncMsg}</div>`;
+  const fabClear=(tab==='today'&&isXmasTheme()?'<div class="xmas-fab-clear" aria-hidden="true"></div>':'');
+  $('#app').innerHTML=xmasRail()+({today:vToday,lists:vLists,appts:vAppts,me:vMeTime,more:vMore})[tab]()+fabClear+`<div class="sync">${syncMsg}</div>`;
   /* Visual-only category colours: no changes to storage, tasks or notes. */
   const toneOf=(heading)=>{
     const h=heading.toLowerCase();
@@ -1387,7 +1420,9 @@ function render(){
   if(animTab){animTab=false}
   if(lastAdd){const b=document.querySelector('[data-pop="'+lastAdd+'"]'),r=b&&b.closest('.row');if(r)r.classList.add('slidein');lastAdd=null}
   if(act){const e=document.getElementById(act);if(e&&e.focus&&e.id.indexOf('mic-')!==0){e.focus();if(e.type==='text'&&e.setSelectionRange){try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
-  $('#tabs').innerHTML=TABS.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="tab='${t[0]}';animTab=true;window.scrollTo(0,0);render()"><span>${t[1]}</span>${t[2]}</button>`).join('')}
+  $('#tabs').innerHTML=TABS.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="tab='${t[0]}';animTab=true;window.scrollTo(0,0);render()"><span>${t[1]}</span>${t[2]}</button>`).join('');
+  if(typeof syncFabContentClearance==='function')requestAnimationFrame(syncFabContentClearance);
+}
 
 
 /* ---------- gestures: swipe rows, drag sheets, collapsing header ---------- */
@@ -1420,7 +1455,27 @@ function render(){
     if(dy>110){m.style.transition='transform .22s ease-in';m.style.transform='translateY(100%)';clearTimeout(modalT);modalT=setTimeout(hideModal,210)}
     else{m.style.transition='transform .35s cubic-bezier(.34,1.56,.64,1)';m.style.transform='';setTimeout(()=>{m.style.transition='';m.style.animation=''},360)}});
   const hd=document.querySelector('header');
-  addEventListener('scroll',()=>{const on=hd.classList.contains('scrolled');if(!on&&scrollY>40)hd.classList.add('scrolled');else if(on&&scrollY<12)hd.classList.remove('scrolled')},{passive:true});
+  let fabScrollT=0;
+  function syncFabContentClearance(){
+    const fab=document.getElementById('md11-fab');if(!fab)return;
+    const faith=document.querySelector('.bloom-home-faith');
+    if(!faith||!isXmasTheme()){fab.classList.remove('fab-content-hide');return}
+    const fr=fab.getBoundingClientRect(),pr=faith.getBoundingClientRect();
+    const overlap=!(pr.right<fr.left||pr.left>fr.right||pr.bottom<fr.top||pr.top>fr.bottom);
+    fab.classList.toggle('fab-content-hide',overlap);
+  }
+  addEventListener('scroll',()=>{
+    const on=hd.classList.contains('scrolled');
+    if(!on&&scrollY>40)hd.classList.add('scrolled');else if(on&&scrollY<12)hd.classList.remove('scrolled');
+    const fab=document.getElementById('md11-fab');
+    if(fab){
+      fab.classList.add('fab-scroll-hide');
+      clearTimeout(fabScrollT);
+      fabScrollT=setTimeout(()=>{fab.classList.remove('fab-scroll-hide');syncFabContentClearance()},220);
+    }
+    syncFabContentClearance();
+  },{passive:true});
+  window.syncFabContentClearance=syncFabContentClearance;
 })();
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modalwrap').hidden)closeModal()});

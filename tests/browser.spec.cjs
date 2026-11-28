@@ -426,6 +426,12 @@ test('Christmas atmosphere decorations render with clearance and theme isolation
  await expect(page.locator('body')).toHaveClass(/xmas-fx-off/);
  const calmVis=await page.locator('#xmas-atmosphere').evaluate(e=>getComputedStyle(e).visibility);
  expect(calmVis).toBe('hidden');
+ const calmDisplay=await page.locator('#xmas-atmosphere').evaluate(e=>getComputedStyle(e).display);
+ expect(calmDisplay).toBe('none');
+ const calmFlakes=await page.locator('#xa-snow .xa-flake').count();
+ expect(calmFlakes).toBe(0);
+ const calmBaubles=await page.locator('#xa-ornaments .xa-bauble').count();
+ expect(calmBaubles).toBe(0);
  await page.evaluate(()=>setXmasFx(true));
  await page.evaluate(()=>{setBloomTheme('lavender');tab='today';render()});
  await expect(page.locator('body')).not.toHaveClass(/bloom-xmas/);
@@ -440,4 +446,84 @@ test('reduced motion disables Christmas snowfall animation',async({page})=>{
  });
  const anim=await page.locator('#xa-snow .xa-flake').first().evaluate(e=>getComputedStyle(e).animationName);
  expect(anim==='none'||anim==='').toBeTruthy();
+});
+
+test('Christmas prayer card colours match each seasonal theme',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ const samples={};
+ for(const id of ['xmas-rose','xmas-enchanted','xmas-midnight']){
+  await page.evaluate(th=>{S.settings.xmasFx=true;setBloomTheme(th);tab='today';render()},id);
+  samples[id]=await page.locator('.bloom-home-faith').evaluate(e=>getComputedStyle(e).backgroundImage||getComputedStyle(e).backgroundColor);
+ }
+ expect(samples['xmas-rose']).toMatch(/943C54|148,\s*60,\s*84|c46a82|486A50/i);
+ expect(samples['xmas-enchanted']).toMatch(/214F3C|33,\s*79,\s*60|A83E42|3a6e52/i);
+ expect(samples['xmas-midnight']).toMatch(/2B4035|43,\s*64,\s*53|38282D|1a2420/i);
+ expect(samples['xmas-rose']).not.toBe(samples['xmas-enchanted']);
+ expect(samples['xmas-enchanted']).not.toBe(samples['xmas-midnight']);
+});
+
+test('Quick Add hides while scrolling and clears prayer card at rest',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  const s=document.getElementById('myday-opening');if(s)s.hidden=true;
+  S.settings.xmasFx=true;setBloomTheme('xmas-rose');tab='today';render();
+ });
+ await expect(page.locator('#md11-fab')).toBeVisible();
+ await expect(page.locator('.xmas-fab-clear')).toBeAttached();
+ await page.evaluate(()=>window.scrollTo(0,240));
+ await page.waitForTimeout(40);
+ const hiddenWhileScroll=await page.locator('#md11-fab').evaluate(e=>e.classList.contains('fab-scroll-hide'));
+ expect(hiddenWhileScroll).toBe(true);
+ await page.waitForTimeout(280);
+ await expect(page.locator('#md11-fab')).not.toHaveClass(/fab-scroll-hide/);
+ await page.evaluate(()=>{
+  const faith=document.querySelector('.bloom-home-faith');
+  const fab=document.getElementById('md11-fab');
+  if(!faith||!fab)return;
+  const fr=fab.getBoundingClientRect();
+  const pr=faith.getBoundingClientRect();
+  const need=pr.bottom-(fr.top-12);
+  if(need>0)window.scrollBy(0,need);
+ });
+ await page.waitForTimeout(280);
+ const clear=await page.evaluate(()=>{
+  const fab=document.getElementById('md11-fab');
+  const faith=document.querySelector('.bloom-home-faith');
+  if(!fab||!faith)return false;
+  fab.classList.remove('fab-scroll-hide');
+  const fr=fab.getBoundingClientRect(),pr=faith.getBoundingClientRect();
+  return pr.bottom <= fr.top + 1;
+ });
+ expect(clear).toBe(true);
+});
+
+test('Calm mode stops seasonal animation processing',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{const s=document.getElementById('myday-opening');if(s)s.hidden=true});
+ await page.evaluate(()=>{S.settings.xmasFx=true;setBloomTheme('xmas-midnight');tab='today';render()});
+ const before=await page.locator('#xa-snow .xa-flake').count();
+ expect(before).toBeGreaterThan(10);
+ await page.evaluate(()=>setXmasFx(false));
+ const after=await page.evaluate(()=>{
+  const atm=document.getElementById('xmas-atmosphere');
+  const cs=getComputedStyle(atm);
+  const running=[...document.querySelectorAll('#xmas-atmosphere *, .xg-lights')].filter(el=>{
+   const a=getComputedStyle(el).animationName;
+   return a && a!=='none';
+  }).length;
+  return {
+   display:cs.display,
+   flakes:document.querySelectorAll('#xa-snow .xa-flake').length,
+   stars:document.querySelectorAll('#xa-stars .xa-star').length,
+   baubles:document.querySelectorAll('#xa-ornaments .xa-bauble').length,
+   running
+  };
+ });
+ expect(after.display).toBe('none');
+ expect(after.flakes).toBe(0);
+ expect(after.stars).toBe(0);
+ expect(after.baubles).toBe(0);
+ expect(after.running).toBe(0);
 });

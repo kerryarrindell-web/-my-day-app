@@ -42,6 +42,38 @@ body[data-theme="xmas-midnight"] #app .card.md131-panel.green{background:linear-
 body[data-theme="xmas-rose"] #app .card.md131-panel.purple,
 body[data-theme="xmas-enchanted"] #app .card.md131-panel.purple{background:linear-gradient(135deg,#943C54,#A83E42)!important;color:#fff!important}
 body[data-theme="xmas-midnight"] #app .card.md131-panel.purple{background:linear-gradient(135deg,#38282D,#2B4035)!important;color:#F5E5C7!important}
+
+/* Prayer / verse cards match each Christmas theme (not generic purple) */
+body[data-theme="xmas-rose"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#943C54 0%,#c46a82 55%,#486A50 130%)!important;
+  color:#fff!important;border:1.5px solid color-mix(in srgb,#D6B477 45%,transparent)!important;
+  box-shadow:0 10px 28px rgba(148,60,84,.18),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+body[data-theme="xmas-enchanted"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#214F3C 0%,#3a6e52 48%,#A83E42 120%)!important;
+  color:#fff!important;border:1.5px solid color-mix(in srgb,#D9B975 45%,transparent)!important;
+  box-shadow:0 10px 28px rgba(33,79,60,.16),inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+body[data-theme="xmas-midnight"] #app :is(.bloom-home-faith.bg-verse,.card.bloom-home-faith,.bg-verse,.card.bg-verse){
+  background:linear-gradient(135deg,#2B4035 0%,#38282D 55%,#1a2420 100%)!important;
+  color:#F5E5C7!important;border:1px solid rgba(231,196,122,.4)!important;
+  box-shadow:0 0 0 1px rgba(231,196,122,.25),0 0 18px rgba(231,196,122,.18)!important;
+}
+body[data-theme="xmas-rose"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#fff6f8,#F7DCE4)!important;color:#3a2430!important;
+  border:1px solid color-mix(in srgb,#943C54 28%,#efd5dc)!important;
+}
+body[data-theme="xmas-enchanted"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#fffdf7,#DCE9DC)!important;color:#24352c!important;
+  border:1px solid color-mix(in srgb,#214F3C 28%,#d9e4d0)!important;
+}
+body[data-theme="xmas-midnight"] #app .bloom-daily-prayer{
+  background:linear-gradient(145deg,#24352c,#1e2a26)!important;color:#F5E5C7!important;
+  border:1px solid rgba(231,196,122,.35)!important;
+}
+body[data-theme="xmas-rose"] #app .bloom-daily-prayer :is(h3,p),
+body[data-theme="xmas-enchanted"] #app .bloom-daily-prayer :is(h3,p){color:inherit!important}
+body[data-theme="xmas-midnight"] #app .bloom-daily-prayer :is(h3,p,blockquote,cite){color:#F5E5C7!important}
 body[data-theme="xmas-midnight"] .meta,body[data-theme="xmas-midnight"] .empty{color:#c9d4c0!important}
 body[data-theme="xmas-midnight"] .tabs button.on{color:#151D1B!important;background:linear-gradient(135deg,#E7C47A,#d4b068)!important}
 
@@ -64,9 +96,10 @@ body.bloom-xmas{
   position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;
   opacity:0;visibility:hidden;
 }
-body.bloom-xmas:not(.xmas-fx-off) #xmas-atmosphere{opacity:1!important;visibility:visible!important}
+body.bloom-xmas:not(.xmas-fx-off) #xmas-atmosphere{opacity:1!important;visibility:visible!important;display:block!important}
+/* Calm / non-Christmas: remove from layout so animations do not keep processing */
 body.bloom-xmas.xmas-fx-off #xmas-atmosphere,
-body:not(.bloom-xmas) #xmas-atmosphere{opacity:0!important;visibility:hidden!important}
+body:not(.bloom-xmas) #xmas-atmosphere{opacity:0!important;visibility:hidden!important;display:none!important}
 #xmas-atmosphere svg{display:block;width:100%;height:100%}
 #xmas-atmosphere .xa-ambient{
   position:absolute;inset:0;
@@ -88,14 +121,14 @@ body:not(.bloom-xmas) #xmas-atmosphere{opacity:0!important;visibility:hidden!imp
 #xmas-atmosphere .xa-garland{
   position:absolute;left:0;right:0;top:0;height:86px;
   filter:drop-shadow(0 4px 12px color-mix(in srgb,var(--xmas-lite-b) 55%,transparent));
-  animation:xaTwinkle 3.6s ease-in-out infinite;
+  animation:xaTwinkle 6.5s ease-in-out infinite;
 }
 #xmas-atmosphere .xa-garland-2{
   position:absolute;left:4%;right:4%;top:68px;height:36px;opacity:.95;
   filter:drop-shadow(0 0 10px color-mix(in srgb,var(--xmas-lite-a) 60%,transparent));
-  animation:xaTwinkle 2.8s ease-in-out infinite reverse;
+  animation:xaTwinkle 7.2s ease-in-out infinite reverse;
 }
-#xmas-atmosphere .xa-bulb{animation:xaBulb 2.8s ease-in-out infinite}
+#xmas-atmosphere .xa-bulb{animation:xaBulb 5.5s ease-in-out infinite}
 #xmas-atmosphere .xa-bulb:nth-child(odd){animation-delay:.5s}
 #xmas-atmosphere .xa-side{
   position:absolute;top:90px;bottom:120px;width:22px;
@@ -110,7 +143,7 @@ body:not(.bloom-xmas) #xmas-atmosphere{opacity:0!important;visibility:hidden!imp
     radial-gradient(circle at 50% 92%, var(--xmas-lite-b) 0 4px, transparent 5px),
     linear-gradient(180deg, transparent, color-mix(in srgb,var(--xmas-garland) 55%,transparent) 8%, color-mix(in srgb,var(--xmas-garland) 55%,transparent) 92%, transparent);
   filter:drop-shadow(0 0 8px color-mix(in srgb,var(--xmas-lite-b) 70%,transparent));
-  animation:xaTwinkle 4s ease-in-out infinite;
+  animation:xaTwinkle 6.8s ease-in-out infinite;
   opacity:.92;
 }
 #xmas-atmosphere .xa-side.left{left:2px}
@@ -139,7 +172,7 @@ body[data-theme="xmas-midnight"] #xmas-atmosphere .xa-corner{
   background:radial-gradient(circle at 35% 35%, #fff8, transparent 45%), var(--xmas-orn-a);
   border-radius:50% 50% 48% 48%;
   box-shadow:0 0 12px color-mix(in srgb,var(--xmas-gold) 55%,transparent), inset 0 -4px 8px rgba(0,0,0,.18);
-  animation:xaSway 5.5s ease-in-out infinite;
+  animation:xaSway 7.5s ease-in-out infinite;
 }
 #xmas-atmosphere .xa-bauble:before{
   content:"";position:absolute;left:50%;top:-6px;width:8px;height:8px;margin-left:-4px;
@@ -154,30 +187,39 @@ body[data-theme="xmas-midnight"] #xmas-atmosphere .xa-corner{
   background:var(--xmas-gold);
   clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
   filter:drop-shadow(0 0 6px color-mix(in srgb,var(--xmas-gold) 70%,transparent));
-  animation:xaTwinkle 3s ease-in-out infinite;
+  animation:xaTwinkle 5.8s ease-in-out infinite;
 }
 #xmas-atmosphere .xa-edge-lights{
   position:absolute;left:4px;right:4px;bottom:calc(84px + env(safe-area-inset-bottom,0px));height:30px;
   filter:drop-shadow(0 0 10px color-mix(in srgb,var(--xmas-lite-b) 75%,transparent));
-  animation:xaTwinkle 4.2s ease-in-out infinite reverse;
+  animation:xaTwinkle 7s ease-in-out infinite reverse;
 }
 @keyframes xaFall{
   0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}
-  12%{opacity:.7}
-  100%{transform:translate3d(14px,110vh,0) rotate(220deg);opacity:0}
+  15%{opacity:.55}
+  100%{transform:translate3d(10px,110vh,0) rotate(160deg);opacity:0}
 }
 @keyframes xaTwinkle{
-  0%,100%{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--xmas-lite-b) 50%,transparent));opacity:.82}
-  50%{filter:drop-shadow(0 0 14px color-mix(in srgb,var(--xmas-lite-a) 80%,transparent));opacity:1}
+  0%,100%{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 40%,transparent));opacity:.88}
+  50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--xmas-lite-a) 55%,transparent));opacity:1}
 }
 @keyframes xaBulb{
-  0%,100%{opacity:.75}
+  0%,100%{opacity:.88}
   50%{opacity:1}
 }
 @keyframes xaSway{
-  0%,100%{transform:rotate(-6deg) translateY(0)}
-  50%{transform:rotate(6deg) translateY(3px)}
+  0%,100%{transform:rotate(-4deg) translateY(0)}
+  50%{transform:rotate(4deg) translateY(2px)}
 }
+/* Calm: hard-stop every seasonal animation (display:none alone is not enough for card lights) */
+body.bloom-xmas.xmas-fx-off #xmas-atmosphere *,
+body.bloom-xmas.xmas-fx-off .xmas-rail,
+body.bloom-xmas.xmas-fx-off .xmas-rail *,
+body.bloom-xmas.xmas-fx-off .xg-lights,
+body.bloom-xmas.xmas-fx-off .xmas-garden-stage:before,
+body:not(.bloom-xmas) #xmas-atmosphere *,
+body:not(.bloom-xmas) .xg-lights{animation:none!important;animation-play-state:paused!important}
+body.bloom-xmas.xmas-fx-off .xg-lights{opacity:0!important;visibility:hidden!important}
 body.xmas-fx-paused #xmas-atmosphere .xa-flake,
 body.xmas-fx-paused #xmas-atmosphere .xa-garland,
 body.xmas-fx-paused #xmas-atmosphere .xa-garland-2,
@@ -185,6 +227,8 @@ body.xmas-fx-paused #xmas-atmosphere .xa-edge-lights,
 body.xmas-fx-paused #xmas-atmosphere .xa-side,
 body.xmas-fx-paused #xmas-atmosphere .xa-bauble,
 body.xmas-fx-paused #xmas-atmosphere .xa-star,
+body.xmas-fx-paused #xmas-atmosphere .xa-bulb,
+body.xmas-fx-paused .xg-lights,
 body.xmas-fx-paused #myday-opening.xmas-open *{animation-play-state:paused!important}
 @media (prefers-reduced-motion:reduce){
   #xmas-atmosphere .xa-flake,
@@ -194,7 +238,8 @@ body.xmas-fx-paused #myday-opening.xmas-open *{animation-play-state:paused!impor
   #xmas-atmosphere .xa-side,
   #xmas-atmosphere .xa-bauble,
   #xmas-atmosphere .xa-star,
-  #xmas-atmosphere .xa-bulb{animation:none!important}
+  #xmas-atmosphere .xa-bulb,
+  .xg-lights{animation:none!important}
   #xmas-atmosphere .xa-flake{opacity:.4;top:12%}
 }
 
@@ -211,8 +256,31 @@ body.bloom-xmas #toast,
 body.bloom-xmas #cheer,
 body.bloom-xmas #banner{position:relative;z-index:4}
 body.bloom-xmas #tabs{z-index:6}
-body.bloom-xmas #md11-fab{z-index:7;bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
-body.bloom-xmas #app{padding-top:10px}
+body.bloom-xmas #md11-fab{
+  z-index:7;bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+}
+body.bloom-xmas #md11-fab.fab-scroll-hide,
+#md11-fab.fab-scroll-hide{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transform:translateY(10px);
+}
+body.bloom-xmas #app{
+  padding-top:10px;
+  padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(160px + env(safe-area-inset-bottom,0px));
+}
+body.bloom-xmas #app .xmas-fab-clear{
+  height:calc(72px + env(safe-area-inset-bottom,0px));
+  pointer-events:none;visibility:hidden;
+}
+/* Keep prayer/verse copy clear of the fixed Quick Add chip */
+body.bloom-xmas #app .bloom-home-faith{
+  padding-right:120px!important;
+}
+body.bloom-xmas #md11-fab.fab-content-hide{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
 
 /* In-flow festive rail — immediately visible on every tab */
 .xmas-rail{
@@ -300,7 +368,7 @@ body[data-theme="xmas-midnight"] .xmas-greet{background:linear-gradient(130deg,#
     radial-gradient(circle at 78% 50%, var(--xmas-lite-c) 0 2px, transparent 3px),
     radial-gradient(circle at 92% 50%, var(--xmas-lite-a) 0 2px, transparent 3px);
   filter:drop-shadow(0 0 4px color-mix(in srgb,var(--xmas-lite-b) 70%,transparent));
-  animation:xaTwinkle 3.2s ease-in-out infinite;
+  animation:xaTwinkle 6.2s ease-in-out infinite;
 }
 body.bloom-xmas:not(.xmas-fx-off) #app .card{
   box-shadow:var(--shadow), inset 0 0 0 1px color-mix(in srgb,var(--xmas-gold) 28%,transparent)!important;
@@ -386,7 +454,7 @@ body.bloom-led[data-theme="xmas-midnight"] #app :is(.card,.bg-home-hero,.bg-vers
 #myday-opening.xmas-open .xo-tree svg{width:100%;height:100%}
 #myday-opening.xmas-open .xo-ornament{
   position:absolute;width:12px;height:12px;border-radius:50%;
-  box-shadow:0 0 8px currentColor;animation:xaTwinkle 2.8s ease-in-out infinite;
+  box-shadow:0 0 8px currentColor;animation:xaTwinkle 5.6s ease-in-out infinite;
 }
 #myday-opening.xmas-open .xo-snow{
   position:absolute;inset:0;overflow:hidden;pointer-events:none;
@@ -396,7 +464,7 @@ body.bloom-led[data-theme="xmas-midnight"] #app :is(.card,.bg-home-hero,.bg-vers
   animation:xaFall linear infinite;
 }
 #myday-opening.xmas-open .xo-star{
-  position:absolute;color:#E7C47A;font-size:12px;opacity:.7;animation:xaTwinkle 3s ease-in-out infinite;
+  position:absolute;color:#E7C47A;font-size:12px;opacity:.7;animation:xaTwinkle 5.8s ease-in-out infinite;
 }
 @media(prefers-reduced-motion:reduce){
   #myday-opening.xmas-open .xo-ornament,
