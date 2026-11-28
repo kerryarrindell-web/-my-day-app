@@ -1,11 +1,12 @@
 # My Day — Christmas Edition Final Production Release Report
 
-**Status: IN PROGRESS — authorised GO**  
-**Time (Europe/London):** Sat 28 Nov 2026, ~11:55 GMT
+**Status: COMPLETE — production live · maintenance-only**  
+**Time (Europe/London):** Sat 28 Nov 2026, ~12:05 GMT
 
 Owner acceptance (iPhone PWA, Samsung PWA, final visual) **PASSED**.  
 Accepted public preview: https://bloom-xmas-final-016.apps.grok.bot/  
-Production authorisation: **GRANTED**.
+Production authorisation: **GRANTED**.  
+Production URL: https://kerryarrindell-web.github.io/-my-day-app/
 
 ---
 
@@ -13,15 +14,17 @@ Production authorisation: **GRANTED**.
 
 | Check | Result |
 | --- | --- |
-| Source tip | `feature/bloom-christmas-edition` @ `fd488e4` (code `f11d715`) |
+| Source tip | `feature/bloom-christmas-edition` → merge `068c055` |
 | Build marker | `xmas-016` |
 | SW cache | `016` (includes `bloom-christmas.css`) |
 | Live preview hashes | Match source (`index.html` after host OG strip) |
 | Local regression | **65/65 PASS** (unit 33 + browser 32) |
+| CI Bloom checks on `main` | **PASS** (run `46142356224`) |
+| Pages deploy | **PASS** (run `46142355418`) |
 | Production before deploy | `prod-013` / SW `013` (confirmed intact) |
 | Rollback tag | `bloom-2.0-rc-prod-013` preserved |
 
-### Accepted asset hashes
+### Accepted / production asset hashes
 
 | File | SHA-256 |
 | --- | --- |
@@ -36,38 +39,45 @@ Production authorisation: **GRANTED**.
 
 | Protection | Status |
 | --- | --- |
-| Storage key `myday-v1` | Unchanged |
-| Groceries permanent (`ensureGroceries` / `delList` guard) | Preserved |
-| Sticky-note colour allowlist (`safeNoteColor`) | Preserved |
+| Storage key `myday-v1` | **Verified live** |
+| Groceries permanent (`ensureGroceries` / `delList` guard) | Preserved in source |
+| Sticky-note colour allowlist (`safeNoteColor`) | Preserved in source |
 | Note image / link / emoji sanitisation | Preserved |
 | Backup import validation | Preserved |
-| Offline SW shell cache | Bumped 013 → 016; activate drops prior `myday-bloom` caches |
+| Offline SW shell | **Verified** — airplane/offline reload serves `xmas-016` |
 
 ---
 
-## 3. Release steps (this run)
+## 3. Release actions completed
 
-1. Preserve prod-013 rollback baseline (tag already on remote)
-2. Merge `feature/bloom-christmas-edition` → `main`
-3. Deploy via GitHub Pages (`main` `/`)
-4. Verify live production build / SW / hashes
-5. Confirm PWA update path (cache `016` + activate cleanup; no reinstall required)
-6. Tag `bloom-christmas-xmas-016`
-7. Freeze handoff to maintenance-only
+1. Preserved prod-013 rollback baseline (`bloom-2.0-rc-prod-013` / `085acfe`)
+2. Merged `feature/bloom-christmas-edition` → `main` (`068c055`)
+3. Deployed via GitHub Pages (`main` `/`)
+4. Verified live production build / SW / hashes (exact match)
+5. Confirmed PWA update path: cache `013` → `016`; activate deletes prior `myday-bloom` caches; no reinstall required
+6. Tagged `bloom-christmas-xmas-016`
+7. Handoff frozen to **maintenance-only**
 
 ---
 
-## 4. Post-deploy (filled after live verify)
+## 4. Live production verification
 
 | Field | Value |
 | --- | --- |
-| Merge commit | _pending_ |
+| Merge commit | `068c0552f541e32f09e72832b1cad45a3aa78e26` |
 | Production URL | https://kerryarrindell-web.github.io/-my-day-app/ |
-| Live build | _pending_ |
-| Live SW | _pending_ |
-| Live hash match | _pending_ |
+| Live build | `xmas-016` |
+| Live SW | `myday-bloom…:016` (controller active) |
+| Live hash match | **PASS** (all four assets) |
+| Festive décor | Rail + 28 flakes + baubles + stars |
+| Theme prayer cards | Distinct rose / enchanted / midnight gradients |
+| Quick Add | Visible at rest; hides on scroll; returns; 120px prayer pad |
+| Calm mode | Atmosphere `display:none`; flakes/stars/baubles 0; running seasonal animations 0 |
+| Offline | Shell reload OK on `xmas-016` |
 | Release tag | `bloom-christmas-xmas-016` |
-| Mode | Maintenance-only |
+| Mode | **Maintenance-only** |
+
+Artefact: `/opt/cursor/artifacts/prod-xmas-016-live-verify.json`
 
 ---
 
@@ -81,3 +91,9 @@ git push --force-with-lease origin main
 ```
 
 Then wait for Pages rebuild. `myday-v1` records remain; Christmas-only fields survive via `norm` if rolled forward again.
+
+---
+
+## 6. Maintenance-only policy
+
+No further feature development or redesign. Allowed work: critical security / data-loss fixes, hosting / offline / PWA breakage only.
