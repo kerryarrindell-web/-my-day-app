@@ -221,3 +221,48 @@ test('quick add fab sits above tab bar clearance',async({page})=>{
  });
  expect(ok).toBe(true);
 });
+
+test('sticky note colour XSS is blocked by allowlist styling',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ const payload='red; background-image:url("javascript:alert(1)"); color:expression(alert(1))';
+ await page.evaluate(color=>{
+  S.notes=[{id:'xss1',text:'Colour probe',color,pin:true,img:''}];
+  S=norm(S);save();tab='more';render();
+ },payload);
+ const bg=await page.locator('.notes .note').first().evaluate(e=>e.style.backgroundColor||e.style.background);
+ const norm=s=>String(s).toLowerCase().replace(/\s/g,'');
+ expect(['#fff3a8','rgb(255,243,168)']).toContain(norm(bg));
+ expect(bg).not.toMatch(/javascript|expression|url\(/i);
+ const attr=await page.locator('.notes .note').first().getAttribute('style');
+ expect(attr||'').toMatch(/background:\s*#fff3a8/i);
+ expect(attr||'').not.toMatch(/javascript|expression|url\(/i);
+});
+
+test('Groceries list cannot be deleted and restores if missing',async({page})=>{
+ await page.goto('http://127.0.0.1:8080/');
+ await page.evaluate(()=>{
+  S.lists=[{id:'party',name:'Party',emoji:'🎉',items:[{id:'c1',t:'cups',done:false}]}];
+  S=norm(S);save();
+  curList='groc';tab='lists';confirmDel=false;render();
+ });
+ await expect(page.locator('#app')).toContainText('Groceries');
+ await expect(page.getByRole('button',{name:'Delete list'})).toHaveCount(0);
+ const blocked=await page.evaluate(()=>{
+  const before=S.lists.find(l=>l.id==='groc');
+  curList='groc';confirmDel=true;delList();
+  const after=S.lists.find(l=>l.id==='groc');
+  return !!(before&&after&&S.lists.some(l=>l.id==='party'&&l.items[0].t==='cups'));
+ });
+ expect(blocked).toBe(true);
+ await page.evaluate(()=>{
+  curList='party';confirmDel=false;render();
+ });
+ await expect(page.getByRole('button',{name:'Delete list'})).toBeVisible();
+ await page.getByRole('button',{name:'Delete list'}).click();
+ await expect(page.getByRole('button',{name:'Tap again to delete list'})).toBeVisible();
+ await page.getByRole('button',{name:'Tap again to delete list'}).click();
+ await expect(page.locator('#app')).not.toContainText('Party');
+ await expect(page.locator('#app')).toContainText('Groceries');
+ const grocAlive=await page.evaluate(()=>!!S.lists.find(l=>l.id==='groc'));
+ expect(grocAlive).toBe(true);
+});

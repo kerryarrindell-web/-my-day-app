@@ -2,10 +2,11 @@
 <html lang="en-GB">
 <head>
   <link rel="stylesheet" href="my-day-v11.css?v=blossom-v7">
-  <link rel="stylesheet" href="bloom-themes.css?v=bloom-visual-4">
+  <link rel="stylesheet" href="bloom-themes.css?v=bloom-visual-5">
 <meta charset="utf-8">
 <title>My Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="bloom-build-id" content="prod-013">
 <meta name="theme-color" content="#fdf6f0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -351,6 +352,10 @@ const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slic
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeNoteImg=s=>{if(typeof s!=='string'||!s)return'';const m=s.match(/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/i);return m?s:''};
 const noteImgHtml=s=>{const u=safeNoteImg(s);return u?`<img src="${u}" alt="" style="width:100%;border-radius:8px;margin-top:8px;display:block">`:''};
+const COLORS=['#fff3a8','#ffd1dc','#c9efd8','#cfe4ff','#ffe0b8'];
+const safeNoteColor=c=>{const s=String(c||'').trim().toLowerCase();return COLORS.includes(s)?s:COLORS[0]};
+const noteBgStyle=c=>'background:'+safeNoteColor(c);
+const safeEmoji=s=>{const v=String(s==null?'':s).slice(0,8);return /[<>&"'`]/.test(v)?'🛒':(v||'🛒')};
 const safeWebLink=(value,fallback='')=>{try{const u=new URL(String(value));return ['https:','http:'].includes(u.protocol)?u.href:fallback}catch(e){return fallback}};
 const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -365,6 +370,21 @@ let S=DEF(),mem=null;
 let animTab=false,lastAdd=null,motiOff=0,motiHelp=false,noteQ='',openRt=null,pendingImg='',editImg='',tab='today',curList='groc',showForm=false,showPast=false,showDone=false,openCat=null,confirmDel=false,noteColor='#fff3a8',lastSnap=null,alerts=[],installEvt=null,syncMsg='Saved on this phone';
 
 /* ---------- storage ---------- */
+function ensureGroceries(lists){
+  const arr=Array.isArray(lists)?lists.slice():[];
+  let groc=arr.find(x=>x&&x.id==='groc');
+  if(!groc){
+    groc={id:'groc',name:'Groceries',emoji:'🛒',items:[]};
+    arr.unshift(groc);
+  }else{
+    if(typeof groc.name!=='string'||!groc.name.trim())groc.name='Groceries';
+    if(!groc.emoji)groc.emoji='🛒';
+    if(!Array.isArray(groc.items))groc.items=[];
+  }
+  // Keep groceries first for stable UX
+  return [groc,...arr.filter(x=>x&&x.id!=='groc')];
+}
+
 function safeFields(o){return Object.fromEntries(Object.entries(o||{}).filter(([k])=>!['__proto__','constructor','prototype'].includes(k)))}
 function norm(o){const d=DEF();const n=Object.assign(d,safeFields(o));n.settings=Object.assign(DEF().settings,safeFields(o&&o.settings));
   n.notified=n.notified||{};n.snooze=n.snooze||{};
@@ -372,6 +392,18 @@ function norm(o){const d=DEF();const n=Object.assign(d,safeFields(o));n.settings
   // Bloom: retain user history; only expire transient notification metadata.
   n.wins=n.wins||{};n.rlog=n.rlog||{};n.meals=n.meals||{};
   n.pills=Array.isArray(n.pills)?n.pills:[];n.routines=n.routines||DEF().routines;
+  n.lists=ensureGroceries(Array.isArray(n.lists)?n.lists:[]).map(l=>{
+    if(!l||typeof l!=='object')return l;
+    return Object.assign({},l,{emoji:safeEmoji(l.emoji),name:typeof l.name==='string'?l.name.slice(0,80):'List',items:Array.isArray(l.items)?l.items:[]});
+  });
+  n.notes=(Array.isArray(n.notes)?n.notes:[]).map(note=>{
+    if(!note||typeof note!=='object')return note;
+    return Object.assign({},note,{color:safeNoteColor(note.color),img:safeNoteImg(note.img||'')});
+  });
+  if(n.settings){
+    n.settings.cal=safeWebLink(n.settings.cal,'https://calendar.google.com/');
+    n.settings.babyUrl=safeWebLink(n.settings.babyUrl,'');
+  }
   return n}
 function save(){const j=JSON.stringify(S);mem=j;try{localStorage.setItem(KEY,j);syncMsg='Saved on this phone';return true}catch(e){syncMsg='Not saved — phone storage unavailable. Export a backup now.';console.warn('My Day: local storage write failed',e);return false}}
 (function(){let j=null;try{j=localStorage.getItem(KEY)}catch(e){}if(j){try{S=norm(JSON.parse(j))}catch(e){}}
@@ -477,7 +509,7 @@ function addItem(){const el=$('#ni');if(!el)return;const v=el.value.trim();if(!v
 function clearDoneItems(){snap();const l=curL();l.items=l.items.filter(i=>!i.done);save();render();toast('Removed ticked items',true)}
 function uncheckAll(){curL().items.forEach(i=>i.done=false);save();render()}
 function newListGo(){const v=$('#nl').value.trim();if(!v)return;const id=uid();S.lists.push({id,name:v,emoji:'📝',items:[]});curList=id;save();render()}
-function delList(){if(S.lists.length<2)return;if(!confirmDel){confirmDel=true;render();return}snap();S.lists=S.lists.filter(x=>x.id!==curList);curList=S.lists[0].id;confirmDel=false;save();render();toast('List deleted',true)}
+function delList(){if(curList==='groc'){toast('Groceries stays in My Day');confirmDel=false;return}if(S.lists.length<2)return;if(!confirmDel){confirmDel=true;render();return}snap();S.lists=S.lists.filter(x=>x.id!==curList);S.lists=ensureGroceries(S.lists);curList=(S.lists.find(x=>x.id!=='groc')||S.lists[0]).id;confirmDel=false;save();render();toast('List deleted',true)}
 function renameList(){const l=curL();openModal(`<h2>Rename list</h2><form onsubmit="doRename(event)"><input id="mrn" value="${esc(l.name)}" required><div class="mbtns"><button class="btn">Save</button><button type="button" class="btn alt" onclick="closeModal()">Cancel</button></div></form>`)}
 function doRename(e){e.preventDefault();const v=$('#mrn').value.trim();if(v){curL().name=v;save();closeModal();render()}}
 function shareText(l){const o=l.items.filter(i=>!i.done);return l.name+':\n'+o.map(i=>'- '+i.t).join('\n')}
@@ -637,7 +669,7 @@ function rtDel(id){snap();S.routines=S.routines.filter(x=>x.id!==id);save();clos
 function rtCard(){
   const lg=S.rlog[todayStr()]||{};
   return `<div class="card"><h2>🔁 Routines</h2>`+S.routines.map(r=>{const n=r.items.length,d=r.items.filter(i=>lg[i.id]).length,open=openRt===r.id;
-    return `<div style="border-top:1px solid var(--line)"><button onclick="rtOpen('${r.id}')" style="width:100%;text-align:left;background:none;border:0;padding:12px 4px;font-weight:800;font-size:1em;display:flex;justify-content:space-between;gap:8px"><span>${r.emoji} ${esc(r.name)}</span><span class="meta">${n&&d===n?'✓ All done':d+'/'+n} ${open?'▲':'▼'}</span></button>`+
+    return `<div style="border-top:1px solid var(--line)"><button onclick="rtOpen('${r.id}')" style="width:100%;text-align:left;background:none;border:0;padding:12px 4px;font-weight:800;font-size:1em;display:flex;justify-content:space-between;gap:8px"><span>${esc(r.emoji)} ${esc(r.name)}</span><span class="meta">${n&&d===n?'✓ All done':d+'/'+n} ${open?'▲':'▼'}</span></button>`+
     (open?r.items.map(i=>`<div class="row ${lg[i.id]?'done':''}" data-sw="r:${i.id}"><button class="chk" data-pop="${i.id}" onclick="rtTick('${i.id}')" aria-label="Tick ${esc(i.t)}">${lg[i.id]?'✓':''}</button><div class="txt" onclick="rtTick('${i.id}')">${esc(i.t)}</div></div>`).join('')+`<div class="acts"><button class="a-del" onclick="rtModal('${r.id}')">Edit steps</button></div>`:'')+`</div>`}).join('')+`<div class="acts"><button class="a-del" onclick="rtModal()">+ New routine</button></div></div>`}
 
 /* ---------- meal planner ---------- */
@@ -675,21 +707,20 @@ function delAppt(id){snap();S.appts=S.appts.filter(a=>a.id!==id);save();closeMod
 function icsAppt(id){const a=S.appts.find(x=>x.id===id);if(a&&!download((a.title.replace(/[^\w]+/g,'-')||'appointment')+'.ics',icsFor(a),'text/calendar'))toast('Couldn’t make the file. Use Google Calendar.')}
 
 /* ---------- notes ---------- */
-const COLORS=['#fff3a8','#ffd1dc','#c9efd8','#cfe4ff','#ffe0b8'];
 function readImg(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const M=720,k=Math.min(1,M/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.6))};im.onerror=()=>toast('Couldn’t read that photo');im.src=r.result};r.onerror=()=>toast('Couldn’t read that photo');r.readAsDataURL(file)}
 function pickPhoto(inp){const f=inp.files&&inp.files[0];if(!f)return;readImg(f,d=>{pendingImg=d;render();toast('Photo attached')})}
 function pickEditPhoto(inp){const f=inp.files&&inp.files[0];if(!f)return;readImg(f,d=>{editImg=safeNoteImg(d);$('#mnimg').innerHTML=noteImgHtml(editImg).replace('border-radius:8px','border-radius:12px')})}
-function addNote(){const v=$('#nn').value.trim();if(!v&&!pendingImg)return;S.notes.unshift({id:uid(),text:v,color:noteColor,pin:false,img:safeNoteImg(pendingImg)});pendingImg='';save();render()}
+function addNote(){const v=$('#nn').value.trim();if(!v&&!pendingImg)return;S.notes.unshift({id:uid(),text:v,color:safeNoteColor(noteColor),pin:false,img:safeNoteImg(pendingImg)});pendingImg='';save();render()}
 function noteModal(id){const n=S.notes.find(x=>x.id===id);if(!n)return;editImg=n.img||'';
   openModal(`<h2>Edit note</h2><form onsubmit="saveNote(event,'${n.id}')"><textarea id="mnt" rows="6">${esc(n.text)}</textarea>
   <div id="mnimg">${safeNoteImg(editImg)?`<img src="${safeNoteImg(editImg)}" style="width:100%;border-radius:12px;margin-top:8px" alt="">`:''}</div>
   <div class="acts"><label class="a-cal" style="margin:0;cursor:pointer;color:#1a56c4">📷 ${editImg?'Change':'Add'} photo<input type="file" accept="image/*" onchange="pickEditPhoto(this)" style="display:none"></label>${editImg?`<button type="button" class="a-del" onclick="editImg='';$('#mnimg').innerHTML=''">Remove photo</button>`:''}</div>
   <label style="display:flex;gap:10px;align-items:center;color:var(--ink);font-size:1em"><input type="checkbox" id="mnp" style="width:auto" ${n.pin?'checked':''}> 📌 Keep at the top</label>
-  <label>Colour</label><div class="add" style="margin:0">${COLORS.map(c=>`<button type="button" data-c="${c}" onclick="pickNote(this)" style="width:40px;height:40px;border-radius:50%;border:${n.color===c?'3px solid var(--ink)':'2px solid #fff'};background:${c}"></button>`).join('')}</div>
-  <input type="hidden" id="mnc" value="${n.color}">
+  <label>Colour</label><div class="add" style="margin:0">${COLORS.map(c=>`<button type="button" data-c="${c}" onclick="pickNote(this)" style="width:40px;height:40px;border-radius:50%;border:${safeNoteColor(n.color)===c?'3px solid var(--ink)':'2px solid #fff'};${noteBgStyle(c)}"></button>`).join('')}</div>
+  <input type="hidden" id="mnc" value="${safeNoteColor(n.color)}">
   <div class="mbtns"><button class="btn">Save</button><button type="button" class="btn danger" onclick="delNote('${n.id}')">Delete</button><button type="button" class="btn alt" onclick="closeModal()">Cancel</button></div></form>`)}
-function pickNote(b){$('#mnc').value=b.dataset.c;document.querySelectorAll('#modal [data-c]').forEach(x=>x.style.border=x===b?'3px solid var(--ink)':'2px solid #fff')}
-function saveNote(e,id){e.preventDefault();const n=S.notes.find(x=>x.id===id);n.text=$('#mnt').value.trim();if(!n.text&&!editImg)return;n.done=false;n.color=$('#mnc').value;n.pin=$('#mnp').checked;n.img=safeNoteImg(editImg);save();closeModal();render()}
+function pickNote(b){$('#mnc').value=safeNoteColor(b.dataset.c);document.querySelectorAll('#modal [data-c]').forEach(x=>x.style.border=x===b?'3px solid var(--ink)':'2px solid #fff')}
+function saveNote(e,id){e.preventDefault();const n=S.notes.find(x=>x.id===id);n.text=$('#mnt').value.trim();if(!n.text&&!editImg)return;n.done=false;n.color=safeNoteColor($('#mnc').value);n.pin=$('#mnp').checked;n.img=safeNoteImg(editImg);save();closeModal();render()}
 function delNote(id){snap();S.notes=S.notes.filter(n=>n.id!==id);save();closeModal();render();toast('Deleted',true)}
 
 /* ---------- task edit ---------- */
@@ -741,7 +772,7 @@ function validBackup(p){
   const records=x=>Array.isArray(x)&&x.every(obj);
   const safe=x=>!x||typeof x!=='object'||Object.keys(x).every(k=>!['__proto__','constructor','prototype'].includes(k)&&(k!=='id'||(typeof x[k]==='string'&&/^[a-zA-Z0-9_-]{1,128}$/.test(x[k])))&&safe(x[k]));
   return obj(p)&&safe(p)&&records(p.lists)&&p.lists.length>0&&p.lists.every(l=>typeof l.name==='string'&&records(l.items))
-    &&records(p.tasks)&&records(p.appts)&&records(p.notes)&&p.notes.every(n=>n.img==null||n.img===''||(typeof n.img==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/i.test(n.img)))
+    &&records(p.tasks)&&records(p.appts)&&records(p.notes)&&p.notes.every(n=>(n.img==null||n.img===''||(typeof n.img==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/i.test(n.img)))&&(n.color==null||n.color===''||['#fff3a8','#ffd1dc','#c9efd8','#cfe4ff','#ffe0b8'].includes(String(n.color).toLowerCase())))
     &&(p.settings==null||obj(p.settings))
     &&(p.routines==null||(records(p.routines)&&p.routines.every(r=>records(r.items))))
     &&(p.pills==null||records(p.pills))
@@ -825,7 +856,7 @@ function homeStickyCard(){
   const notes=(S.notes||[]).slice().sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
   const shown=notes.filter(n=>!n.done).slice(0,3);
   return `<section class="card bg-home-notes bg-led"><div class="bg-note-head"><h2>📌 Home sticky notes</h2><button class="btn alt" onclick="homeStickyAdd()">+ Quick Add</button></div>
-  <div class="bg-note-grid">${shown.map(n=>`<div class="bg-note" style="background:${n.color||'#fff3a8'}"><div class="bg-note-text">${esc(n.text||'')}</div><div class="bg-note-actions"><button onclick="noteModal('${n.id}')">Edit</button><button onclick="homeStickyDone('${n.id}')">✓ Done</button></div></div>`).join('')||'<p class="meta">No sticky notes yet. Add a little reminder 🌸</p>'}</div>
+  <div class="bg-note-grid">${shown.map(n=>`<div class="bg-note" style="${noteBgStyle(n.color)}"><div class="bg-note-text">${esc(n.text||'')}</div><div class="bg-note-actions"><button onclick="noteModal('${n.id}')">Edit</button><button onclick="homeStickyDone('${n.id}')">✓ Done</button></div></div>`).join('')||'<p class="meta">No sticky notes yet. Add a little reminder 🌸</p>'}</div>
   <button class="a-cal" onclick="homeStickyAll()">All notes (${notes.length})</button></section>`
 }
 function homeStickyAdd(){openModal(`<h2>📌 New sticky note</h2><form onsubmit="homeStickySave(event)"><label for="homeStickyText">Your note</label><textarea id="homeStickyText" rows="4" maxlength="2000" required placeholder="A little reminder…"></textarea><div class="mbtns"><button class="btn">Save sticky note</button><button type="button" class="btn alt" onclick="closeModal()">Cancel</button></div></form>`)}
@@ -856,22 +887,22 @@ function vToday(){
   </div>
   ${safeWebLink(S.settings.babyUrl)?`<div class="card"><a class="btn" style="display:block;text-align:center;text-decoration:none" href="${esc(safeWebLink(S.settings.babyUrl))}" target="_blank" rel="noopener">👶 Open baby tracker</a></div>`:''}
 `}
-function listChips(sel){return `<div class="chips">${S.lists.map(x=>`<button class="chip ${x.id===sel?'on':''}" onclick="curList='${x.id}';confirmDel=false;render()">${x.emoji} ${esc(x.name)}</button>`).join('')}<button class="chip ${sel==='meals'?'on':''}" onclick="curList='meals';render()">🍽️ Meals</button></div>`}
+function listChips(sel){return `<div class="chips">${S.lists.map(x=>`<button class="chip ${x.id===sel?'on':''}" onclick="curList='${x.id}';confirmDel=false;render()">${esc(x.emoji)} ${esc(x.name)}</button>`).join('')}<button class="chip ${sel==='meals'?'on':''}" onclick="curList='meals';render()">🍽️ Meals</button></div>`}
 function listOverviewTiles(){
   const extras=S.lists.filter(x=>x.id!=='groc');
   if(!extras.length)return '';
-  return `<div class="card bg-list-overview"><h2>🛍️ My other lists</h2><div class="myday-list-grid">${extras.map((x,i)=>`<button type="button" class="myday-list-tile" style="--list-accent:${['#7658ac','#a64e82','#2b8577','#b77840'][i%4]};--list-tint:${['#eee7ff','#ffe5f1','#ddf4ec','#fff0d7'][i%4]}" onclick="curList='${x.id}';confirmDel=false;render();window.scrollTo({top:0,behavior:'auto'})"><span class="myday-list-icon">${x.emoji}</span><strong>${esc(x.name)}</strong><small>${x.items.filter(it=>!it.done).length} to get · ${x.items.length} total</small><span class="myday-list-open">Open list →</span></button>`).join('')}</div></div>`;
+  return `<div class="card bg-list-overview"><h2>🛍️ My other lists</h2><div class="myday-list-grid">${extras.map((x,i)=>`<button type="button" class="myday-list-tile" style="--list-accent:${['#7658ac','#a64e82','#2b8577','#b77840'][i%4]};--list-tint:${['#eee7ff','#ffe5f1','#ddf4ec','#fff0d7'][i%4]}" onclick="curList='${x.id}';confirmDel=false;render();window.scrollTo({top:0,behavior:'auto'})"><span class="myday-list-icon">${esc(x.emoji)}</span><strong>${esc(x.name)}</strong><small>${x.items.filter(it=>!it.done).length} to get · ${x.items.length} total</small><span class="myday-list-open">Open list →</span></button>`).join('')}</div></div>`;
 }
 function vLists(){
   if(curList==='meals')return `<div class="bg-section-hero bloom-floral"><span>✦ SHOPPING</span><h2>Meal plan</h2><p>Gentle planning for the week ahead.</p></div>`+listChips('meals')+vMeals();
   const l=curL(),open=l.items.filter(i=>!i.done),done=l.items.filter(i=>i.done);
-  return `<div class="bg-section-hero bloom-floral"><span>✦ SHOPPING</span><h2>${l.emoji} ${esc(l.name)}</h2><p>Lists that stay with you, offline.</p></div>
+  return `<div class="bg-section-hero bloom-floral"><span>✦ SHOPPING</span><h2>${esc(l.emoji)} ${esc(l.name)}</h2><p>Lists that stay with you, offline.</p></div>
   ${listChips(l.id)}
-  <div class="card bg-active-list"><h2>${l.emoji} ${esc(l.name)}</h2>
+  <div class="card bg-active-list"><h2>${esc(l.emoji)} ${esc(l.name)}</h2>
     <div class="add" style="margin:0 0 8px"><input id="ni" placeholder="Add items (e.g. milk, nappies, bread)" onkeydown="if(event.key==='Enter')addItem()" autocomplete="off">${micBtn('ni')}<button class="btn" onclick="addItem()">Add</button></div>
     ${[...open,...done].map(i=>`<div class="row ${i.done?'done':''}" data-sw="i:${i.id}"><button class="chk" data-pop="${i.id}" onclick="toggleItem('${i.id}')" aria-label="Tick ${esc(i.t)}">${i.done?'✓':''}</button><div class="txt" onclick="toggleItem('${i.id}')">${esc(i.t)}</div><button class="x" onclick="delItem('${i.id}')" aria-label="Remove ${esc(i.t)}">×</button></div>`).join('')||'<div class="empty">Empty list. Type or speak what you need 🎤</div>'}
     <div class="acts">${open.length?`<button class="a-cal" onclick="shareList()">📤 Share list</button><a class="a-cal" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(l))}">WhatsApp</a>`:''}${done.length?`<button class="a-del" onclick="clearDoneItems()">Remove ticked</button><button class="a-del" onclick="uncheckAll()">Untick all (reuse list)</button>`:''}
-      <button class="a-del" onclick="renameList()">Rename</button>${S.lists.length>1?`<button class="a-del" onclick="delList()">${confirmDel?'Tap again to delete list':'Delete list'}</button>`:''}</div>
+      <button class="a-del" onclick="renameList()">Rename</button>${l.id!=='groc'?`<button class="a-del" onclick="delList()">${confirmDel?'Tap again to delete list':'Delete list'}</button>`:''}</div>
   </div>
   ${l.id==='groc'?quickCard(l):''}
   ${listOverviewTiles()}
@@ -902,12 +933,12 @@ function vAppts(){
 function vNotes(){
   return `<div class="card"><h2>📌 Sticky notes</h2>
     <textarea id="nn" rows="3" placeholder="Write it down so it's not on your mind…"></textarea>
-    <div class="add" style="align-items:center;gap:10px">${COLORS.map(c=>`<button onclick="noteColor='${c}';render()" aria-label="Colour" style="width:36px;height:36px;border-radius:50%;border:${noteColor===c?'3px solid var(--ink)':'2px solid #fff'};background:${c};box-shadow:var(--shadow);flex:none"></button>`).join('')}</div>
+    <div class="add" style="align-items:center;gap:10px">${COLORS.map(c=>`<button type="button" data-c="${c}" onclick="noteColor=safeNoteColor(this.dataset.c);render()" aria-label="Colour" style="width:36px;height:36px;border-radius:50%;border:${safeNoteColor(noteColor)===c?'3px solid var(--ink)':'2px solid #fff'};${noteBgStyle(c)};box-shadow:var(--shadow);flex:none"></button>`).join('')}</div>
     ${safeNoteImg(pendingImg)?`<img src="${safeNoteImg(pendingImg)}" style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:10px" alt="Attached photo"><div class="acts"><button class="a-del" onclick="pendingImg='';render()">Remove photo</button></div>`:''}
     <div class="add">${micBtn('nn')}<label class="mic" style="display:grid;place-items:center;cursor:pointer" aria-label="Add a photo">📷<input type="file" accept="image/*" onchange="pickPhoto(this)" style="display:none"></label><button class="btn" style="flex:1" onclick="addNote()">Stick it</button></div></div>
   ${S.notes.length?`<input id="nq" type="text" placeholder="🔍 Search my notes" value="${esc(noteQ)}" oninput="noteQ=this.value;render()" style="margin-bottom:12px">`:''}
   ${(()=>{const q=noteQ.trim().toLowerCase();const ns=S.notes.filter(n=>!q||(n.text||'').toLowerCase().includes(q)).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
-    return ns.length?`<div class="notes">${ns.map(n=>`<div class="note" style="background:${n.color}" onclick="noteModal('${n.id}')">${n.pin?'📌 ':''}${esc(n.text).replace(/\n/g,'<br>')}${noteImgHtml(n.img)}<button class="x" onclick="event.stopPropagation();delNote('${n.id}')" aria-label="Delete note">×</button></div>`).join('')}</div>`:S.notes.length?'<div class="empty">No notes match.</div>':'<div class="empty">No notes yet. Things like “Parked on level 3” or “Ask about jabs”.</div>'})()}`}
+    return ns.length?`<div class="notes">${ns.map(n=>`<div class="note" style="${noteBgStyle(n.color)}" onclick="noteModal('${n.id}')">${n.pin?'📌 ':''}${esc(n.text).replace(/\n/g,'<br>')}${noteImgHtml(n.img)}<button class="x" onclick="event.stopPropagation();delNote('${n.id}')" aria-label="Delete note">×</button></div>`).join('')}</div>`:S.notes.length?'<div class="empty">No notes match.</div>':'<div class="empty">No notes yet. Things like “Parked on level 3” or “Ask about jabs”.</div>'})()}`}
 /* Me Time: additive, private local-only journal; never removes S.notes. */
 const ME_TEMPLATES={
   rest:['I managed to get some rest','I took a shower and felt refreshed','I ate a proper meal','I drank some water','I listened to my body and slowed down','I asked for help when I needed it'],

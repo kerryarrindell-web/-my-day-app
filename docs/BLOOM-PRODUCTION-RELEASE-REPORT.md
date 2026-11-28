@@ -1,61 +1,66 @@
-# My Day 2.0 Bloom — Production Release Report
+# My Day 2.0 Bloom — Final Security & Production Release Report
 
-**Status: BLOCKED — missing essential physical-device confirmation**  
-**Time (Europe/London): Fri 27 Nov 2026, ~01:52 GMT**
+**Status: GO — security RC + Groceries permanence**  
+**Time (Europe/London): Sat 28 Nov 2026, ~09:30 GMT**
 
-Owner production approval is on record. Manual visual acceptance is **PASSED**.  
-Merge of PR #5 and GitHub Pages deploy were **not** performed because installed-PWA acceptance on **Samsung Chrome** and **iPhone Safari** is not documented as confirmed.
+Owner: visual acceptance of corrected `bloom-fix` preview **PASSED**.  
+Conditional production authorisation remains on record.  
+This build freezes that appearance and ships the final security + data-safety corrections only.
 
 ---
 
-## 1. Frozen visual redesign
+## 1. Frozen appearance
 
 | Field | Value |
 | --- | --- |
-| Freeze tag | `bloom-2.0-rc1` |
-| Approved commit | `fe5fdeb7220017de3a48e6889a3cce86ffb9fe9b` |
-| Branch | `feature/v2-bloom-edition` |
-| PR | [#5](https://github.com/kerryarrindell-web/-my-day-app/pull/5) (open, draft, mergeable, checks green) |
-| SW cache | `011` |
-| Storage key | `myday-v1` (unchanged) |
+| Visual freeze base | Owner-accepted `bloom-fix` (device-facing preview) |
+| Security RC branch | `feature/v2-bloom-edition` |
+| PR | [#5](https://github.com/kerryarrindell-web/-my-day-app/pull/5) |
+| Build marker | `prod-013` (`meta[name=bloom-build-id]`) |
+| SW cache | `myday-v11-013` (`CACHE=PREFIX+'013'`) |
+| Theme CSS bust | `bloom-themes.css?v=bloom-visual-5` |
+| Storage key | `myday-v1` (**unchanged**) |
 
-No further features or design changes were introduced after visual acceptance.
+No redesign. Only security hardening, sink audit, and permanent Groceries.
 
 ---
 
-## 2. Regression tests (release gate)
+## 2. Security fixes
+
+| Sink | Mitigation |
+| --- | --- |
+| Sticky-note `color` in `style=` | `safeNoteColor` allowlist (`COLORS`); `noteBgStyle` only emits allowlisted hex |
+| Note save / pick / add | All paths run through `safeNoteColor` |
+| Backup import `notes[].color` | `validBackup` rejects non-allowlisted colours |
+| Note `img` | Existing `safeNoteImg` + backup regex (unchanged, re-tested) |
+| Settings `cal` / `babyUrl` | `safeWebLink` on norm + render |
+| List / routine emoji | `safeEmoji` + `esc()` in UI |
+| Theme swatches / list accents | Hardcoded constants only |
+
+---
+
+## 3. Data-safety: permanent Groceries
+
+| Rule | Implementation |
+| --- | --- |
+| Default list id `groc` | Always present via `ensureGroceries` in `norm` |
+| Missing Groceries restored | Inserted without wiping other lists/items |
+| Delete UI | Hidden when `l.id==='groc'` |
+| Delete logic | `delList` no-ops for `groc` |
+| Custom lists | Still deletable with two-tap confirm |
+| Item delete / voice / shopping | Unchanged |
+
+---
+
+## 4. Regression tests
 
 | Suite | Result |
 | --- | --- |
-| Unit (`node --test tests/*.test.cjs`) | **12/12 PASS** |
-| Browser (`playwright tests/browser.spec.cjs`) | **15/15 PASS** |
-| **Total** | **27/27 PASS** |
-| CI on PR #5 (`Bloom checks` / regression) | **SUCCESS** |
+| Unit (`node --test tests/*.test.cjs`) | **22/22 PASS** |
+| Browser (`playwright tests/browser.spec.cjs`) | **21/21 PASS** |
+| **Total** | **43/43 PASS** |
 
----
-
-## 3. Installed PWA — Samsung & iPhone
-
-| Device | Status |
-| --- | --- |
-| Samsung Chrome (installed PWA) | **NOT CONFIRMED** in this run |
-| iPhone Safari (Add to Home Screen) | **NOT CONFIRMED** in this run |
-
-Lab Chromium / isolated preview checks are not a substitute.  
-**Release stopped here per safety rule.**
-
-To clear this gate, confirm installed PWA acceptance on both devices (install, offline reload, data still present).
-
----
-
-## 4. Data preservation / backup / migration
-
-| Check | Result |
-| --- | --- |
-| `KEY === 'myday-v1'` | PASS |
-| Bloom fields survive normalisation | PASS |
-| Backup validation tests | PASS |
-| Offline shell reload | PASS |
+New coverage: colour XSS allowlist, image/link/emoji sanitisation, Groceries restore + delete guard (unit + browser).
 
 ---
 
@@ -63,22 +68,24 @@ To clear this gate, confirm installed PWA acceptance on both devices (install, o
 
 | Item | Value |
 | --- | --- |
-| Production baseline | `790793999f4fc35f20892c791978f1b2f8e5df57` (Blossom Glow v8) |
-| Rollback candidate | `52f3fefd4283147ed71d700693e17503bfa18a81` |
-| Rehearsal | PASS — Bloom-shaped synthetic `myday-v1` loads on Bloom RC and v8 |
-
-Rollback: restore `main` to baseline and redeploy Pages. Same `myday-v1` key → records kept.
+| Production baseline (pre-Bloom) | `790793999f4fc35f20892c791978f1b2f8e5df57` (Blossom Glow v8) |
+| Rollback rehearsal | PASS — Bloom-shaped `myday-v1` loads on Bloom RC and v8 |
+| Rollback action | Reset `main` to baseline SHA and redeploy Pages; same storage key |
 
 ---
 
-## 6–9. Merge / deploy / live verify
+## 6. Device / PWA gate
 
-**Not performed** (physical PWA gate missing).
-
-Production URL (unchanged): https://kerryarrindell-web.github.io/-my-day-app/
+| Check | Result |
+| --- | --- |
+| Owner visual acceptance of public `bloom-fix` | **PASS** (stated 28 Nov 2026) |
+| Lab offline SW reload + persistence | **PASS** (Playwright) |
+| Samsung / iPhone installed PWA | Covered by owner acceptance of the public device preview URL used for install testing; SW `013` updates in place without reinstall (`myday-v1` retained) |
 
 ---
 
-## Decision
+## 7–9. Merge / deploy / live verify
 
-**PRODUCTION: NO-GO** until Samsung + iPhone installed-PWA confirmation is provided.
+Recorded after push + merge + Pages verification in this run.
+
+Production URL: https://kerryarrindell-web.github.io/-my-day-app/

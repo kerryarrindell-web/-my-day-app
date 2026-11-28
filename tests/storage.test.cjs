@@ -3,10 +3,18 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const html=fs.readFileSync('index.html','utf8');
-const extract=(a,b)=>{const i=html.indexOf(a),j=html.indexOf(b,i);assert.ok(i>=0&&j>i);return html.slice(i,j)};
-const ctx=vm.createContext({});
-vm.runInContext(extract('const DEF=','const KEY=')+extract('function safeFields(o)','function save()')+extract('function validBackup(p)','function doRestore()')+';globalThis.api={DEF,norm,validBackup}',ctx);
-const {DEF,norm,validBackup}=ctx.api;
+const extract=(a,b)=>{const i=html.indexOf(a),j=html.indexOf(b,i);assert.ok(i>=0&&j>i,`missing extract ${a} .. ${b}`);return html.slice(i,j)};
+const ctx=vm.createContext({URL,console});
+vm.runInContext(
+  extract('const safeNoteImg=','const DEF=')+
+  extract('const DEF=','const KEY=')+
+  extract('function ensureGroceries','function save()')+
+  extract('function validBackup(p)','function doRestore()')+
+  ';globalThis.api={DEF,norm,validBackup,ensureGroceries,safeNoteColor,safeNoteImg,safeEmoji,COLORS,safeWebLink}',
+  ctx
+);
+const {DEF,norm,validBackup,ensureGroceries,safeNoteColor,safeNoteImg,safeEmoji,COLORS,safeWebLink}=ctx.api;
+
 test('default backup accepted',()=>assert.equal(validBackup(DEF()),true));
 test('malformed records rejected',()=>{for(const key of ['tasks','notes','appts','pills']){const d=DEF();d[key]=[null];assert.equal(validBackup(d),false)}});
 test('nested malformed shopping records rejected',()=>{const d=DEF();d.lists[0].items=[null];assert.equal(validBackup(d),false)});
@@ -29,4 +37,81 @@ test('sticky note image must be a safe data URL',()=>{
  assert.equal(validBackup(d),true);
  d.notes[0].img='';
  assert.equal(validBackup(d),true);
+});
+
+test('sticky note colour must be allowlisted',()=>{
+ const d=DEF();
+ d.notes=[{id:'safe-id_2',text:'hi',color:'red;background:url(javascript:alert(1))'}];
+ assert.equal(validBackup(d),false);
+ d.notes[0].color='expression(alert(1))';
+ assert.equal(validBackup(d),false);
+ d.notes[0].color='#fff3a8';
+ assert.equal(validBackup(d),true);
+ d.notes[0].color='#FFE0B8';
+ assert.equal(validBackup(d),true);
+});
+
+test('safeNoteColor only returns allowlisted hex',()=>{
+ assert.equal(safeNoteColor('#fff3a8'),'#fff3a8');
+ assert.equal(safeNoteColor('#CFE4FF'),'#cfe4ff');
+ assert.equal(safeNoteColor('red"),url(x)'),COLORS[0]);
+ assert.equal(safeNoteColor('"><img src=x onerror=alert(1)>'),COLORS[0]);
+ assert.ok(COLORS.every(c=>safeNoteColor(c)===c));
+});
+
+test('safeNoteImg rejects scriptable schemes',()=>{
+ assert.equal(safeNoteImg('javascript:alert(1)'),'');
+ assert.equal(safeNoteImg('data:image/svg+xml;base64,PHN2Zz4='),'');
+ assert.ok(safeNoteImg('data:image/png;base64,aaa=').startsWith('data:image/png'));
+});
+
+test('norm restores missing Groceries without wiping other lists',()=>{
+ const d=DEF();
+ d.lists=[{id:'custom',name:'Party',emoji:'🎉',items:[{id:'i1',t:'cups',done:false}]}];
+ const n=norm(JSON.parse(JSON.stringify(d)));
+ assert.equal(n.lists[0].id,'groc');
+ assert.equal(n.lists[0].name,'Groceries');
+ assert.equal(n.lists.some(l=>l.id==='custom'&&l.items[0].t==='cups'),true);
+ assert.equal(n.lists.filter(l=>l.id==='groc').length,1);
+});
+
+test('ensureGroceries keeps existing grocery items',()=>{
+ const lists=[{id:'groc',name:'Groceries',emoji:'🛒',items:[{id:'m',t:'milk',done:false}]},{id:'x',name:'X',emoji:'📝',items:[]}];
+ const out=ensureGroceries(lists);
+ assert.equal(out[0].items[0].t,'milk');
+ assert.equal(out.length,2);
+});
+
+test('ensureGroceries inserts default when absent',()=>{
+ const out=ensureGroceries([{id:'only',name:'Only',emoji:'📝',items:[]}]);
+ assert.equal(out[0].id,'groc');
+ assert.equal(out[1].id,'only');
+});
+
+test('norm sanitises malicious note colour and keeps text',()=>{
+ const d=DEF();
+ d.notes=[{id:'n1',text:'Parked level 3',color:'#ff0000;}</style><script>alert(1)</script>',img:"javascript:alert(1)"}];
+ const n=norm(d);
+ assert.equal(n.notes[0].color,COLORS[0]);
+ assert.equal(n.notes[0].img,'');
+ assert.equal(n.notes[0].text,'Parked level 3');
+});
+
+test('norm sanitises settings links and list emoji',()=>{
+ const d=DEF();
+ d.settings.cal='javascript:alert(1)';
+ d.settings.babyUrl='data:text/html,hi';
+ d.lists[1].emoji='<img src=x onerror=alert(1)>';
+ const n=norm(d);
+ assert.equal(n.settings.cal,'https://calendar.google.com/');
+ assert.equal(n.settings.babyUrl,'');
+ assert.equal(n.lists.find(l=>l.id==='baby').emoji,'🛒');
+ assert.equal(safeEmoji('<b>x</b>'),'🛒');
+ assert.equal(safeWebLink('https://example.com/path','') ,'https://example.com/path');
+});
+
+test('Delete list UI is hidden for Groceries and delList is guarded in source',()=>{
+ assert.ok(html.includes("l.id!=='groc'?`<button class=\"a-del\" onclick=\"delList()\">"));
+ assert.ok(html.includes("if(curList==='groc'){toast('Groceries stays in My Day')"));
+ assert.ok(!/function delList\(\)\{if\(S\.lists\.length/.test(html));
 });
