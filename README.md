@@ -30,7 +30,9 @@ python3 -m http.server 8080 --bind 127.0.0.1
 # open http://127.0.0.1:8080/
 ```
 
-Or any static file server. A service worker caches the shell for offline use (`sw.js` cache `009`).
+Or any static file server. A service worker caches the shell for offline use (`sw.js` cache `016`).
+
+**Production freeze:** Christmas Edition `xmas-016` on GitHub Pages. Maintenance-only — no further feature development or redesign.
 
 ## Tests
 

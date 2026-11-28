@@ -1,30 +1,29 @@
-# Christmas Edition production release — GATE STOP
+# Christmas Edition production release — GATE GO
 
-**Time (Europe/London):** 2026-11-28 late morning  
-**Decision:** **NO-GO** — production merge/deploy halted.
+**Time (Europe/London):** Sat 28 Nov 2026, ~11:55 GMT  
+**Decision:** **GO** — owner acceptance and production authorisation granted. Proceeding to merge, Pages deploy, live verify, tag, and maintenance-only.
 
 ## Gate results
 
 | # | Gate | Result |
 | --- | --- | --- |
-| 1 | Accepted live preview is xmas-016 / SW 016 | **FAIL** — public bloom-xmas origin still serves **xmas-014** / SW **014** |
-| 2 | 65 regression tests | **PASS** — unit 33/33 + browser 32/32 locally on tip `f11d715` |
-| 3 | Physical iPhone + Samsung acceptance on accepted preview | **UNCONFIRMED** for xmas-016 (live public build is still 014) |
-| 4 | Rollback readiness vs prod-013 | **READY** — prod-013 commit `085acfe`, SW `013` intact on production Pages |
-| 5 | myday-v1 / backups / offline protections | **PASS** in source tip (`KEY='myday-v1'`, groceries guard, colour allowlist) |
-| 6–12 | Merge, deploy, live verify, tag, maintenance | **NOT STARTED** (blocked by gates 1 and 3) |
+| 1 | Accepted live preview is xmas-016 / SW 016 | **PASS** — https://bloom-xmas-final-016.apps.grok.bot/ |
+| 2 | 65 regression tests | **PASS** — unit 33/33 + browser 32/32 on tip `fd488e4` (code tip `f11d715`) |
+| 3 | Physical iPhone + Samsung acceptance | **PASS** (owner) |
+| 4 | Final visual acceptance | **PASS** (owner) |
+| 5 | Rollback readiness vs prod-013 | **READY** — tag `bloom-2.0-rc-prod-013` / commit `085acfe` |
+| 6 | myday-v1 / backups / offline / security | **PASS** — `KEY='myday-v1'`, Groceries guard, colour allowlist preserved |
+| 7 | Production authorisation | **GRANTED** (owner) |
 
-## Live verification notes
+## Accepted hashes (source = live preview after OG strip)
 
-- Public preview build meta: `xmas-014`
-- Public preview SW: `CACHE … '014'`
-- Local tip build meta: `xmas-016`
-- Local tip SW: `CACHE … '016'`
-- Production Pages: still `prod-013` / SW `013` (untouched)
+| File | SHA-256 |
+| --- | --- |
+| `index.html` | `13df70a3be6be617781a4e2838f523b5aaec78691ad8936dfa936345632bd278` |
+| `sw.js` | `0b090c4ed92605d229a9edc70f0be02df2e371b3865d9f65af63943af8f675f3` |
+| `bloom-christmas.css` | `e383f59aab8c482ccf02ac19759846dd638d830e1391e94279aa496848529d5f` |
+| `bloom-themes.css` | `20e8c4d26d9d73f7baeb8efafd03b6c1bcb0a5e4bae731e01e46ed2fd0497d6f` |
 
-## Required before GO
+## Rollback
 
-1. Confirm the pending **bloom-xmas** publish so public preview ships **xmas-016** / SW **016**.
-2. Re-verify live preview markers/hashes match tip `f11d715` (or successor).
-3. Explicit physical-device acceptance on that **xmas-016** public preview (iPhone Safari + Samsung Chrome installed PWA).
-4. Re-issue production release authorization after those confirmations.
+If production verification fails: reset `main` to `085acfe` / tag `bloom-2.0-rc-prod-013` and redeploy GitHub Pages. Storage key `myday-v1` is unchanged.
